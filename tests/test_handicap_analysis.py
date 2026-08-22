@@ -31,6 +31,9 @@ from odds_analyzer import (
 from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
 from odds_analyzer.sources import (
     DataSourcePurpose,
+    SportteryMarket,
+    SportteryMatch,
+    SportteryOutcome,
     ReliabilityTier,
     get_data_source_candidates,
     get_sources_by_purpose,
@@ -242,6 +245,51 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertNotIn("2026-08-22-arsenal-coventry", ids)
         self.assertNotIn("2026-08-23-brighton-aston-villa", ids)
 
+    def test_sporttery_enrichment_updates_lottery_without_prediction(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+        sporttery_match = SportteryMatch(
+            match_id="fixture-016",
+            match_no="周六016",
+            business_date="2026-08-22",
+            league="西甲",
+            home_team="毕尔巴鄂",
+            away_team="塞维利亚",
+            kickoff_at="2026-08-22T23:00:00",
+            markets=(
+                SportteryMarket(
+                    code="hhad",
+                    label="让球胜平负",
+                    line=-1.0,
+                    outcomes=(
+                        SportteryOutcome("home", "主胜", 2.10, "flat"),
+                        SportteryOutcome("draw", "平", 3.55, "flat"),
+                        SportteryOutcome("away", "客胜", 2.70, "flat"),
+                    ),
+                    updated_at="2026-08-22 12:00:00",
+                ),
+            ),
+        )
+
+        batch = build_evening_slate_batch(
+            existing,
+            "2026-08-22",
+            sporttery_matches=[sporttery_match],
+            sporttery_source="Sporttery official",
+        )
+        athletic = next(
+            match
+            for match in batch["current_matches"]
+            if match["id"] == "2026-08-22-athletic-club-sevilla-fc"
+        )
+
+        self.assertEqual(batch["slate"]["sporttery_source"], "Sporttery official")
+        self.assertEqual(athletic["chinese_lottery"]["handicap"], -1)
+        self.assertEqual(athletic["chinese_lottery"]["handicap_odds"]["home"], 2.10)
+        self.assertEqual(athletic["sporttery_snapshot"]["match_no"], "周六016")
+        self.assertEqual(athletic["signal_label"], "竞彩已抓取")
+        self.assertEqual(athletic["prediction"]["market"], "无推荐")
+
     def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -260,6 +308,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertFalse(athletic["mismatch"]["matched"])
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["checker_history"]})
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
+
 class SportterySourceTest(unittest.TestCase):
     def test_parse_official_sporttery_supports_hhad_only_match(self):
         fixture_path = Path(__file__).resolve().parent / "fixtures" / "sporttery_official_sample.json"
@@ -367,4 +416,3 @@ def sample_match(match_id, confidence, batch_date=None):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -2,8 +2,9 @@
   "slate": {
     "date": "2026-08-22",
     "window": "2026-08-22 18:00 -> 2026-08-23 06:00 GMT+8",
-    "generated_at": "2026-08-22T12:42:31+08:00",
-    "source": "manual evening-report job"
+    "generated_at": "2026-08-22T12:57:38+08:00",
+    "source": "manual evening-report job",
+    "sporttery_source": "Sporttery official"
   },
   "current_matches": [
     {
@@ -29,16 +30,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 8.9,
-          "draw": 5.1,
-          "away": 1.22
+          "home": 9.2,
+          "draw": 5.15,
+          "away": 1.21
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 3.32,
-          "draw": 3.8,
-          "away": 1.77
-        }
+          "home": 3.4,
+          "draw": 3.85,
+          "away": 1.74
+        },
+        "source": "Sporttery official",
+        "match_no": "周六007",
+        "updated_at": "12:16:38"
       },
       "fundamentals": [
         {
@@ -70,7 +74,8 @@
         "Premier League",
         "Sporttery",
         "BetVictor",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩胜平负",
@@ -78,7 +83,12 @@
         "confidence": 70,
         "detail": "基本面倾向曼联客胜；不作为错盘机会，明确建议是竞彩胜平负客胜，胜差盘只做观察。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六007",
+        "match_id": "2041039",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-everton-crystal-palace",
@@ -112,7 +122,10 @@
           "home": 4.5,
           "draw": 3.65,
           "away": 1.58
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六010",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -144,7 +157,8 @@
         "Premier League",
         "Sporttery",
         "SportyTrader",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -152,7 +166,12 @@
         "confidence": 64,
         "detail": "埃弗顿只有轻微主场优势，欧亚盘不支持大胜；明确建议是竞彩让球 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六010",
+        "match_id": "2040982",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -186,7 +205,10 @@
           "home": 5.4,
           "draw": 3.95,
           "away": 1.45
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六012",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -218,7 +240,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -226,7 +249,12 @@
         "confidence": 67,
         "detail": "双方接近均势，亚盘平手附近；明确建议是竞彩伊普斯维奇 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六012",
+        "match_id": "2040984",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -260,7 +288,10 @@
           "home": 4.6,
           "draw": 3.7,
           "away": 1.56
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六011",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -292,7 +323,8 @@
         "Premier League",
         "Sporttery",
         "AiScore",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -300,7 +332,12 @@
         "confidence": 66,
         "detail": "森林只是主场小优，亚盘 -0.25 不支持两球胜；明确建议是竞彩森林 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六011",
+        "match_id": "2040983",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -325,16 +362,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.2,
-          "draw": 3.35,
-          "away": 2.66
+          "home": 2.02,
+          "draw": 3.45,
+          "away": 2.9
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 4,
-          "away": 1.51
-        }
+          "home": 4.2,
+          "draw": 3.81,
+          "away": 1.59
+        },
+        "source": "Sporttery official",
+        "match_no": "周六018",
+        "updated_at": "12:27:29"
       },
       "fundamentals": [
         {
@@ -366,7 +406,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -374,7 +415,12 @@
         "confidence": 69,
         "detail": "欧赔接近均势、亚盘平手，竞彩主让 1 偏深；明确建议是竞彩布伦特福德 -1 让负为主，防让平。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六018",
+        "match_id": "2040990",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-athletic-club-sevilla-fc",
@@ -386,25 +432,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 1.6,
+          "draw": 3.2,
+          "away": 5.25
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 3.15,
+          "draw": 3.15,
+          "away": 2.03
+        },
+        "source": "Sporttery official",
+        "match_no": "周六016",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Athletic Club 赛程已进入本批次，基本面数据源待接入。",
           "away": "Sevilla FC 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -417,9 +478,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六016",
+        "match_id": "2040988",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-valencia-cf-celta-vigo",
@@ -431,25 +498,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 2.35,
+          "draw": 2.95,
+          "away": 2.75
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 5.5,
+          "draw": 3.9,
+          "away": 1.45
+        },
+        "source": "Sporttery official",
+        "match_no": "周六021",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Valencia CF 赛程已进入本批次，基本面数据源待接入。",
           "away": "Celta Vigo 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -462,9 +544,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六021",
+        "match_id": "2040993",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-espanyol-real-madrid",
@@ -476,25 +564,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 6.8,
+          "draw": 4.45,
+          "away": 1.32
+        },
+        "handicap": 1,
+        "handicap_odds": {
+          "home": 2.83,
+          "draw": 3.55,
+          "away": 2.03
+        },
+        "source": "Sporttery official",
+        "match_no": "周六027",
+        "updated_at": "11:27:45"
+      },
       "fundamentals": [
         {
           "home": "Espanyol 赛程已进入本批次，基本面数据源待接入。",
           "away": "Real Madrid 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -507,9 +610,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六027",
+        "match_id": "2040999",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-inter-milan-monza",
@@ -521,25 +630,36 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": null,
+        "handicap": -2,
+        "handicap_odds": {
+          "home": 2.38,
+          "draw": 3.9,
+          "away": 2.21
+        },
+        "source": "Sporttery official",
+        "match_no": "周六020",
+        "updated_at": "12:25:26"
+      },
       "fundamentals": [
         {
           "home": "Inter Milan 赛程已进入本批次，基本面数据源待接入。",
           "away": "Monza 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -552,9 +672,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六020",
+        "match_id": "2040992",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-udinese-como",
@@ -566,25 +692,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 4.65,
+          "draw": 3.45,
+          "away": 1.6
+        },
+        "handicap": 1,
+        "handicap_odds": {
+          "home": 2.01,
+          "draw": 3.25,
+          "away": 3.1
+        },
+        "source": "Sporttery official",
+        "match_no": "周六019",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Udinese 赛程已进入本批次，基本面数据源待接入。",
           "away": "Como 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -597,9 +738,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六019",
+        "match_id": "2040991",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-genoa-napoli",
@@ -611,25 +758,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 4.3,
+          "draw": 3.15,
+          "away": 1.73
+        },
+        "handicap": 1,
+        "handicap_odds": {
+          "home": 1.87,
+          "draw": 3.3,
+          "away": 3.45
+        },
+        "source": "Sporttery official",
+        "match_no": "周六023",
+        "updated_at": "12:36:05"
+      },
       "fundamentals": [
         {
           "home": "Genoa 赛程已进入本批次，基本面数据源待接入。",
           "away": "Napoli 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -642,9 +804,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六023",
+        "match_id": "2040995",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-parma-cagliari",
@@ -656,25 +824,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 2.28,
+          "draw": 2.8,
+          "away": 3.0
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 5.7,
+          "draw": 3.65,
+          "away": 1.47
+        },
+        "source": "Sporttery official",
+        "match_no": "周六024",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Parma 赛程已进入本批次，基本面数据源待接入。",
           "away": "Cagliari 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -687,9 +870,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六024",
+        "match_id": "2040996",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-lens-auxerre",
@@ -701,25 +890,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 1.33,
+          "draw": 4.45,
+          "away": 6.55
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 2.1,
+          "draw": 3.5,
+          "away": 2.72
+        },
+        "source": "Sporttery official",
+        "match_no": "周六017",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Lens 赛程已进入本批次，基本面数据源待接入。",
           "away": "Auxerre 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -732,9 +936,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六017",
+        "match_id": "2040989",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-le-mans-brest",
@@ -791,25 +1001,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 1.94,
+          "draw": 3.25,
+          "away": 3.27
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 3.95,
+          "draw": 3.6,
+          "away": 1.67
+        },
+        "source": "Sporttery official",
+        "match_no": "周六025",
+        "updated_at": "09:55:26"
+      },
       "fundamentals": [
         {
           "home": "Nice 赛程已进入本批次，基本面数据源待接入。",
           "away": "Lorient 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -822,9 +1047,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六025",
+        "match_id": "2040997",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-toulouse-lyon",
@@ -836,25 +1067,40 @@
       "venue": "待补",
       "weather": "待补",
       "status": "pending",
-      "signal_label": "数据待补",
+      "signal_label": "竞彩已抓取",
       "european_odds": null,
       "asian_handicap": null,
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 2.23,
+          "draw": 3.23,
+          "away": 2.69
+        },
+        "handicap": 1,
+        "handicap_odds": {
+          "home": 1.35,
+          "draw": 4.45,
+          "away": 6.1
+        },
+        "source": "Sporttery official",
+        "match_no": "周六026",
+        "updated_at": "12:34:58"
+      },
       "fundamentals": [
         {
           "home": "Toulouse 赛程已进入本批次，基本面数据源待接入。",
           "away": "Lyon 赛程已进入本批次，基本面数据源待接入。"
         }
       ],
-      "market_read": "欧赔、亚盘、竞彩数据待补；不做盘口判断。",
+      "market_read": "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。",
       "mismatch": {
         "matched": false,
         "reason": "缺少亚盘或竞彩让球数据，不能运行错盘检查。",
         "pick": "不进入错盘栏"
       },
       "recommendation": {
-        "fundamental": "数据不足，暂不形成赛前方向。",
-        "mismatch": "不符合错盘检查条件：缺少亚盘或竞彩让球。"
+        "fundamental": "基本面数据不足，暂不形成赛前方向。",
+        "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。"
       },
       "prediction": {
         "market": "无推荐",
@@ -867,9 +1113,15 @@
         "盘口、基本面、伤停和天气数据待补。"
       ],
       "sources": [
-        "Curated fixture seed / evening slate"
+        "Curated fixture seed / evening slate",
+        "Sporttery official"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六026",
+        "match_id": "2040998",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-troyes-paris-fc",
@@ -950,7 +1202,10 @@
           "home": 4.5,
           "draw": 3.65,
           "away": 1.58
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六010",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -982,7 +1237,8 @@
         "Premier League",
         "Sporttery",
         "SportyTrader",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -990,7 +1246,12 @@
         "confidence": 64,
         "detail": "埃弗顿只有轻微主场优势，欧亚盘不支持大胜；明确建议是竞彩让球 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六010",
+        "match_id": "2040982",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -1024,7 +1285,10 @@
           "home": 5.4,
           "draw": 3.95,
           "away": 1.45
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六012",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -1056,7 +1320,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1064,7 +1329,12 @@
         "confidence": 67,
         "detail": "双方接近均势，亚盘平手附近；明确建议是竞彩伊普斯维奇 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六012",
+        "match_id": "2040984",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -1098,7 +1368,10 @@
           "home": 4.6,
           "draw": 3.7,
           "away": 1.56
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六011",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -1130,7 +1403,8 @@
         "Premier League",
         "Sporttery",
         "AiScore",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1138,7 +1412,12 @@
         "confidence": 66,
         "detail": "森林只是主场小优，亚盘 -0.25 不支持两球胜；明确建议是竞彩森林 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六011",
+        "match_id": "2040983",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -1163,16 +1442,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.2,
-          "draw": 3.35,
-          "away": 2.66
+          "home": 2.02,
+          "draw": 3.45,
+          "away": 2.9
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 4,
-          "away": 1.51
-        }
+          "home": 4.2,
+          "draw": 3.81,
+          "away": 1.59
+        },
+        "source": "Sporttery official",
+        "match_no": "周六018",
+        "updated_at": "12:27:29"
       },
       "fundamentals": [
         {
@@ -1204,7 +1486,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1212,7 +1495,12 @@
         "confidence": 69,
         "detail": "欧赔接近均势、亚盘平手，竞彩主让 1 偏深；明确建议是竞彩布伦特福德 -1 让负为主，防让平。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六018",
+        "match_id": "2040990",
+        "source": "Sporttery official"
+      }
     }
   ],
   "checker_history": [
@@ -1239,16 +1527,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 8.9,
-          "draw": 5.1,
-          "away": 1.22
+          "home": 9.2,
+          "draw": 5.15,
+          "away": 1.21
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 3.32,
-          "draw": 3.8,
-          "away": 1.77
-        }
+          "home": 3.4,
+          "draw": 3.85,
+          "away": 1.74
+        },
+        "source": "Sporttery official",
+        "match_no": "周六007",
+        "updated_at": "12:16:38"
       },
       "fundamentals": [
         {
@@ -1280,7 +1571,8 @@
         "Premier League",
         "Sporttery",
         "BetVictor",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩胜平负",
@@ -1288,7 +1580,12 @@
         "confidence": 70,
         "detail": "基本面倾向曼联客胜；不作为错盘机会，明确建议是竞彩胜平负客胜，胜差盘只做观察。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六007",
+        "match_id": "2041039",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -1313,16 +1610,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.2,
-          "draw": 3.35,
-          "away": 2.66
+          "home": 2.02,
+          "draw": 3.45,
+          "away": 2.9
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 4,
-          "away": 1.51
-        }
+          "home": 4.2,
+          "draw": 3.81,
+          "away": 1.59
+        },
+        "source": "Sporttery official",
+        "match_no": "周六018",
+        "updated_at": "12:27:29"
       },
       "fundamentals": [
         {
@@ -1354,7 +1654,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1362,7 +1663,12 @@
         "confidence": 69,
         "detail": "欧赔接近均势、亚盘平手，竞彩主让 1 偏深；明确建议是竞彩布伦特福德 -1 让负为主，防让平。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六018",
+        "match_id": "2040990",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -1396,7 +1702,10 @@
           "home": 5.4,
           "draw": 3.95,
           "away": 1.45
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六012",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -1428,7 +1737,8 @@
         "Premier League",
         "Sporttery",
         "Stake",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1436,7 +1746,12 @@
         "confidence": 67,
         "detail": "双方接近均势，亚盘平手附近；明确建议是竞彩伊普斯维奇 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六012",
+        "match_id": "2040984",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -1470,7 +1785,10 @@
           "home": 4.6,
           "draw": 3.7,
           "away": 1.56
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六011",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -1502,7 +1820,8 @@
         "Premier League",
         "Sporttery",
         "AiScore",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1510,7 +1829,12 @@
         "confidence": 66,
         "detail": "森林只是主场小优，亚盘 -0.25 不支持两球胜；明确建议是竞彩森林 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六011",
+        "match_id": "2040983",
+        "source": "Sporttery official"
+      }
     },
     {
       "id": "2026-08-22-everton-crystal-palace",
@@ -1544,7 +1868,10 @@
           "home": 4.5,
           "draw": 3.65,
           "away": 1.58
-        }
+        },
+        "source": "Sporttery official",
+        "match_no": "周六010",
+        "updated_at": "09:55:26"
       },
       "fundamentals": [
         {
@@ -1576,7 +1903,8 @@
         "Premier League",
         "Sporttery",
         "SportyTrader",
-        "公开亚盘快照"
+        "公开亚盘快照",
+        "Sporttery official"
       ],
       "prediction": {
         "market": "竞彩让球 -1",
@@ -1584,7 +1912,12 @@
         "confidence": 64,
         "detail": "埃弗顿只有轻微主场优势，欧亚盘不支持大胜；明确建议是竞彩让球 -1 选让平 + 让负。"
       },
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "sporttery_snapshot": {
+        "match_no": "周六010",
+        "match_id": "2040982",
+        "source": "Sporttery official"
+      }
     }
   ],
   "next_matchday": {

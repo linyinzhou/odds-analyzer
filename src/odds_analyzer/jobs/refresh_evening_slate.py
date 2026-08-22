@@ -5,9 +5,9 @@ import json
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
+from odds_analyzer.sources import SportteryMatch, fetch_official_sporttery_matches
 
 
 BEIJING = timezone(timedelta(hours=8), name="Asia/Shanghai")
@@ -24,6 +24,38 @@ EXISTING_DETAIL_IDS_BY_DATE = {
     ]
 }
 
+TEAM_ALIASES = {
+    "Athletic Club": "毕尔巴鄂",
+    "Sevilla FC": "塞维利亚",
+    "Valencia CF": "巴伦西亚",
+    "Celta Vigo": "塞尔塔",
+    "Espanyol": "西班牙人",
+    "Real Madrid": "皇马",
+    "Inter Milan": "国际米兰",
+    "Monza": "蒙扎",
+    "Udinese": "乌迪内斯",
+    "Como": "科莫",
+    "Genoa": "热那亚",
+    "Napoli": "那不勒斯",
+    "Parma": "帕尔马",
+    "Cagliari": "卡利亚里",
+    "Lens": "朗斯",
+    "Auxerre": "欧塞尔",
+    "Nice": "尼斯",
+    "Lorient": "洛里昂",
+    "Toulouse": "图卢兹",
+    "Lyon": "里昂",
+    "赫尔城": "赫尔城",
+    "曼联": "曼联",
+    "埃弗顿": "埃弗顿",
+    "水晶宫": "水晶宫",
+    "伊普斯维奇": "伊普斯",
+    "桑德兰": "桑德兰",
+    "诺丁汉森林": "诺丁汉",
+    "利兹联": "利兹联",
+    "布伦特福德": "布伦特",
+    "热刺": "热刺",
+}
 CURATED_FIXTURES_BY_DATE = {
     "2026-08-22": [
         {
@@ -181,6 +213,102 @@ def _placeholder_match(fixture: dict) -> dict:
     }
 
 
+
+def _enrich_with_sporttery(matches: list[dict], sporttery_matches: list[SportteryMatch]) -> list[dict]:
+    index = {_sporttery_key(match): match for match in sporttery_matches}
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        sporttery = index.get(_dashboard_match_key(copied))
+        if sporttery is not None:
+            copied["chinese_lottery"] = _sporttery_lottery_payload(sporttery)
+            copied["sporttery_snapshot"] = {
+                "match_no": sporttery.match_no,
+                "match_id": sporttery.match_id,
+                "source": "Sporttery official",
+            }
+            sources = list(copied.get("sources", []))
+            if "Sporttery official" not in sources:
+                sources.append("Sporttery official")
+            copied["sources"] = sources
+            if copied.get("status") == "pending":
+                copied["signal_label"] = "竞彩已抓取"
+                copied["market_read"] = "竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。"
+                copied["recommendation"] = {
+                    "fundamental": "基本面数据不足，暂不形成赛前方向。",
+                    "mismatch": "不符合错盘检查条件：缺少亚盘数据，无法与竞彩让球比较。",
+                }
+        enriched.append(copied)
+    return enriched
+
+
+def _sporttery_key(match: SportteryMatch) -> tuple[str, str, str, str]:
+    return (
+        match.league,
+        _kickoff_key(match.kickoff_at),
+        _normalize_team(match.home_team),
+        _normalize_team(match.away_team),
+    )
+
+
+def _dashboard_match_key(match: dict) -> tuple[str, str, str, str]:
+    return (
+        _competition_key(match.get("competition")),
+        _kickoff_key(str(match.get("kickoff_time", ""))),
+        _normalize_team(str(match.get("home_team", ""))),
+        _normalize_team(str(match.get("away_team", ""))),
+    )
+
+
+def _competition_key(value: object) -> str:
+    text = str(value or "")
+    for league in ("英超", "西甲", "意甲", "德甲", "法甲"):
+        if league in text:
+            return league
+    return text.strip()
+
+
+def _kickoff_key(value: str) -> str:
+    text = value.strip().replace("T", " ")
+    if len(text) >= 16 and text[4] == "-":
+        return text[:16]
+    if len(text) >= 11 and text[2] == "-":
+        return f"2026-{text[:11]}"
+    return text[:16]
+
+
+def _normalize_team(value: str) -> str:
+    return TEAM_ALIASES.get(value, value).replace(" ", "").strip().casefold()
+
+
+def _sporttery_lottery_payload(match: SportteryMatch) -> dict:
+    had = _three_way_from_market(match.market("had"))
+    hhad = match.market("hhad")
+    return {
+        "standard": had,
+        "handicap": int(hhad.line) if hhad and hhad.line is not None else None,
+        "handicap_odds": _three_way_from_market(hhad),
+        "source": "Sporttery official",
+        "match_no": match.match_no,
+        "updated_at": _market_updated_at(match),
+    }
+
+
+def _three_way_from_market(market) -> dict | None:
+    if market is None:
+        return None
+    values = {outcome.key: outcome.odds for outcome in market.outcomes}
+    if not all(key in values for key in ("home", "draw", "away")):
+        return None
+    return {"home": values["home"], "draw": values["draw"], "away": values["away"]}
+
+
+def _market_updated_at(match: SportteryMatch) -> str | None:
+    for market in match.markets:
+        if market.updated_at:
+            return market.updated_at
+    return None
+
 def _dedupe_fixtures(fixtures: list[dict]) -> list[dict]:
     seen = set()
     result = []
@@ -210,7 +338,12 @@ def _filter_next_matchday(existing_next_matchday: dict, current_ids: set[str]) -
     return next_matchday
 
 
-def build_evening_slate_batch(existing_payload: dict, slate_date: str) -> dict:
+def build_evening_slate_batch(
+    existing_payload: dict,
+    slate_date: str,
+    sporttery_matches: list[SportteryMatch] | None = None,
+    sporttery_source: str = "not requested",
+) -> dict:
     current_by_id = {
         match.get("id"): match for match in existing_payload.get("current_matches", [])
     }
@@ -226,6 +359,9 @@ def build_evening_slate_batch(existing_payload: dict, slate_date: str) -> dict:
         match["batch_date"] = slate_date
         current_matches.append(match)
 
+    if sporttery_matches:
+        current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
+
     current_ids = {match["id"] for match in current_matches}
     next_matchday = _filter_next_matchday(
         existing_payload.get("next_matchday", {}), current_ids
@@ -240,6 +376,7 @@ def build_evening_slate_batch(existing_payload: dict, slate_date: str) -> dict:
             "window": window,
             "generated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
             "source": "manual evening-report job",
+            "sporttery_source": sporttery_source,
         },
         "current_matches": current_matches,
         "mismatch_history": [
@@ -269,7 +406,18 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     existing_payload = _load_payload(path)
-    batch_payload = build_evening_slate_batch(existing_payload, slate_date)
+    try:
+        sporttery_matches = fetch_official_sporttery_matches(slate_date)
+        sporttery_source = "Sporttery official"
+    except Exception as exc:
+        sporttery_matches = []
+        sporttery_source = f"Sporttery unavailable: {type(exc).__name__}"
+    batch_payload = build_evening_slate_batch(
+        existing_payload,
+        slate_date,
+        sporttery_matches=sporttery_matches,
+        sporttery_source=sporttery_source,
+    )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
     _write_payload(path, merged_payload)
     return merged_payload
@@ -306,4 +454,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
