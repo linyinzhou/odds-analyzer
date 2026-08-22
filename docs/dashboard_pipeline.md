@@ -44,8 +44,8 @@ The file is split into three lists:
 | Field | Behavior |
 |---|---|
 | `current_matches` | Current queried slate only. Replace this list on the next daily query. |
-| `mismatch_history` | Historical matched mismatch opportunities. Append new matches first; do not clear daily. |
-| `checker_history` | Historical review queue. Append selected daily recommendations first; do not clear daily. |
+| `mismatch_history` | Historical matched mismatch opportunities. Preserve older batches, but upsert same `batch_date + id` with the newest run data. |
+| `checker_history` | Historical review queue. Preserve older batches, but upsert same `batch_date + id` with the newest run data. |
 | `next_matchday` | Upcoming fixtures for Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League proper. Replace on each evening refresh. |
 
 This is enough for GitHub Pages and for validating the UI/data model before adding scheduled data collection.
@@ -56,8 +56,8 @@ Add a daily data job that produces the same JSON shape:
 
 ```text
 fixtures -> market snapshots -> match reports -> current_matches
-                                         -> append mismatch_history
-                                         -> append checker_history
+                                         -> upsert mismatch_history
+                                         -> upsert checker_history
                                          -> dashboard
 ```
 
@@ -87,12 +87,10 @@ The Next Matchday panel is schedule-only. Show only competition, fixture, and da
 
 ## checker_history sorting rule
 
-Checker entries should include batch_date when generated. Display newest batches first; within the same batch, sort by prediction.confidence descending. New daily candidates should be prepended or otherwise sorted ahead of older batches.
+Checker entries should include batch_date when generated. Display newest batches first; within the same batch, sort by prediction.confidence descending. If the same match already exists in the same batch, overwrite it with the newest run data instead of appending a duplicate.
 
 ## next_matchday must not duplicate current_matches
 
 The Next Matchday panel must show the fixtures after the current detail slate. Do not repeat any fixture already present in current_matches. The frontend also filters accidental duplicates, but the data generator should avoid writing them.
-
-
 
 

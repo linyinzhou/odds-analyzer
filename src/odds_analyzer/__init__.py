@@ -1,6 +1,7 @@
 """Core football odds analysis utilities."""
 
 from odds_analyzer.analysis import check_lottery_asian_mismatch, compare_handicap_markets
+from odds_analyzer.dashboard_payload import merge_dashboard_payload, upsert_history
 from odds_analyzer.models import (
     AsianHandicapLine,
     AsianHandicapOdds,
@@ -30,6 +31,7 @@ __all__ = [
     "ChineseLotteryOdds",
     "HandicapMismatchCheck",
     "HandicapSignal",
+    "merge_dashboard_payload",
     "MatchReport",
     "MatchRequest",
     "MatchSlateWindow",
@@ -43,5 +45,7 @@ __all__ = [
     "compare_handicap_markets",
     "render_match_report",
     "settle_asian_handicap",
+    "upsert_history",
     "settle_chinese_lottery",
 ]
+

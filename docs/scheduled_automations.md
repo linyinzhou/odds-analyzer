@@ -7,7 +7,7 @@ Two local Codex cron automations keep the deployed dashboard fresh.
 - Name: `Odds Analyzer evening slate refresh`
 - Time: daily 18:00 local Beijing-time machine schedule
 - Automation id: `odds-analyzer-evening-slate-refresh`
-- Purpose: query fixtures from tonight through the next early morning, refresh `current_matches`, refresh `next_matchday`, append new `mismatch_history`, append the daily top 5-8 concrete predictions to `checker_history`, test, commit, push, and refresh GitHub Pages.
+- Purpose: query fixtures from tonight through the next early morning, refresh `current_matches`, refresh `next_matchday`, upsert new `mismatch_history`, upsert the daily top 5-8 concrete predictions to `checker_history`, test, commit, push, and refresh GitHub Pages.
 
 ## Morning Result Review
 
@@ -34,8 +34,8 @@ Current limitation: the workflow validates and redeploys the dashboard payload. 
 ## Data Rules
 
 - `current_matches` is replaced on every evening refresh.
-- `mismatch_history` is never cleared by the daily refresh; newest entries should appear first.
-- `checker_history` is never cleared by the daily refresh; newest selected recommendations should appear first.
+- `mismatch_history` is never cleared by the daily refresh, but entries with the same `batch_date + id` are overwritten by the newest run.
+- `checker_history` is never cleared by the daily refresh, but entries with the same `batch_date + id` are overwritten by the newest run.
 - `next_matchday` must include the five major leagues plus Champions League proper; Champions League qualifiers/preliminary/playoffs are excluded.
 - Checker candidates must be concrete predictions, not vague match-direction notes.
 - Each prediction must include `market`, `pick`, `confidence`, and `detail`.
@@ -54,7 +54,7 @@ These automations still depend on live source availability and agent-side resear
 
 ## checker_history sorting rule
 
-Checker entries should include batch_date when generated. Display newest batches first; within the same batch, sort by prediction.confidence descending. New daily candidates should be prepended or otherwise sorted ahead of older batches.
+Checker entries should include batch_date when generated. Display newest batches first; within the same batch, sort by prediction.confidence descending. If the same match already exists in the same batch, overwrite it with the newest run data instead of appending a duplicate.
 
 ## next_matchday must not duplicate current_matches
 

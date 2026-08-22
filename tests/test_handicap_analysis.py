@@ -24,6 +24,7 @@ from odds_analyzer import (
     check_lottery_asian_mismatch,
     compare_handicap_markets,
     render_match_report,
+    merge_dashboard_payload,
     settle_asian_handicap,
     settle_chinese_lottery,
 )
@@ -34,7 +35,6 @@ from odds_analyzer.sources import (
     get_sources_by_purpose,
     parse_official_sporttery,
 )
-
 
 class HandicapSettlementTest(unittest.TestCase):
     def test_chinese_lottery_draw_when_home_gives_one_and_wins_by_one(self):
@@ -60,7 +60,6 @@ class HandicapSettlementTest(unittest.TestCase):
         line = AsianHandicapLine(home_handicap=-0.25)
 
         self.assertEqual(settle_asian_handicap(score, line, Selection.AWAY), 0.5)
-
 
 class HandicapAnalysisTest(unittest.TestCase):
     def test_lottery_draw_signal_for_half_ball_vs_lottery_minus_one(self):
@@ -104,7 +103,6 @@ class HandicapAnalysisTest(unittest.TestCase):
         self.assertEqual(check.status, "lottery_shallower_favorite_supported")
         self.assertEqual(check.preferred_selections, (Selection.HOME, Selection.DRAW))
 
-
 class SearchPlanTest(unittest.TestCase):
     def test_build_match_search_plan_includes_core_market_queries(self):
         match = MatchRequest(
@@ -124,7 +122,6 @@ class SearchPlanTest(unittest.TestCase):
         self.assertIn("Inter Milan", queries)
         self.assertIn("Juventus", queries)
 
-
 class MatchSlateWindowTest(unittest.TestCase):
     def test_build_today_slate_window_covers_afternoon_to_next_early_morning(self):
         window = build_today_slate_window(date(2026, 8, 8))
@@ -135,7 +132,6 @@ class MatchSlateWindowTest(unittest.TestCase):
         self.assertTrue(window.contains(datetime(2026, 8, 9, 2, 45, tzinfo=tz)))
         self.assertFalse(window.contains(datetime(2026, 8, 8, 10, 0, tzinfo=tz)))
         self.assertFalse(window.contains(datetime(2026, 8, 9, 6, 0, tzinfo=tz)))
-
 
 class DataSourceRegistryTest(unittest.TestCase):
     def test_registry_has_core_sources_for_three_market_comparison(self):
@@ -154,7 +150,6 @@ class DataSourceRegistryTest(unittest.TestCase):
         self.assertIn("hkjc", keys)
         self.assertIn("the_odds_api", keys)
         self.assertTrue(any(source.tier == ReliabilityTier.MARKET for source in asian_sources))
-
 
 class MatchReportTest(unittest.TestCase):
     def test_render_match_report_includes_markets_and_recommendation(self):
@@ -201,7 +196,6 @@ class MatchReportTest(unittest.TestCase):
         self.assertIn("prioritize handicap home", markdown)
         self.assertIn("HKJC candidate", markdown)
 
-
 class DashboardPrototypeTest(unittest.TestCase):
     def test_dashboard_sample_payload_has_required_fields(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
@@ -220,7 +214,6 @@ class DashboardPrototypeTest(unittest.TestCase):
             self.assertIn(key, first["prediction"])
 
         self.assertIn(first["status"], {"mismatch", "pending", "watch"})
-
 
 class SportterySourceTest(unittest.TestCase):
     def test_parse_official_sporttery_supports_hhad_only_match(self):
@@ -241,6 +234,66 @@ class SportterySourceTest(unittest.TestCase):
         self.assertEqual(match.handicap, -2.0)
         self.assertEqual([outcome.odds for outcome in hhad.outcomes], [2.32, 3.8, 2.3])
 
+class DashboardPayloadMergeTest(unittest.TestCase):
+    def test_current_matches_are_replaced_and_histories_are_upserted(self):
+        existing = {
+            "slate": {"date": "2026-08-22", "window": "old"},
+            "current_matches": [sample_match("old-current", confidence=50)],
+            "mismatch_history": [sample_match("same-match", confidence=60, batch_date="2026-08-22")],
+            "checker_history": [sample_match("same-match", confidence=60, batch_date="2026-08-22")],
+            "next_matchday": {"competitions": []},
+        }
+        fresh_same_match = sample_match("same-match", confidence=72)
+        batch = {
+            "slate": {"date": "2026-08-22", "window": "18:00-06:00"},
+            "current_matches": [sample_match("new-current", confidence=55)],
+            "mismatch_history": [fresh_same_match],
+            "checker_history": [fresh_same_match],
+            "next_matchday": {"competitions": [{"name": "英超", "fixtures": []}]},
+        }
+
+        merged = merge_dashboard_payload(existing, batch)
+
+        self.assertEqual([item["id"] for item in merged["current_matches"]], ["new-current"])
+        self.assertEqual(len(merged["mismatch_history"]), 1)
+        self.assertEqual(len(merged["checker_history"]), 1)
+        self.assertEqual(merged["mismatch_history"][0]["prediction"]["confidence"], 72)
+        self.assertEqual(merged["checker_history"][0]["prediction"]["confidence"], 72)
+        self.assertEqual(merged["checker_history"][0]["batch_date"], "2026-08-22")
+
+    def test_same_match_in_different_batch_is_preserved(self):
+        existing = {
+            "slate": {"date": "2026-08-23"},
+            "current_matches": [],
+            "mismatch_history": [sample_match("same-match", confidence=60, batch_date="2026-08-22")],
+            "checker_history": [],
+        }
+        batch = {
+            "slate": {"date": "2026-08-23"},
+            "current_matches": [],
+            "mismatch_history": [sample_match("same-match", confidence=70)],
+            "checker_history": [],
+        }
+
+        merged = merge_dashboard_payload(existing, batch)
+
+        self.assertEqual(len(merged["mismatch_history"]), 2)
+        self.assertEqual([item["batch_date"] for item in merged["mismatch_history"]], ["2026-08-23", "2026-08-22"])
+
+def sample_match(match_id, confidence, batch_date=None):
+    item = {
+        "id": match_id,
+        "kickoff_time": "08-22 22:00",
+        "competition": "英超",
+        "home_team": "主队",
+        "away_team": "客队",
+        "status": "watch",
+        "recommendation": {"fundamental": "test", "mismatch": "test"},
+        "prediction": {"market": "竞彩", "pick": "胜", "confidence": confidence},
+    }
+    if batch_date:
+        item["batch_date"] = batch_date
+    return item
 
 if __name__ == "__main__":
     unittest.main()
