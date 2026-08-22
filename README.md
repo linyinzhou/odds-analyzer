@@ -158,6 +158,24 @@ http://127.0.0.1:8026/
 
 The GitHub Pages workflow in `.github/workflows/pages.yml` deploys the `dashboard/` folder.
 
+
+## Manual Report Trigger
+
+Besides the scheduled 18:00 evening refresh and 08:00 result review, the dashboard exposes a manual trigger entry in the top bar.
+
+Current manual trigger target:
+
+```text
+https://github.com/linyinzhou/odds-analyzer/actions/workflows/manual-report.yml
+```
+
+The workflow accepts:
+
+- `run_type`: `evening-report` or `result-review`.
+- `slate_date`: optional Beijing-time slate date, `YYYY-MM-DD`.
+- `note`: optional operator note.
+
+Until deterministic live data adapters are connected, the manual workflow validates and deploys the current dashboard payload. The report-generation command should be wired into this workflow once fixture, odds, Sporttery, and result adapters can produce `dashboard/data/daily_matches.json` without manual research.
 ## Run Tests
 
 ```bash

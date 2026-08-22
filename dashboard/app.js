@@ -50,6 +50,7 @@ function normalizePayload(payload) {
     currentMatches,
     mismatchHistory,
     checkerHistory,
+    nextMatchday,
   };
 }
 
@@ -62,6 +63,10 @@ function render() {
   }
   if (state.activeView === "checker") {
     renderCheckerView();
+    return;
+  }
+  if (state.activeView === "schedule") {
+    renderScheduleView();
     return;
   }
   renderDetailView();
@@ -406,7 +411,7 @@ function renderLearningSummary(groups) {
 }
 
 function getCheckerMatches() {
-  return [...state.checkerHistory].sort(sortByKickoffDesc);
+  return [...state.checkerHistory].sort(sortCheckerHistory);
 }
 
 function getCheckerReview(match) {
@@ -537,11 +542,4 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
-
-
-
-
-
-
-
 

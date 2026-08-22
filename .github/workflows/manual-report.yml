@@ -1,0 +1,70 @@
+name: Manual report refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_type:
+        description: "Refresh type"
+        required: true
+        default: "evening-report"
+        type: choice
+        options:
+          - evening-report
+          - result-review
+      slate_date:
+        description: "Optional slate date, Asia/Shanghai YYYY-MM-DD"
+        required: false
+        type: string
+      note:
+        description: "Optional operator note"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: manual-report-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Show manual trigger context
+        run: |
+          echo "run_type=${{ inputs.run_type }}"
+          echo "slate_date=${{ inputs.slate_date }}"
+          echo "note=${{ inputs.note }}"
+          echo "TODO: replace this placeholder with the deterministic report-generation job once live source adapters are wired."
+
+      - name: Validate dashboard data
+        run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
+
+      - name: Run tests
+        run: PYTHONPATH=src python -m unittest discover -s tests
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload dashboard
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

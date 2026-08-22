@@ -16,6 +16,21 @@ Two local Codex cron automations keep the deployed dashboard fresh.
 - Automation id: `odds-analyzer-morning-result-review`
 - Purpose: check final scores from the previous evening slate, settle the exact stored `prediction.market` and `prediction.pick`, update checker review fields, test, commit, push, and refresh GitHub Pages.
 
+
+## Manual Trigger
+
+A manual GitHub Actions workflow is available for ad hoc refreshes:
+
+```text
+https://github.com/linyinzhou/odds-analyzer/actions/workflows/manual-report.yml
+```
+
+Use `Run workflow` and choose:
+
+- `evening-report` to refresh the current slate report batch.
+- `result-review` to run the checker review path.
+
+Current limitation: the workflow validates and redeploys the dashboard payload. It is the stable manual entry point, but the real report-generation command still needs to be wired after live data source adapters can generate `dashboard/data/daily_matches.json` deterministically.
 ## Data Rules
 
 - `current_matches` is replaced on every evening refresh.
@@ -44,8 +59,4 @@ Checker entries should include batch_date when generated. Display newest batches
 ## next_matchday must not duplicate current_matches
 
 The Next Matchday panel must show the fixtures after the current detail slate. Do not repeat any fixture already present in current_matches. The frontend also filters accidental duplicates, but the data generator should avoid writing them.
-
-
-
-
 

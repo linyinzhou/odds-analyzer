@@ -89,6 +89,7 @@ h4 {
 }
 
 .slate,
+.manual-trigger,
 .summary-grid article,
 .view-nav,
 .panel,
@@ -100,6 +101,41 @@ h4 {
   border-radius: 8px;
 }
 
+
+.top-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.manual-trigger {
+  min-width: 132px;
+  padding: 11px 14px;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.manual-trigger span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.manual-trigger strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.manual-trigger:hover {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+}
 .slate {
   min-width: 280px;
   padding: 11px 14px;
@@ -514,8 +550,13 @@ h4 {
     display: block;
   }
 
-  .slate {
+  .top-actions {
     margin-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .slate {
     text-align: left;
   }
 
@@ -612,6 +653,7 @@ h4 {
   font-style: normal;
   text-align: right;
 }
+
 
 
 
