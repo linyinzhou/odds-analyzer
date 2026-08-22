@@ -1,3 +1,4 @@
+const APP_VERSION = "20260822-2";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -28,7 +29,7 @@ const elements = {
 };
 
 async function loadDashboard() {
-  const response = await fetch("./data/daily_matches.json");
+  const response = await fetch(`./data/daily_matches.json?v=${APP_VERSION}`);
   const payload = await response.json();
   const normalized = normalizePayload(payload);
   state.currentMatches = normalized.currentMatches;
@@ -542,4 +543,5 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
 
