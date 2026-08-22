@@ -31,7 +31,10 @@ from odds_analyzer import (
     settle_asian_handicap,
     settle_chinese_lottery,
 )
-from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
+from odds_analyzer.jobs.refresh_evening_slate import (
+    _normalize_team,
+    build_evening_slate_batch,
+)
 from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
     DataSourcePurpose,
@@ -357,6 +360,112 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["odds_api_snapshot"]["bookmaker_key"], "pinnacle")
         self.assertEqual(athletic["signal_label"], "盘口已抓取")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
+    def test_official_team_names_share_keys_with_curated_slate_names(self):
+        pairs = (
+            ("Hull City", "Hull City AFC"),
+            ("Manchester United", "Manchester United FC"),
+            ("Espanyol", "RCD Espanyol de Barcelona"),
+            ("Inter Milan", "FC Internazionale Milano"),
+            ("Como", "Como 1907"),
+            ("Lens", "RC Lens"),
+            ("Le Mans", "Le Mans FC"),
+            ("Brest", "Stade Brestois 29"),
+            ("Troyes", "ES Troyes AC"),
+        )
+
+        for curated_name, official_name in pairs:
+            with self.subTest(official_name=official_name):
+                self.assertEqual(_normalize_team(curated_name), _normalize_team(official_name))
+    def test_same_match_from_all_sources_is_merged_and_latest_odds_replace_seed(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+        fixture_payload = {
+            "competition": {"code": "PL", "name": "Premier League"},
+            "matches": [
+                {
+                    "id": 1001,
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "TIMED",
+                    "matchday": 1,
+                    "stage": "REGULAR_SEASON",
+                    "venue": "Hill Dickinson Stadium",
+                    "homeTeam": {"id": 62, "name": "Everton FC"},
+                    "awayTeam": {"id": 354, "name": "Crystal Palace FC"},
+                }
+            ],
+        }
+        football_data_snapshot = FootballDataSnapshot(
+            fixtures=parse_football_data_fixtures(fixture_payload, "PL"),
+            standings={},
+            forms={},
+        )
+        odds_event = OddsApiEvent(
+            event_id="event-everton",
+            sport_key="soccer_epl",
+            commence_time="2026-08-22T14:00:00Z",
+            home_team="Everton",
+            away_team="Crystal Palace",
+            bookmaker="Pinnacle",
+            bookmaker_key="pinnacle",
+            updated_at="2026-08-22T11:00:00Z",
+            european_odds=ThreeWayOdds(home=1.88, draw=3.55, away=4.20),
+            asian_handicap=AsianHandicapOdds(
+                handicap=-0.5,
+                home_odds=1.94,
+                away_odds=1.96,
+                provider="Pinnacle",
+            ),
+        )
+        sporttery_match = SportteryMatch(
+            match_id="sporttery-everton",
+            match_no="周六010",
+            business_date="2026-08-22",
+            league="英超",
+            home_team="埃弗顿",
+            away_team="水晶宫",
+            kickoff_at="2026-08-22T22:00:00",
+            markets=(
+                SportteryMarket(
+                    code="hhad",
+                    label="让球胜平负",
+                    line=-1.0,
+                    outcomes=(
+                        SportteryOutcome("home", "主胜", 4.50, "flat"),
+                        SportteryOutcome("draw", "平", 3.55, "flat"),
+                        SportteryOutcome("away", "客胜", 1.60, "flat"),
+                    ),
+                    updated_at="2026-08-22 17:30:00",
+                ),
+            ),
+        )
+
+        batch = build_evening_slate_batch(
+            existing,
+            "2026-08-22",
+            sporttery_matches=[sporttery_match],
+            sporttery_source="Sporttery official",
+            odds_api_events=[odds_event],
+            odds_api_source="The Odds API",
+            football_data_snapshot=football_data_snapshot,
+            football_data_source="football-data.org",
+        )
+        matches = [
+            match
+            for match in batch["current_matches"]
+            if match["id"] == "2026-08-22-everton-crystal-palace"
+            or match["home_team"] == "Everton FC"
+        ]
+
+        self.assertEqual(len(matches), 1)
+        match = matches[0]
+        self.assertEqual(match["home_team"], "埃弗顿")
+        self.assertEqual(match["football_data_snapshot"]["match_id"], 1001)
+        self.assertEqual(match["odds_api_snapshot"]["event_id"], "event-everton")
+        self.assertEqual(match["sporttery_snapshot"]["match_id"], "sporttery-everton")
+        self.assertEqual(match["european_odds"]["home"], 1.88)
+        self.assertEqual(match["asian_handicap"]["handicap"], -0.5)
+        self.assertEqual(match["chinese_lottery"]["handicap"], -1)
+
     def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))

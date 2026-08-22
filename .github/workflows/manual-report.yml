@@ -24,7 +24,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: manual-report-refresh
+  group: dashboard-publish
   cancel-in-progress: false
 
 jobs:
@@ -40,6 +40,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Restore latest live report data
+        run: |
+          git fetch origin +refs/heads/gh-pages:refs/remotes/origin/gh-pages || true
+          if git show origin/gh-pages:data/daily_matches.json > /tmp/daily_matches.json; then
+            cp /tmp/daily_matches.json dashboard/data/daily_matches.json
+          fi
 
       - name: Show manual trigger context
         run: |

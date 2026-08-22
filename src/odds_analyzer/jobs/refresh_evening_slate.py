@@ -35,35 +35,70 @@ EXISTING_DETAIL_IDS_BY_DATE = {
 
 TEAM_ALIASES = {
     "Hull City": "赫尔城",
+    "Hull City AFC": "赫尔城",
     "Manchester United": "曼联",
+    "Manchester United FC": "曼联",
     "Everton": "埃弗顿",
+    "Everton FC": "埃弗顿",
     "Crystal Palace": "水晶宫",
+    "Crystal Palace FC": "水晶宫",
     "Ipswich Town": "伊普斯",
+    "Ipswich Town FC": "伊普斯",
     "Sunderland": "桑德兰",
+    "Sunderland AFC": "桑德兰",
     "Nottingham Forest": "诺丁汉",
+    "Nottingham Forest FC": "诺丁汉",
     "Leeds United": "利兹联",
+    "Leeds United FC": "利兹联",
     "Brentford": "布伦特",
+    "Brentford FC": "布伦特",
     "Tottenham Hotspur": "热刺",
+    "Tottenham Hotspur FC": "热刺",
     "Athletic Club": "毕尔巴鄂",
     "Sevilla FC": "塞维利亚",
     "Valencia CF": "巴伦西亚",
     "Celta Vigo": "塞尔塔",
+    "RC Celta de Vigo": "塞尔塔",
     "Espanyol": "西班牙人",
+    "RCD Espanyol de Barcelona": "西班牙人",
     "Real Madrid": "皇马",
+    "Real Madrid CF": "皇马",
     "Inter Milan": "国际米兰",
+    "FC Internazionale Milano": "国际米兰",
     "Monza": "蒙扎",
+    "AC Monza": "蒙扎",
     "Udinese": "乌迪内斯",
+    "Udinese Calcio": "乌迪内斯",
     "Como": "科莫",
+    "Como 1907": "科莫",
     "Genoa": "热那亚",
+    "Genoa CFC": "热那亚",
     "Napoli": "那不勒斯",
+    "SSC Napoli": "那不勒斯",
     "Parma": "帕尔马",
+    "Parma Calcio 1913": "帕尔马",
     "Cagliari": "卡利亚里",
+    "Cagliari Calcio": "卡利亚里",
     "Lens": "朗斯",
+    "Racing Club de Lens": "朗斯",
+    "RC Lens": "朗斯",
     "Auxerre": "欧塞尔",
+    "Le Mans": "勒芒",
+    "Le Mans FC": "勒芒",
+    "Brest": "布雷斯特",
+    "Stade Brestois 29": "布雷斯特",
+    "AJ Auxerre": "欧塞尔",
     "Nice": "尼斯",
+    "OGC Nice": "尼斯",
     "Lorient": "洛里昂",
+    "FC Lorient": "洛里昂",
     "Toulouse": "图卢兹",
+    "Toulouse FC": "图卢兹",
     "Lyon": "里昂",
+    "Olympique Lyonnais": "里昂",
+    "Troyes": "特鲁瓦",
+    "ES Troyes AC": "特鲁瓦",
+    "Paris FC": "巴黎FC",
     "赫尔城": "赫尔城",
     "曼联": "曼联",
     "埃弗顿": "埃弗顿",
@@ -374,13 +409,13 @@ def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) 
         copied = deepcopy(match)
         event = index.get(_dashboard_match_key(copied))
         if event is not None:
-            if copied.get("european_odds") is None and event.european_odds is not None:
+            if event.european_odds is not None:
                 copied["european_odds"] = {
                     "home": event.european_odds.home,
                     "draw": event.european_odds.draw,
                     "away": event.european_odds.away,
                 }
-            if copied.get("asian_handicap") is None and event.asian_handicap is not None:
+            if event.asian_handicap is not None:
                 copied["asian_handicap"] = {
                     "provider": event.asian_handicap.provider,
                     "handicap": event.asian_handicap.handicap,
@@ -490,7 +525,7 @@ def _dashboard_match_key(match: dict) -> tuple[str, str, str, str]:
 
 def _competition_key(value: object) -> str:
     text = str(value or "")
-    for league in ("英超", "西甲", "意甲", "德甲", "法甲"):
+    for league in ("英超", "西甲", "意甲", "德甲", "法甲", "欧冠"):
         if league in text:
             return league
     return text.strip()
