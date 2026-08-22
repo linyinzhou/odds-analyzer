@@ -68,8 +68,9 @@ function renderSummary() {
   const mismatchMatches = state.mismatchHistory.length;
   const pendingMatches = state.currentMatches.filter((match) => match.status === "pending").length;
   const checkerIds = new Set(getCheckerMatches().map((match) => match.id));
-  const reviewed = Object.entries(state.checker).filter(([id, item]) => checkerIds.has(id) && item.reviewed).length;
-  const hits = Object.entries(state.checker).filter(([id, item]) => checkerIds.has(id) && item.reviewed && item.hit).length;
+  const reviews = getCheckerMatches().map(getCheckerReview).filter((review) => checkerIds.has(review.id));
+  const reviewed = reviews.filter((review) => review.reviewed).length;
+  const hits = reviews.filter((review) => review.reviewed && review.hit).length;
 
   elements.totalMatches.textContent = String(state.currentMatches.length);
   elements.mismatchMatches.textContent = String(mismatchMatches);
@@ -206,8 +207,9 @@ function renderMismatchView() {
 function renderCheckerView() {
   const matches = getCheckerMatches();
   const checkerIds = new Set(matches.map((match) => match.id));
-  const reviewed = Object.entries(state.checker).filter(([id, item]) => checkerIds.has(id) && item.reviewed).length;
-  const hits = Object.entries(state.checker).filter(([id, item]) => checkerIds.has(id) && item.reviewed && item.hit).length;
+  const reviews = getCheckerMatches().map(getCheckerReview).filter((review) => checkerIds.has(review.id));
+  const reviewed = reviews.filter((review) => review.reviewed).length;
+  const hits = reviews.filter((review) => review.reviewed && review.hit).length;
   const paged = paginate(matches, state.pages.checker);
   const learning = buildLearningSummary();
   elements.viewEyebrow.textContent = "Checker";
@@ -229,7 +231,7 @@ function renderCheckerView() {
 }
 
 function renderCheckerItem(match) {
-  const item = state.checker[match.id] ?? {};
+  const item = getCheckerReview(match);
   return `
     <article class="checker-item">
       <header>
@@ -244,7 +246,7 @@ function renderCheckerItem(match) {
       <div class="checker-result">
         <label>
           <span>赛果</span>
-          <input data-field="score" data-id="${match.id}" value="${escapeAttribute(item.score ?? "")}" placeholder="例：1-1" />
+          <input data-field="score" data-id="${match.id}" value="${escapeAttribute(item.score ?? item.final_score ?? "")}" placeholder="例：1-1" />
         </label>
         <label>
           <span>复盘</span>
@@ -256,7 +258,7 @@ function renderCheckerItem(match) {
         </label>
         <label class="checker-note">
           <span>备注</span>
-          <input data-field="note" data-id="${match.id}" value="${escapeAttribute(item.note ?? "")}" placeholder="盘口变化、阵容、赛果原因" />
+          <input data-field="note" data-id="${match.id}" value="${escapeAttribute(item.note ?? item.review_note ?? "")}" placeholder="盘口变化、阵容、赛果原因" />
         </label>
       </div>
     </article>
@@ -298,7 +300,7 @@ function saveChecker() {
 
 function buildLearningSummary() {
   const reviewed = state.checkerHistory
-    .map((match) => ({ match, review: state.checker[match.id] }))
+    .map((match) => ({ match, review: getCheckerReview(match) }))
     .filter((item) => item.review?.reviewed);
 
   const groups = [
@@ -354,6 +356,14 @@ function renderLearningSummary(groups) {
 
 function getCheckerMatches() {
   return [...state.checkerHistory].sort(sortByKickoffDesc);
+}
+
+function getCheckerReview(match) {
+  return {
+    id: match.id,
+    ...(match.review ?? {}),
+    ...(state.checker[match.id] ?? {}),
+  };
 }
 
 function getTopCheckerCandidates(matches) {
@@ -456,3 +466,4 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
