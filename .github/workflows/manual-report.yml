@@ -84,6 +84,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git subtree split --prefix dashboard -b gh-pages-deploy
+          rm -rf /tmp/odds-analyzer-dashboard
+          mkdir -p /tmp/odds-analyzer-dashboard
+          cp -R dashboard/. /tmp/odds-analyzer-dashboard/
+          git checkout --orphan gh-pages-deploy
+          git rm -rf .
+          cp -R /tmp/odds-analyzer-dashboard/. .
+          git add .
+          git commit -m "Deploy dashboard from ${GITHUB_RUN_ID}"
           git push -f origin gh-pages-deploy:gh-pages
 
