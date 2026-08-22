@@ -2,10 +2,11 @@
   "slate": {
     "date": "2026-08-22",
     "window": "2026-08-22 18:00 -> 2026-08-23 06:00 GMT+8",
-    "generated_at": "2026-08-22T14:36:47+08:00",
+    "generated_at": "2026-08-22T18:06:39+08:00",
     "source": "manual evening-report job",
     "sporttery_source": "Sporttery official",
-    "odds_api_source": "The Odds API skipped: missing THE_ODDS_API_KEY"
+    "odds_api_source": "The Odds API skipped: missing THE_ODDS_API_KEY",
+    "football_data_source": "football-data.org skipped: missing FOOTBALL_DATA_API_KEY"
   },
   "current_matches": [
     {
@@ -37,9 +38,9 @@
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 3.4,
-          "draw": 3.85,
-          "away": 1.74
+          "home": 3.48,
+          "draw": 3.95,
+          "away": 1.7
         },
         "source": "Sporttery official",
         "match_no": "周六007",
@@ -89,7 +90,9 @@
         "match_no": "周六007",
         "match_id": "2041039",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "赫尔城 vs 曼联，开球：08-22 19:30。欧赔已取得、亚盘已取得、竞彩已取得。亚盘约赫尔城 +1.25，竞彩赫尔城 +1，竞彩比亚盘略浅。 预测：竞彩胜平负 客胜（信心 70%）。",
+      "report_en": "赫尔城 vs 曼联, kickoff 08-22 19:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩胜平负 客胜 (confidence 70%)."
     },
     {
       "id": "2026-08-22-everton-crystal-palace",
@@ -114,19 +117,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.06,
-          "draw": 3.1,
-          "away": 3.12
+          "home": 2.03,
+          "draw": 3.12,
+          "away": 3.16
         },
         "handicap": -1,
         "handicap_odds": {
           "home": 4.5,
-          "draw": 3.65,
-          "away": 1.58
+          "draw": 3.55,
+          "away": 1.6
         },
         "source": "Sporttery official",
         "match_no": "周六010",
-        "updated_at": "09:55:26"
+        "updated_at": "14:37:19"
       },
       "fundamentals": [
         {
@@ -172,7 +175,9 @@
         "match_no": "周六010",
         "match_id": "2040982",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "埃弗顿 vs 水晶宫，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘只到埃弗顿 -0.25 或平手，竞彩却给埃弗顿 -1，竞彩明显比亚盘深。 预测：竞彩让球 -1 让平 + 让负（信心 64%）。",
+      "report_en": "埃弗顿 vs 水晶宫, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 64%)."
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -197,19 +202,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.42,
+          "home": 2.48,
           "draw": 3.05,
-          "away": 2.58
+          "away": 2.52
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.6,
-          "draw": 4.05,
-          "away": 1.42
+          "home": 5.75,
+          "draw": 4.15,
+          "away": 1.4
         },
         "source": "Sporttery official",
         "match_no": "周六012",
-        "updated_at": "13:07:55"
+        "updated_at": "17:09:47"
       },
       "fundamentals": [
         {
@@ -255,7 +260,9 @@
         "match_no": "周六012",
         "match_id": "2040984",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "伊普斯维奇 vs 桑德兰，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。 预测：竞彩让球 -1 让平 + 让负（信心 67%）。",
+      "report_en": "伊普斯维奇 vs 桑德兰, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 67%)."
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -280,19 +287,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
+          "home": 2.06,
           "draw": 3.15,
-          "away": 3.0
+          "away": 3.06
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 4.5,
+          "draw": 3.65,
+          "away": 1.58
         },
         "source": "Sporttery official",
         "match_no": "周六011",
-        "updated_at": "09:55:26"
+        "updated_at": "15:52:07"
       },
       "fundamentals": [
         {
@@ -338,7 +345,9 @@
         "match_no": "周六011",
         "match_id": "2040983",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "诺丁汉森林 vs 利兹联，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。 预测：竞彩让球 -1 让平 + 让负（信心 66%）。",
+      "report_en": "诺丁汉森林 vs 利兹联, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 66%)."
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -363,19 +372,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.02,
-          "draw": 3.45,
-          "away": 2.9
+          "home": 1.99,
+          "draw": 3.51,
+          "away": 2.92
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.2,
-          "draw": 3.81,
-          "away": 1.59
+          "home": 4.15,
+          "draw": 3.75,
+          "away": 1.61
         },
         "source": "Sporttery official",
         "match_no": "周六018",
-        "updated_at": "12:27:29"
+        "updated_at": "15:38:27"
       },
       "fundamentals": [
         {
@@ -421,7 +430,9 @@
         "match_no": "周六018",
         "match_id": "2040990",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "布伦特福德 vs 热刺，开球：08-23 00:30。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩布伦特福德 -1，是本轮错位最明显的比赛之一。 预测：竞彩让球 -1 让负，防让平（信心 69%）。",
+      "report_en": "布伦特福德 vs 热刺, kickoff 08-23 00:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让负，防让平 (confidence 69%)."
     },
     {
       "id": "2026-08-22-athletic-club-sevilla-fc",
@@ -438,19 +449,19 @@
       "asian_handicap": null,
       "chinese_lottery": {
         "standard": {
-          "home": 1.59,
-          "draw": 3.28,
+          "home": 1.58,
+          "draw": 3.33,
           "away": 5.1
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 3.15,
-          "draw": 3.15,
-          "away": 2.03
+          "home": 3.3,
+          "draw": 2.9,
+          "away": 2.08
         },
         "source": "Sporttery official",
         "match_no": "周六016",
-        "updated_at": "13:17:04"
+        "updated_at": "15:40:40"
       },
       "fundamentals": [
         {
@@ -487,7 +498,9 @@
         "match_no": "周六016",
         "match_id": "2040988",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Athletic Club vs Sevilla FC，开球：2026-08-22 23:00。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Athletic Club vs Sevilla FC, kickoff 2026-08-22 23:00. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-valencia-cf-celta-vigo",
@@ -504,19 +517,19 @@
       "asian_handicap": null,
       "chinese_lottery": {
         "standard": {
-          "home": 2.35,
-          "draw": 2.95,
+          "home": 2.4,
+          "draw": 2.87,
           "away": 2.75
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.5,
-          "draw": 3.9,
-          "away": 1.45
+          "home": 5.65,
+          "draw": 3.95,
+          "away": 1.43
         },
         "source": "Sporttery official",
         "match_no": "周六021",
-        "updated_at": "09:55:26"
+        "updated_at": "16:50:11"
       },
       "fundamentals": [
         {
@@ -553,7 +566,9 @@
         "match_no": "周六021",
         "match_id": "2040993",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Valencia CF vs Celta Vigo，开球：2026-08-23 01:30。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Valencia CF vs Celta Vigo, kickoff 2026-08-23 01:30. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-espanyol-real-madrid",
@@ -570,19 +585,19 @@
       "asian_handicap": null,
       "chinese_lottery": {
         "standard": {
-          "home": 6.95,
-          "draw": 4.5,
-          "away": 1.31
+          "home": 7.0,
+          "draw": 4.6,
+          "away": 1.3
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 2.88,
-          "draw": 3.55,
-          "away": 2.0
+          "home": 2.93,
+          "draw": 3.6,
+          "away": 1.96
         },
         "source": "Sporttery official",
         "match_no": "周六027",
-        "updated_at": "13:02:31"
+        "updated_at": "16:21:06"
       },
       "fundamentals": [
         {
@@ -619,7 +634,9 @@
         "match_no": "周六027",
         "match_id": "2040999",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Espanyol vs Real Madrid，开球：2026-08-23 03:30。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Espanyol vs Real Madrid, kickoff 2026-08-23 03:30. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-inter-milan-monza",
@@ -639,12 +656,12 @@
         "handicap": -2,
         "handicap_odds": {
           "home": 2.3,
-          "draw": 3.85,
-          "away": 2.3
+          "draw": 3.6,
+          "away": 2.4
         },
         "source": "Sporttery official",
         "match_no": "周六020",
-        "updated_at": "14:20:07"
+        "updated_at": "17:44:54"
       },
       "fundamentals": [
         {
@@ -681,7 +698,9 @@
         "match_no": "周六020",
         "match_id": "2040992",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Inter Milan vs Monza，开球：2026-08-23 00:30。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Inter Milan vs Monza, kickoff 2026-08-23 00:30. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-udinese-como",
@@ -747,7 +766,9 @@
         "match_no": "周六019",
         "match_id": "2040991",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Udinese vs Como，开球：2026-08-23 00:30。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Udinese vs Como, kickoff 2026-08-23 00:30. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-genoa-napoli",
@@ -764,19 +785,19 @@
       "asian_handicap": null,
       "chinese_lottery": {
         "standard": {
-          "home": 4.08,
-          "draw": 3.05,
-          "away": 1.8
+          "home": 3.88,
+          "draw": 3.02,
+          "away": 1.85
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 1.8,
-          "draw": 3.35,
-          "away": 3.65
+          "home": 1.75,
+          "draw": 3.38,
+          "away": 3.82
         },
         "source": "Sporttery official",
         "match_no": "周六023",
-        "updated_at": "14:06:51"
+        "updated_at": "15:22:29"
       },
       "fundamentals": [
         {
@@ -813,7 +834,9 @@
         "match_no": "周六023",
         "match_id": "2040995",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Genoa vs Napoli，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Genoa vs Napoli, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-parma-cagliari",
@@ -830,19 +853,19 @@
       "asian_handicap": null,
       "chinese_lottery": {
         "standard": {
-          "home": 2.3,
-          "draw": 2.77,
+          "home": 2.34,
+          "draw": 2.72,
           "away": 3.0
         },
         "handicap": -1,
         "handicap_odds": {
           "home": 5.7,
-          "draw": 3.65,
-          "away": 1.47
+          "draw": 3.72,
+          "away": 1.46
         },
         "source": "Sporttery official",
         "match_no": "周六024",
-        "updated_at": "13:01:22"
+        "updated_at": "17:14:52"
       },
       "fundamentals": [
         {
@@ -879,7 +902,9 @@
         "match_no": "周六024",
         "match_id": "2040996",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Parma vs Cagliari，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Parma vs Cagliari, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-22-lens-auxerre",
@@ -902,8 +927,8 @@
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 2.1,
-          "draw": 3.5,
+          "home": 2.05,
+          "draw": 3.65,
           "away": 2.72
         },
         "source": "Sporttery official",
@@ -945,7 +970,9 @@
         "match_no": "周六017",
         "match_id": "2040989",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Lens vs Auxerre，开球：2026-08-22 23:15。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Lens vs Auxerre, kickoff 2026-08-22 23:15. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-le-mans-brest",
@@ -990,7 +1017,9 @@
       "sources": [
         "Curated fixture seed / evening slate"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "report_zh": "Le Mans vs Brest，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩未取得。欧赔、亚盘、竞彩数据待补；不做盘口判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Le Mans vs Brest, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 未取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-nice-lorient",
@@ -1056,7 +1085,9 @@
         "match_no": "周六025",
         "match_id": "2040997",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Nice vs Lorient，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Nice vs Lorient, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-toulouse-lyon",
@@ -1122,7 +1153,9 @@
         "match_no": "周六026",
         "match_id": "2040998",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "Toulouse vs Lyon，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩已取得。竞彩官方数据已抓取；欧赔、亚盘和基本面待补，暂不做错盘判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Toulouse vs Lyon, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 已取得. Prediction: 无推荐 跳过 (confidence 0%)."
     },
     {
       "id": "2026-08-23-troyes-paris-fc",
@@ -1167,7 +1200,9 @@
       "sources": [
         "Curated fixture seed / evening slate"
       ],
-      "batch_date": "2026-08-22"
+      "batch_date": "2026-08-22",
+      "report_zh": "Troyes vs Paris FC，开球：2026-08-23 02:45。欧赔未取得、亚盘未取得、竞彩未取得。欧赔、亚盘、竞彩数据待补；不做盘口判断。 预测：无推荐 跳过（信心 0%）。",
+      "report_en": "Troyes vs Paris FC, kickoff 2026-08-23 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 未取得. Prediction: 无推荐 跳过 (confidence 0%)."
     }
   ],
   "mismatch_history": [
@@ -1194,19 +1229,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.06,
-          "draw": 3.1,
-          "away": 3.12
+          "home": 2.03,
+          "draw": 3.12,
+          "away": 3.16
         },
         "handicap": -1,
         "handicap_odds": {
           "home": 4.5,
-          "draw": 3.65,
-          "away": 1.58
+          "draw": 3.55,
+          "away": 1.6
         },
         "source": "Sporttery official",
         "match_no": "周六010",
-        "updated_at": "09:55:26"
+        "updated_at": "14:37:19"
       },
       "fundamentals": [
         {
@@ -1252,7 +1287,9 @@
         "match_no": "周六010",
         "match_id": "2040982",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "埃弗顿 vs 水晶宫，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘只到埃弗顿 -0.25 或平手，竞彩却给埃弗顿 -1，竞彩明显比亚盘深。 预测：竞彩让球 -1 让平 + 让负（信心 64%）。",
+      "report_en": "埃弗顿 vs 水晶宫, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 64%)."
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -1277,19 +1314,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.42,
+          "home": 2.48,
           "draw": 3.05,
-          "away": 2.58
+          "away": 2.52
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.6,
-          "draw": 4.05,
-          "away": 1.42
+          "home": 5.75,
+          "draw": 4.15,
+          "away": 1.4
         },
         "source": "Sporttery official",
         "match_no": "周六012",
-        "updated_at": "13:07:55"
+        "updated_at": "17:09:47"
       },
       "fundamentals": [
         {
@@ -1335,7 +1372,9 @@
         "match_no": "周六012",
         "match_id": "2040984",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "伊普斯维奇 vs 桑德兰，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。 预测：竞彩让球 -1 让平 + 让负（信心 67%）。",
+      "report_en": "伊普斯维奇 vs 桑德兰, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 67%)."
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -1360,19 +1399,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
+          "home": 2.06,
           "draw": 3.15,
-          "away": 3.0
+          "away": 3.06
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 4.5,
+          "draw": 3.65,
+          "away": 1.58
         },
         "source": "Sporttery official",
         "match_no": "周六011",
-        "updated_at": "09:55:26"
+        "updated_at": "15:52:07"
       },
       "fundamentals": [
         {
@@ -1418,7 +1457,9 @@
         "match_no": "周六011",
         "match_id": "2040983",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "诺丁汉森林 vs 利兹联，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。 预测：竞彩让球 -1 让平 + 让负（信心 66%）。",
+      "report_en": "诺丁汉森林 vs 利兹联, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 66%)."
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -1443,19 +1484,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.02,
-          "draw": 3.45,
-          "away": 2.9
+          "home": 1.99,
+          "draw": 3.51,
+          "away": 2.92
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.2,
-          "draw": 3.81,
-          "away": 1.59
+          "home": 4.15,
+          "draw": 3.75,
+          "away": 1.61
         },
         "source": "Sporttery official",
         "match_no": "周六018",
-        "updated_at": "12:27:29"
+        "updated_at": "15:38:27"
       },
       "fundamentals": [
         {
@@ -1501,7 +1542,9 @@
         "match_no": "周六018",
         "match_id": "2040990",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "布伦特福德 vs 热刺，开球：08-23 00:30。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩布伦特福德 -1，是本轮错位最明显的比赛之一。 预测：竞彩让球 -1 让负，防让平（信心 69%）。",
+      "report_en": "布伦特福德 vs 热刺, kickoff 08-23 00:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让负，防让平 (confidence 69%)."
     }
   ],
   "checker_history": [
@@ -1534,9 +1577,9 @@
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 3.4,
-          "draw": 3.85,
-          "away": 1.74
+          "home": 3.48,
+          "draw": 3.95,
+          "away": 1.7
         },
         "source": "Sporttery official",
         "match_no": "周六007",
@@ -1586,7 +1629,9 @@
         "match_no": "周六007",
         "match_id": "2041039",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "赫尔城 vs 曼联，开球：08-22 19:30。欧赔已取得、亚盘已取得、竞彩已取得。亚盘约赫尔城 +1.25，竞彩赫尔城 +1，竞彩比亚盘略浅。 预测：竞彩胜平负 客胜（信心 70%）。",
+      "report_en": "赫尔城 vs 曼联, kickoff 08-22 19:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩胜平负 客胜 (confidence 70%)."
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -1611,19 +1656,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.02,
-          "draw": 3.45,
-          "away": 2.9
+          "home": 1.99,
+          "draw": 3.51,
+          "away": 2.92
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.2,
-          "draw": 3.81,
-          "away": 1.59
+          "home": 4.15,
+          "draw": 3.75,
+          "away": 1.61
         },
         "source": "Sporttery official",
         "match_no": "周六018",
-        "updated_at": "12:27:29"
+        "updated_at": "15:38:27"
       },
       "fundamentals": [
         {
@@ -1669,7 +1714,9 @@
         "match_no": "周六018",
         "match_id": "2040990",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "布伦特福德 vs 热刺，开球：08-23 00:30。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩布伦特福德 -1，是本轮错位最明显的比赛之一。 预测：竞彩让球 -1 让负，防让平（信心 69%）。",
+      "report_en": "布伦特福德 vs 热刺, kickoff 08-23 00:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让负，防让平 (confidence 69%)."
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -1694,19 +1741,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.42,
+          "home": 2.48,
           "draw": 3.05,
-          "away": 2.58
+          "away": 2.52
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.6,
-          "draw": 4.05,
-          "away": 1.42
+          "home": 5.75,
+          "draw": 4.15,
+          "away": 1.4
         },
         "source": "Sporttery official",
         "match_no": "周六012",
-        "updated_at": "13:07:55"
+        "updated_at": "17:09:47"
       },
       "fundamentals": [
         {
@@ -1752,7 +1799,9 @@
         "match_no": "周六012",
         "match_id": "2040984",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "伊普斯维奇 vs 桑德兰，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。 预测：竞彩让球 -1 让平 + 让负（信心 67%）。",
+      "report_en": "伊普斯维奇 vs 桑德兰, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 67%)."
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -1777,19 +1826,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
+          "home": 2.06,
           "draw": 3.15,
-          "away": 3.0
+          "away": 3.06
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 4.5,
+          "draw": 3.65,
+          "away": 1.58
         },
         "source": "Sporttery official",
         "match_no": "周六011",
-        "updated_at": "09:55:26"
+        "updated_at": "15:52:07"
       },
       "fundamentals": [
         {
@@ -1835,7 +1884,9 @@
         "match_no": "周六011",
         "match_id": "2040983",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "诺丁汉森林 vs 利兹联，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。 预测：竞彩让球 -1 让平 + 让负（信心 66%）。",
+      "report_en": "诺丁汉森林 vs 利兹联, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 66%)."
     },
     {
       "id": "2026-08-22-everton-crystal-palace",
@@ -1860,19 +1911,19 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.06,
-          "draw": 3.1,
-          "away": 3.12
+          "home": 2.03,
+          "draw": 3.12,
+          "away": 3.16
         },
         "handicap": -1,
         "handicap_odds": {
           "home": 4.5,
-          "draw": 3.65,
-          "away": 1.58
+          "draw": 3.55,
+          "away": 1.6
         },
         "source": "Sporttery official",
         "match_no": "周六010",
-        "updated_at": "09:55:26"
+        "updated_at": "14:37:19"
       },
       "fundamentals": [
         {
@@ -1918,7 +1969,9 @@
         "match_no": "周六010",
         "match_id": "2040982",
         "source": "Sporttery official"
-      }
+      },
+      "report_zh": "埃弗顿 vs 水晶宫，开球：08-22 22:00。欧赔已取得、亚盘已取得、竞彩已取得。亚盘只到埃弗顿 -0.25 或平手，竞彩却给埃弗顿 -1，竞彩明显比亚盘深。 预测：竞彩让球 -1 让平 + 让负（信心 64%）。",
+      "report_en": "埃弗顿 vs 水晶宫, kickoff 08-22 22:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Prediction: 竞彩让球 -1 让平 + 让负 (confidence 64%)."
     }
   ],
   "next_matchday": {
@@ -1996,21 +2049,6 @@
         "matchday": "2026/27 第 2 轮剩余",
         "fixtures": [
           {
-            "kickoff_time": "08-22 23:00",
-            "home_team": "Athletic Club",
-            "away_team": "Sevilla FC"
-          },
-          {
-            "kickoff_time": "08-23 01:30",
-            "home_team": "Valencia CF",
-            "away_team": "Celta Vigo"
-          },
-          {
-            "kickoff_time": "08-23 03:30",
-            "home_team": "Espanyol",
-            "away_team": "Real Madrid"
-          },
-          {
             "kickoff_time": "08-23 23:00",
             "home_team": "Atletico Madrid",
             "away_team": "Villarreal CF"
@@ -2042,26 +2080,6 @@
         "country": "意大利",
         "matchday": "2026/27 第 1 轮",
         "fixtures": [
-          {
-            "kickoff_time": "08-23 00:30",
-            "home_team": "Inter Milan",
-            "away_team": "Monza"
-          },
-          {
-            "kickoff_time": "08-23 00:30",
-            "home_team": "Udinese",
-            "away_team": "Como"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Genoa",
-            "away_team": "Napoli"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Parma",
-            "away_team": "Cagliari"
-          },
           {
             "kickoff_time": "08-24 00:30",
             "home_team": "Frosinone",
@@ -2152,36 +2170,6 @@
         "matchday": "2026/27 第 1 轮",
         "fixtures": [
           {
-            "kickoff_time": "08-22 02:45",
-            "home_team": "Marseille",
-            "away_team": "Strasbourg"
-          },
-          {
-            "kickoff_time": "08-22 23:15",
-            "home_team": "Lens",
-            "away_team": "Auxerre"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Le Mans",
-            "away_team": "Brest"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Nice",
-            "away_team": "Lorient"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Toulouse",
-            "away_team": "Lyon"
-          },
-          {
-            "kickoff_time": "08-23 02:45",
-            "home_team": "Troyes",
-            "away_team": "Paris FC"
-          },
-          {
             "kickoff_time": "08-23 21:00",
             "home_team": "Angers",
             "away_team": "Lille"
@@ -2197,6 +2185,11 @@
             "away_team": "Paris Saint-Germain"
           }
         ]
+      },
+      {
+        "name": "欧冠",
+        "status": "欧冠主阶段赛程未从可靠来源取得；不展示资格赛、附加赛或推测对阵。",
+        "fixtures": []
       }
     ]
   }

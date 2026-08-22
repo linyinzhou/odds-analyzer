@@ -537,6 +537,32 @@ def _market_updated_at(match: SportteryMatch) -> str | None:
             return market.updated_at
     return None
 
+def _attach_bilingual_reports(matches: list[dict]) -> list[dict]:
+    """Attach compact query-time reports without turning unavailable inputs into facts."""
+    reports = []
+    for match in matches:
+        copied = deepcopy(match)
+        home = copied.get("home_team", "主队")
+        away = copied.get("away_team", "客队")
+        kickoff = copied.get("kickoff_time", "开球时间待补")
+        prediction = copied.get("prediction", {})
+        market = prediction.get("market", "无推荐")
+        pick = prediction.get("pick", "跳过")
+        confidence = prediction.get("confidence", 0)
+        chinese_lottery = "已取得" if copied.get("chinese_lottery") else "未取得"
+        european = "已取得" if copied.get("european_odds") else "未取得"
+        asian = "已取得" if copied.get("asian_handicap") else "未取得"
+        copied["report_zh"] = (
+            f"{home} vs {away}，开球：{kickoff}。欧赔{european}、亚盘{asian}、竞彩{chinese_lottery}。"
+            f"{copied.get('market_read', '市场解读待补')} 预测：{market} {pick}（信心 {confidence}%）。"
+        )
+        copied["report_en"] = (
+            f"{home} vs {away}, kickoff {kickoff}. Query-time snapshot: European 1X2 {european}, "
+            f"Asian handicap {asian}, Sporttery {chinese_lottery}. "
+            f"Prediction: {market} {pick} (confidence {confidence}%)."
+        )
+        reports.append(copied)
+    return reports
 def _dedupe_fixtures(fixtures: list[dict]) -> list[dict]:
     seen = set()
     result = []
@@ -549,21 +575,64 @@ def _dedupe_fixtures(fixtures: list[dict]) -> list[dict]:
     return result
 
 
-def _filter_next_matchday(existing_next_matchday: dict, current_ids: set[str]) -> dict:
+def _filter_next_matchday(
+    existing_next_matchday: dict,
+    current_matches: list[dict],
+    query_time: datetime,
+) -> dict:
     next_matchday = deepcopy(existing_next_matchday)
+    current_keys = {
+        _schedule_fixture_key(match.get("kickoff_time", ""), match.get("home_team", ""), match.get("away_team", ""))
+        for match in current_matches
+    }
     competitions = []
     for competition in next_matchday.get("competitions", []):
         fixtures = [
             fixture
             for fixture in competition.get("fixtures", [])
-            if fixture.get("id") not in current_ids
+            if _fixture_is_after_query_time(fixture, query_time)
+            and _schedule_fixture_key(
+                fixture.get("kickoff_time", ""),
+                fixture.get("home_team", ""),
+                fixture.get("away_team", ""),
+            )
+            not in current_keys
         ]
+        fixtures.sort(key=lambda fixture: _kickoff_key(str(fixture.get("kickoff_time", ""))))
         if fixtures:
             updated = deepcopy(competition)
             updated["fixtures"] = fixtures
             competitions.append(updated)
+        elif competition.get("name") == "欧冠":
+            competitions.append(deepcopy(competition))
+
+    if not any(competition.get("name") == "欧冠" for competition in competitions):
+        competitions.append(
+            {
+                "name": "欧冠",
+                "status": "欧冠主阶段赛程未从可靠来源取得；不展示资格赛、附加赛或推测对阵。",
+                "fixtures": [],
+            }
+        )
     next_matchday["competitions"] = competitions
     return next_matchday
+
+
+def _schedule_fixture_key(kickoff_time: object, home_team: object, away_team: object) -> tuple[str, str, str]:
+    return (
+        _kickoff_key(str(kickoff_time)),
+        _normalize_team(str(home_team)),
+        _normalize_team(str(away_team)),
+    )
+
+
+def _fixture_is_after_query_time(fixture: dict, query_time: datetime) -> bool:
+    kickoff = _kickoff_key(str(fixture.get("kickoff_time", "")))
+    try:
+        parsed = datetime.strptime(kickoff, "%Y-%m-%d %H:%M").replace(tzinfo=BEIJING)
+    except ValueError:
+        return False
+    return parsed > query_time
 
 
 def build_evening_slate_batch(
@@ -598,10 +667,12 @@ def build_evening_slate_batch(
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
         current_matches = _enrich_with_odds_api(current_matches, odds_api_events)
+    current_matches = _attach_bilingual_reports(current_matches)
 
-    current_ids = {match["id"] for match in current_matches}
     next_matchday = _filter_next_matchday(
-        existing_payload.get("next_matchday", {}), current_ids
+        existing_payload.get("next_matchday", {}),
+        current_matches,
+        datetime.now(BEIJING),
     )
 
     next_date = (date.fromisoformat(slate_date) + timedelta(days=1)).isoformat()
