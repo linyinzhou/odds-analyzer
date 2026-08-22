@@ -396,6 +396,11 @@ def _checker_text(prediction: dict[str, Any]) -> str:
 
 def _risks(match: dict[str, Any], prediction: dict[str, Any]) -> list[str]:
     risks = ["赔率会临场变化，本报告只使用本次查询快照。", "官方首发和最新伤停尚未接入时，不作为已确认事实。"]
+    weather = match.get("weather_snapshot") or {}
+    if (weather.get("precipitation_probability") or 0) >= 50:
+        risks.append(f"开赛时降水概率约 {weather['precipitation_probability']:.0f}%，需关注湿滑场地对节奏的影响。")
+    if (weather.get("wind_gusts_kmh") or 0) >= 45:
+        risks.append(f"开赛时阵风约 {weather['wind_gusts_kmh']:.0f} km/h，长传和高球稳定性可能受影响。")
     if not match.get("chinese_lottery"):
         risks.append("本次未取得竞彩数据，未运行完整三盘比较。")
     if prediction["market"] != "无推荐":

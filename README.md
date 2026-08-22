@@ -204,6 +204,7 @@ Shortlist:
 
 - China Sports Lottery / Sporttery for official Chinese lottery schedules and SP odds.
 - API-Football or Sportmonks for fixtures, standings, injuries, lineups, H2H, and weather.
+- Open-Meteo for query-time hourly weather near kickoff; no API key is required for the public endpoint.
 - HKJC Football for Asian handicap and related football markets.
 - football-data.org for structured fixtures, standings, matchday, venue, and recent finished-match form.
 - The Odds API for structured European odds and spreads where coverage is available.

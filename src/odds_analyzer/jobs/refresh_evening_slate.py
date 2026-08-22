@@ -15,8 +15,10 @@ from odds_analyzer.sources import (
     SportteryMatch,
     fetch_evening_football_data,
     fetch_evening_odds_api_events,
+    fetch_fixture_weather,
     fetch_official_sporttery_matches,
     fixture_dashboard_id,
+    weather_description,
 )
 
 
@@ -351,6 +353,46 @@ def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapsh
             copied["signal_label"] = "基本面已抓取"
         enriched.append(copied)
     return enriched
+
+
+def _enrich_with_weather(matches: list[dict], forecasts: dict[int, object]) -> list[dict]:
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        match_id = (copied.get("football_data_snapshot") or {}).get("match_id")
+        forecast = forecasts.get(match_id)
+        if forecast is None:
+            enriched.append(copied)
+            continue
+        condition_zh = weather_description(forecast.weather_code, "zh")
+        condition_en = weather_description(forecast.weather_code, "en")
+        temperature = _weather_value(forecast.temperature_c, "°C")
+        rain = _weather_value(forecast.precipitation_probability, "%")
+        wind = _weather_value(forecast.wind_speed_kmh, " km/h")
+        copied["weather"] = f"{condition_zh}，{temperature}，降水 {rain}，风速 {wind}"
+        copied["weather_en"] = f"{condition_en}, {temperature}, precipitation {rain}, wind {wind}"
+        copied["weather_snapshot"] = {
+            "location": forecast.location,
+            "latitude": forecast.latitude,
+            "longitude": forecast.longitude,
+            "forecast_time": forecast.forecast_time,
+            "temperature_c": forecast.temperature_c,
+            "precipitation_probability": forecast.precipitation_probability,
+            "weather_code": forecast.weather_code,
+            "wind_speed_kmh": forecast.wind_speed_kmh,
+            "wind_gusts_kmh": forecast.wind_gusts_kmh,
+            "source": forecast.source,
+        }
+        sources = list(copied.get("sources", []))
+        if "Open-Meteo" not in sources:
+            sources.append("Open-Meteo")
+        copied["sources"] = sources
+        enriched.append(copied)
+    return enriched
+
+
+def _weather_value(value: float | None, suffix: str) -> str:
+    return "待补" if value is None else f"{value:.0f}{suffix}"
 
 
 def _football_data_fixture_key(fixture) -> tuple[str, str, str, str]:
@@ -717,6 +759,8 @@ def build_evening_slate_batch(
     odds_api_source: str = "not requested",
     football_data_snapshot: FootballDataSnapshot | None = None,
     football_data_source: str = "not requested",
+    weather_forecasts: dict[int, object] | None = None,
+    weather_source: str = "not requested",
 ) -> dict:
     current_by_id = {
         match.get("id"): match for match in existing_payload.get("current_matches", [])
@@ -736,6 +780,8 @@ def build_evening_slate_batch(
     if football_data_snapshot is not None:
         current_matches = _add_football_data_fixtures(current_matches, football_data_snapshot)
         current_matches = _enrich_with_football_data(current_matches, football_data_snapshot)
+    if weather_forecasts:
+        current_matches = _enrich_with_weather(current_matches, weather_forecasts)
     if sporttery_matches:
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
@@ -761,6 +807,7 @@ def build_evening_slate_batch(
             "sporttery_source": sporttery_source,
             "odds_api_source": odds_api_source,
             "football_data_source": football_data_source,
+            "weather_source": weather_source,
         },
         "current_matches": current_matches,
         "mismatch_history": [
@@ -802,6 +849,17 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     else:
         football_data_snapshot = None
         football_data_source = "football-data.org skipped: missing FOOTBALL_DATA_API_KEY"
+    if football_data_snapshot and football_data_snapshot.fixtures:
+        try:
+            weather_batch = fetch_fixture_weather(football_data_snapshot.fixtures)
+            weather_forecasts = weather_batch.forecasts
+            weather_source = _weather_source_status(weather_batch)
+        except Exception as exc:
+            weather_forecasts = {}
+            weather_source = f"Open-Meteo unavailable: {type(exc).__name__}"
+    else:
+        weather_forecasts = {}
+        weather_source = "Open-Meteo skipped: no football-data fixtures"
     try:
         sporttery_matches = fetch_official_sporttery_matches(slate_date)
         sporttery_source = "Sporttery official"
@@ -828,6 +886,8 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         odds_api_source=odds_api_source,
         football_data_snapshot=football_data_snapshot,
         football_data_source=football_data_source,
+        weather_forecasts=weather_forecasts,
+        weather_source=weather_source,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
     _write_payload(path, merged_payload)
@@ -843,6 +903,17 @@ def _football_data_source_status(snapshot: FootballDataSnapshot) -> str:
     if snapshot.errors:
         return "football-data.org unavailable: " + "; ".join(snapshot.errors[:6])
     return "football-data.org empty: no fixtures in slate window"
+
+
+def _weather_source_status(batch) -> str:
+    if batch.forecasts and batch.errors:
+        return f"Open-Meteo partial: {len(batch.forecasts)} forecasts; {len(batch.errors)} unresolved"
+    if batch.forecasts:
+        return f"Open-Meteo: {len(batch.forecasts)} forecasts"
+    if batch.errors:
+        return "Open-Meteo unavailable: " + "; ".join(batch.errors[:3])
+    return "Open-Meteo empty: no forecasts"
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(

@@ -35,6 +35,13 @@ from odds_analyzer.sources.sporttery import (
     fetch_official_sporttery_matches,
     parse_official_sporttery,
 )
+from odds_analyzer.sources.weather import (
+    WeatherBatch,
+    WeatherSnapshot,
+    fetch_fixture_weather,
+    team_city_query,
+    weather_description,
+)
 
 __all__ = [
     "COMPETITION_CODES",
@@ -50,11 +57,14 @@ __all__ = [
     "SportteryMarket",
     "SportteryMatch",
     "SportteryOutcome",
+    "WeatherBatch",
+    "WeatherSnapshot",
     "fetch_evening_football_data",
     "fetch_evening_fixtures",
     "fetch_evening_odds_api_events",
     "fetch_odds_api_events",
     "fetch_official_sporttery_matches",
+    "fetch_fixture_weather",
     "fixture_dashboard_id",
     "get_data_source_candidates",
     "get_sources_by_purpose",
@@ -64,4 +74,6 @@ __all__ = [
     "parse_football_data_standings",
     "parse_odds_api_events",
     "parse_official_sporttery",
+    "team_city_query",
+    "weather_description",
 ]

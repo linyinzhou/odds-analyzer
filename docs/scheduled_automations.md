@@ -47,7 +47,7 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 ## Current Limitation
 
-The evening job depends on football-data.org, The Odds API, and the public Sporttery endpoint. Injuries, confirmed lineups, and weather are not connected yet; unavailable inputs are shown as missing rather than carried forward from an older query. Morning settlement requires football-data.org to publish a final score.
+The evening job depends on football-data.org, The Odds API, the public Sporttery endpoint, and Open-Meteo. Weather is matched to the football-data fixture and sampled near kickoff; unresolved locations remain missing. Injuries and confirmed lineups are not connected yet. Morning settlement requires football-data.org to publish a final score.
 
 
 ## Next Matchday Display
