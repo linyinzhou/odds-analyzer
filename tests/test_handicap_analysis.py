@@ -1,9 +1,9 @@
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone as fixed_timezone
 import json
 from pathlib import Path
 import sys
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
@@ -28,6 +28,7 @@ from odds_analyzer import (
     settle_asian_handicap,
     settle_chinese_lottery,
 )
+from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
 from odds_analyzer.sources import (
     DataSourcePurpose,
     ReliabilityTier,
@@ -125,7 +126,10 @@ class SearchPlanTest(unittest.TestCase):
 class MatchSlateWindowTest(unittest.TestCase):
     def test_build_today_slate_window_covers_afternoon_to_next_early_morning(self):
         window = build_today_slate_window(date(2026, 8, 8))
-        tz = ZoneInfo("Asia/Shanghai")
+        try:
+            tz = ZoneInfo("Asia/Shanghai")
+        except ZoneInfoNotFoundError:
+            tz = fixed_timezone(timedelta(hours=8), name="Asia/Shanghai")
 
         self.assertIsInstance(window, MatchSlateWindow)
         self.assertTrue(window.contains(datetime(2026, 8, 8, 15, 0, tzinfo=tz)))
@@ -222,6 +226,40 @@ class DashboardPrototypeTest(unittest.TestCase):
         for key in ("status", "run_type", "run_id", "commit", "branch", "actor", "updated_at"):
             self.assertIn(key, payload)
 
+class EveningSlateRefreshJobTest(unittest.TestCase):
+    def test_build_evening_slate_for_aug_22_contains_window_matches_only(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+
+        batch = build_evening_slate_batch(existing, "2026-08-22")
+        ids = {match["id"] for match in batch["current_matches"]}
+
+        self.assertEqual(batch["slate"]["date"], "2026-08-22")
+        self.assertIn("2026-08-22-hull-man-united", ids)
+        self.assertIn("2026-08-22-athletic-club-sevilla-fc", ids)
+        self.assertIn("2026-08-23-inter-milan-monza", ids)
+        self.assertIn("2026-08-22-lens-auxerre", ids)
+        self.assertNotIn("2026-08-22-arsenal-coventry", ids)
+        self.assertNotIn("2026-08-23-brighton-aston-villa", ids)
+
+    def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+
+        batch = build_evening_slate_batch(existing, "2026-08-22")
+        athletic = next(
+            match
+            for match in batch["current_matches"]
+            if match["id"] == "2026-08-22-athletic-club-sevilla-fc"
+        )
+
+        self.assertIsNone(athletic["european_odds"])
+        self.assertIsNone(athletic["asian_handicap"])
+        self.assertIsNone(athletic["chinese_lottery"])
+        self.assertEqual(athletic["prediction"]["market"], "无推荐")
+        self.assertFalse(athletic["mismatch"]["matched"])
+        self.assertNotIn(athletic["id"], {match["id"] for match in batch["checker_history"]})
+        self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
 class SportterySourceTest(unittest.TestCase):
     def test_parse_official_sporttery_supports_hhad_only_match(self):
         fixture_path = Path(__file__).resolve().parent / "fixtures" / "sporttery_official_sample.json"
@@ -268,6 +306,31 @@ class DashboardPayloadMergeTest(unittest.TestCase):
         self.assertEqual(merged["checker_history"][0]["prediction"]["confidence"], 72)
         self.assertEqual(merged["checker_history"][0]["batch_date"], "2026-08-22")
 
+    def test_replace_history_batch_removes_stale_items_for_that_batch(self):
+        existing = {
+            "slate": {"date": "2026-08-22"},
+            "current_matches": [],
+            "mismatch_history": [sample_match("old-same-batch", confidence=60, batch_date="2026-08-22")],
+            "checker_history": [
+                sample_match("old-same-batch", confidence=60, batch_date="2026-08-22"),
+                sample_match("older-batch", confidence=55, batch_date="2026-08-21"),
+            ],
+        }
+        batch = {
+            "slate": {"date": "2026-08-22"},
+            "current_matches": [],
+            "mismatch_history": [],
+            "checker_history": [sample_match("fresh", confidence=70)],
+            "replace_history_batch": True,
+        }
+
+        merged = merge_dashboard_payload(existing, batch)
+
+        self.assertEqual([item["id"] for item in merged["mismatch_history"]], [])
+        self.assertEqual(
+            [item["id"] for item in merged["checker_history"]],
+            ["fresh", "older-batch"],
+        )
     def test_same_match_in_different_batch_is_preserved(self):
         existing = {
             "slate": {"date": "2026-08-23"},

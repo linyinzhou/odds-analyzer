@@ -1,4 +1,4 @@
-const APP_VERSION = "20260822-6";
+const APP_VERSION = "20260822-7";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -33,7 +33,7 @@ const elements = {
 };
 
 async function loadDashboard() {
-  const response = await fetch(`./data/daily_matches.json?v=${APP_VERSION}`);
+  const response = await fetch(`./data/daily_matches.json?v=${APP_VERSION}-${Date.now()}`);
   const payload = await response.json();
   const normalized = normalizePayload(payload);
   state.currentMatches = normalized.currentMatches;
@@ -49,7 +49,7 @@ async function loadDashboard() {
 
 async function loadRunStatus() {
   try {
-    const response = await fetch(`./data/run_status.json?v=${APP_VERSION}`);
+    const response = await fetch(`./data/run_status.json?v=${APP_VERSION}-${Date.now()}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     renderRunStatus(await response.json());
   } catch {
@@ -141,7 +141,7 @@ function renderMatchReport(match) {
       <summary class="report-head">
         <div>
           <span>${match.competition}</span>
-          <h3>英超 ${match.home_team} vs ${match.away_team} · ${match.kickoff_time}</h3>
+          <h3>${match.competition} ${match.home_team} vs ${match.away_team} · ${match.kickoff_time}</h3>
         </div>
         <em class="tag ${match.status}">${match.signal_label}</em>
       </summary>

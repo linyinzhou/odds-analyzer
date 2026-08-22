@@ -6,12 +6,14 @@ from typing import Any
 MatchRecord = dict[str, Any]
 Payload = dict[str, Any]
 
+
 def merge_dashboard_payload(existing: Payload, batch: Payload) -> Payload:
     """Merge a generated batch into the persisted dashboard payload.
 
     The current slate is always replaced. Historical mismatch and checker lists are
     upserted by same fixture and same batch date so a rerun refreshes stale odds or
-    recommendations instead of appending duplicates.
+    recommendations instead of appending duplicates. A daily refresh can set
+    replace_history_batch to rebuild that batch while preserving older dates.
     """
 
     merged = deepcopy(existing)
@@ -23,15 +25,26 @@ def merge_dashboard_payload(existing: Payload, batch: Payload) -> Payload:
     if "next_matchday" in batch:
         merged["next_matchday"] = deepcopy(batch["next_matchday"])
 
+    existing_mismatch = existing.get("mismatch_history", [])
+    existing_checker = existing.get("checker_history", [])
+    if batch.get("replace_history_batch"):
+        existing_mismatch = without_batch(existing_mismatch, batch_date)
+        existing_checker = without_batch(existing_checker, batch_date)
+
     merged["mismatch_history"] = upsert_history(
-        existing.get("mismatch_history", []),
+        existing_mismatch,
         with_batch_date(batch.get("mismatch_history", []), batch_date),
     )
     merged["checker_history"] = upsert_history(
-        existing.get("checker_history", []),
+        existing_checker,
         with_batch_date(batch.get("checker_history", []), batch_date),
     )
     return merged
+
+
+def without_batch(items: list[MatchRecord], batch_date: str) -> list[MatchRecord]:
+    return [item for item in items if item_batch_key(item) != batch_date]
+
 
 def upsert_history(existing: list[MatchRecord], fresh: list[MatchRecord]) -> list[MatchRecord]:
     result: list[MatchRecord] = []
@@ -53,6 +66,7 @@ def upsert_history(existing: list[MatchRecord], fresh: list[MatchRecord]) -> lis
 
     return result
 
+
 def with_batch_date(items: list[MatchRecord], batch_date: str) -> list[MatchRecord]:
     dated = []
     for item in items:
@@ -61,8 +75,14 @@ def with_batch_date(items: list[MatchRecord], batch_date: str) -> list[MatchReco
         dated.append(copied)
     return dated
 
+
 def history_key(item: MatchRecord) -> tuple[str, str]:
-    return str(item.get("batch_date") or item.get("generated_at") or ""), fixture_key(item)
+    return item_batch_key(item), fixture_key(item)
+
+
+def item_batch_key(item: MatchRecord) -> str:
+    return str(item.get("batch_date") or item.get("generated_at") or "")
+
 
 def fixture_key(item: MatchRecord) -> str:
     if item.get("id"):
@@ -71,6 +91,7 @@ def fixture_key(item: MatchRecord) -> str:
     away = normalize(item.get("away_team"))
     kickoff = normalize(item.get("kickoff_time"))
     return f"{home}|{away}|{kickoff}"
+
 
 def batch_key(batch: Payload, current_matches: list[MatchRecord]) -> str:
     slate = batch.get("slate", {})
@@ -81,7 +102,7 @@ def batch_key(batch: Payload, current_matches: list[MatchRecord]) -> str:
             return str(item["batch_date"])
     return ""
 
+
 def normalize(value: Any) -> str:
     return str(value or "").strip().casefold()
-
 

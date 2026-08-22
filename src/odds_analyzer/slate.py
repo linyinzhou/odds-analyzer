@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from datetime import date, datetime, time, timedelta
-from zoneinfo import ZoneInfo
+from datetime import date, datetime, time, timedelta, timezone as fixed_timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from odds_analyzer.models import MatchSlateWindow
 
@@ -19,7 +19,12 @@ def build_today_slate_window(
 ) -> MatchSlateWindow:
     """Build the default betting-day window: afternoon today to next early morning."""
 
-    tz = ZoneInfo(timezone)
+    try:
+        tz = ZoneInfo(timezone)
+    except ZoneInfoNotFoundError:
+        if timezone != DEFAULT_TIMEZONE:
+            raise
+        tz = fixed_timezone(timedelta(hours=8), name=DEFAULT_TIMEZONE)
     starts_at = datetime.combine(target_date, time(hour=start_hour), tzinfo=tz)
     ends_at = datetime.combine(
         target_date + timedelta(days=1),
