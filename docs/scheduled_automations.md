@@ -29,3 +29,9 @@ Two local Codex cron automations keep the deployed dashboard fresh.
 
 These automations still depend on live source availability and agent-side research. A later milestone should replace this with deterministic source adapters and a repeatable data job.
 
+
+## Next Matchday Display
+
+
+ext_matchday is schedule-only: competition, fixture, and date/time. Do not add analysis or predictions until those fixtures enter current_matches on their match day.
+

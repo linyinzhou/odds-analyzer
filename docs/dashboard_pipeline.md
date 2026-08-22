@@ -77,3 +77,8 @@ The first reliable sources to wire in are:
 - Champions League fixtures should appear only from the main stage/group-or-league phase onward.
 - If a competition has no available fixtures from the current data source, write an explicit status instead of fabricating fixtures.
 
+
+## Schedule-Only Display Rule
+
+The Next Matchday panel is schedule-only. Show only competition, fixture, and date/time. Do not include analysis, odds, venues, weather, predictions, or reports there; those belong in current_matches on the actual match day.
+

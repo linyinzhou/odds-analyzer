@@ -218,7 +218,7 @@ function renderScheduleView() {
     <div class="schedule-note">
       <span>范围</span>
       <strong>五大联赛 + 欧冠正赛</strong>
-      <p>${state.nextMatchday.scope_note ?? "欧冠外围赛不纳入，从正赛阶段开始。"}</p>
+      <p>${state.nextMatchday.scope_note ?? "只显示联赛、对阵和日期；到比赛日再生成详细报告。"}</p>
     </div>
     <div class="schedule-list">
       ${competitions.map(renderCompetitionSchedule).join("") || `<p class="empty">暂无下个比赛日赛程。</p>`}
@@ -237,17 +237,17 @@ function renderCompetitionSchedule(competition) {
         </div>
         <em class="tag ${fixtures.length ? "watch" : "pending"}">${competition.matchday ?? competition.status ?? "待更新"}</em>
       </header>
-      ${fixtures.length ? `<div class="fixture-table">${fixtures.map(renderFixtureRow).join("")}</div>` : `<p class="empty">${competition.status ?? "待赛程源接入。"}</p>`}
+      ${fixtures.length ? `<div class="fixture-table">${fixtures.map((fixture) => renderFixtureRow(fixture, competition.name)).join("")}</div>` : `<p class="empty">${competition.status ?? "待赛程源接入。"}</p>`}
     </article>
   `;
 }
 
-function renderFixtureRow(fixture) {
+function renderFixtureRow(fixture, competitionName) {
   return `
     <div class="fixture-row">
-      <span>${fixture.kickoff_time}</span>
+      <span>${competitionName}</span>
       <strong>${fixture.home_team} vs ${fixture.away_team}</strong>
-      <em>${fixture.venue ?? "场地待补"}</em>
+      <em>${fixture.kickoff_time}</em>
     </div>
   `;
 }
@@ -513,6 +513,8 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
+
 
 
 
