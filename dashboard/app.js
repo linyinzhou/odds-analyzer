@@ -4,6 +4,7 @@ const state = {
   currentMatches: [],
   mismatchHistory: [],
   checkerHistory: [],
+  nextMatchday: { generated_at: null, competitions: [] },
   activeView: "detail",
   checker: {},
   pages: {
@@ -33,6 +34,7 @@ async function loadDashboard() {
   state.currentMatches = normalized.currentMatches;
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
+  state.nextMatchday = normalized.nextMatchday;
   state.checker = loadChecker();
   elements.slateDate.textContent = payload.slate.date;
   elements.slateWindow.textContent = payload.slate.window;
@@ -43,6 +45,7 @@ function normalizePayload(payload) {
   const currentMatches = payload.current_matches ?? payload.matches ?? [];
   const mismatchHistory = payload.mismatch_history ?? currentMatches.filter((match) => match.mismatch?.matched);
   const checkerHistory = payload.checker_history ?? getTopCheckerCandidates(currentMatches);
+  const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
   return {
     currentMatches,
     mismatchHistory,
@@ -204,6 +207,50 @@ function renderMismatchView() {
   bindPagination();
 }
 
+
+function renderScheduleView() {
+  const competitions = state.nextMatchday.competitions ?? [];
+  const fixtureCount = competitions.reduce((total, competition) => total + (competition.fixtures?.length ?? 0), 0);
+  elements.viewEyebrow.textContent = "Schedule";
+  elements.viewTitle.textContent = "下个比赛日";
+  elements.viewCounter.textContent = `${fixtureCount} 场`;
+  elements.viewBody.innerHTML = `
+    <div class="schedule-note">
+      <span>范围</span>
+      <strong>五大联赛 + 欧冠正赛</strong>
+      <p>${state.nextMatchday.scope_note ?? "欧冠外围赛不纳入，从正赛阶段开始。"}</p>
+    </div>
+    <div class="schedule-list">
+      ${competitions.map(renderCompetitionSchedule).join("") || `<p class="empty">暂无下个比赛日赛程。</p>`}
+    </div>
+  `;
+}
+
+function renderCompetitionSchedule(competition) {
+  const fixtures = competition.fixtures ?? [];
+  return `
+    <article class="schedule-competition">
+      <header>
+        <div>
+          <span>${competition.country ?? "欧洲"}</span>
+          <h3>${competition.name}</h3>
+        </div>
+        <em class="tag ${fixtures.length ? "watch" : "pending"}">${competition.matchday ?? competition.status ?? "待更新"}</em>
+      </header>
+      ${fixtures.length ? `<div class="fixture-table">${fixtures.map(renderFixtureRow).join("")}</div>` : `<p class="empty">${competition.status ?? "待赛程源接入。"}</p>`}
+    </article>
+  `;
+}
+
+function renderFixtureRow(fixture) {
+  return `
+    <div class="fixture-row">
+      <span>${fixture.kickoff_time}</span>
+      <strong>${fixture.home_team} vs ${fixture.away_team}</strong>
+      <em>${fixture.venue ?? "场地待补"}</em>
+    </div>
+  `;
+}
 function renderCheckerView() {
   const matches = getCheckerMatches();
   const checkerIds = new Set(matches.map((match) => match.id));
@@ -466,4 +513,6 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
+
 

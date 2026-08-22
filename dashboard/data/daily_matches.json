@@ -1572,5 +1572,349 @@
         "detail": "竞彩未返回，明确建议只落在亚盘切尔西 -0.5，客胜方向但不重仓。"
       }
     }
-  ]
+  ],
+  "next_matchday": {
+    "generated_at": "2026-08-22",
+    "scope_note": "只统计五大联赛和欧冠正赛；欧冠资格赛/外围赛/附加赛不纳入，欧冠从联赛阶段开始。时间统一按北京时间展示；无精确开球时间时标为时间待定。",
+    "sources": [
+      "Premier League / 当前英超样例批次",
+      "LALIGA official calendar 2026-2027",
+      "Lega Serie A / Sky Sport Italia fixtures",
+      "Bundesliga official Matchday 1",
+      "L'Equipe Ligue 1 calendar",
+      "UEFA Champions League 2026/27 dates"
+    ],
+    "competitions": [
+      {
+        "name": "英超",
+        "country": "英格兰",
+        "matchday": "2026/27 第 1 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "08-22 03:00",
+            "home_team": "阿森纳",
+            "away_team": "考文垂",
+            "venue": "Emirates Stadium"
+          },
+          {
+            "kickoff_time": "08-22 19:30",
+            "home_team": "赫尔城",
+            "away_team": "曼联",
+            "venue": "MKM Stadium"
+          },
+          {
+            "kickoff_time": "08-22 22:00",
+            "home_team": "埃弗顿",
+            "away_team": "水晶宫",
+            "venue": "Hill Dickinson Stadium"
+          },
+          {
+            "kickoff_time": "08-22 22:00",
+            "home_team": "伊普斯维奇",
+            "away_team": "桑德兰",
+            "venue": "Portman Road"
+          },
+          {
+            "kickoff_time": "08-22 22:00",
+            "home_team": "诺丁汉森林",
+            "away_team": "利兹联",
+            "venue": "City Ground"
+          },
+          {
+            "kickoff_time": "08-23 00:30",
+            "home_team": "布伦特福德",
+            "away_team": "热刺",
+            "venue": "Gtech Community Stadium"
+          },
+          {
+            "kickoff_time": "08-23 21:00",
+            "home_team": "布莱顿",
+            "away_team": "阿斯顿维拉",
+            "venue": "Amex Stadium"
+          },
+          {
+            "kickoff_time": "08-23 21:00",
+            "home_team": "曼城",
+            "away_team": "伯恩茅斯",
+            "venue": "Etihad Stadium"
+          },
+          {
+            "kickoff_time": "08-23 23:30",
+            "home_team": "纽卡斯尔",
+            "away_team": "利物浦",
+            "venue": "St James' Park"
+          },
+          {
+            "kickoff_time": "08-25 03:00",
+            "home_team": "富勒姆",
+            "away_team": "切尔西",
+            "venue": "Craven Cottage"
+          }
+        ]
+      },
+      {
+        "name": "西甲",
+        "country": "西班牙",
+        "matchday": "2026/27 第 2 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Athletic Club",
+            "away_team": "Sevilla FC",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Atletico Madrid",
+            "away_team": "Villarreal CF",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Real Betis",
+            "away_team": "Real Sociedad",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Elche CF",
+            "away_team": "FC Barcelona",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Espanyol",
+            "away_team": "Real Madrid",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Getafe CF",
+            "away_team": "Racing Club",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Malaga CF",
+            "away_team": "RC Deportivo",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Osasuna",
+            "away_team": "Levante UD",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Rayo Vallecano",
+            "away_team": "Alaves",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 时间待定",
+            "home_team": "Valencia CF",
+            "away_team": "Celta Vigo",
+            "venue": "待补"
+          }
+        ]
+      },
+      {
+        "name": "意甲",
+        "country": "意大利",
+        "matchday": "2026/27 第 1 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "08-23 00:30",
+            "home_team": "Inter Milan",
+            "away_team": "Monza",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 00:30",
+            "home_team": "Udinese",
+            "away_team": "Como",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Genoa",
+            "away_team": "Napoli",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Parma",
+            "away_team": "Cagliari",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-24 00:30",
+            "home_team": "Frosinone",
+            "away_team": "Juventus",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-24 00:30",
+            "home_team": "Venezia",
+            "away_team": "Lecce",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-24 02:45",
+            "home_team": "Atalanta",
+            "away_team": "Sassuolo",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-24 02:45",
+            "home_team": "Torino",
+            "away_team": "AC Milan",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-25 00:30",
+            "home_team": "Bologna",
+            "away_team": "Lazio",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-25 02:45",
+            "home_team": "Roma",
+            "away_team": "Fiorentina",
+            "venue": "待补"
+          }
+        ]
+      },
+      {
+        "name": "德甲",
+        "country": "德国",
+        "matchday": "2026/27 第 1 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "08-29 00:30",
+            "home_team": "Bayern Munich",
+            "away_team": "VfB Stuttgart",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 19:30",
+            "home_team": "Elversberg",
+            "away_team": "Bayer Leverkusen",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 19:30",
+            "home_team": "Koln",
+            "away_team": "Hoffenheim",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 19:30",
+            "home_team": "Union Berlin",
+            "away_team": "Eintracht Frankfurt",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 19:30",
+            "home_team": "Mainz",
+            "away_team": "Paderborn",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 19:30",
+            "home_team": "RB Leipzig",
+            "away_team": "Borussia Monchengladbach",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-29 22:30",
+            "home_team": "Borussia Dortmund",
+            "away_team": "Hamburger SV",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-30 19:30",
+            "home_team": "Freiburg",
+            "away_team": "Werder Bremen",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-30 21:30",
+            "home_team": "Augsburg",
+            "away_team": "Schalke",
+            "venue": "待补"
+          }
+        ]
+      },
+      {
+        "name": "法甲",
+        "country": "法国",
+        "matchday": "2026/27 第 1 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "08-22 02:45",
+            "home_team": "Marseille",
+            "away_team": "Strasbourg",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-22 23:15",
+            "home_team": "Lens",
+            "away_team": "Auxerre",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Le Mans",
+            "away_team": "Brest",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Nice",
+            "away_team": "Lorient",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Toulouse",
+            "away_team": "Lyon",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 02:45",
+            "home_team": "Troyes",
+            "away_team": "Paris FC",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 21:00",
+            "home_team": "Angers",
+            "away_team": "Lille",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-23 23:15",
+            "home_team": "Le Havre",
+            "away_team": "Monaco",
+            "venue": "待补"
+          },
+          {
+            "kickoff_time": "08-24 02:45",
+            "home_team": "Rennes",
+            "away_team": "Paris Saint-Germain",
+            "venue": "待补"
+          }
+        ]
+      },
+      {
+        "name": "欧冠",
+        "country": "欧洲",
+        "matchday": "2026/27 联赛阶段",
+        "status": "正赛抽签 2026-08-27；联赛阶段第 1 轮 2026-09-08 至 2026-09-10。当前仍是附加赛阶段，按规则不纳入赛程。",
+        "fixtures": []
+      }
+    ]
+  }
 }

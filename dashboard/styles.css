@@ -113,7 +113,10 @@ h4 {
 .report-head span,
 .mismatch-row span,
 .checker-item span,
-.checker-tools span {
+.checker-tools span,
+.schedule-note span,
+.schedule-competition span,
+.fixture-row span {
   display: block;
   color: var(--muted);
   font-size: 12px;
@@ -143,7 +146,7 @@ h4 {
 
 .view-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   padding: 8px;
 }
@@ -285,7 +288,7 @@ h4 {
 }
 
 .market-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .info-grid div,
@@ -392,7 +395,7 @@ h4 {
 
 .learning-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -548,3 +551,66 @@ h4 {
     margin-top: 8px;
   }
 }
+
+.schedule-note,
+.schedule-competition {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 14px;
+}
+
+.schedule-note {
+  margin-bottom: 12px;
+}
+
+.schedule-note p {
+  margin-top: 6px;
+  color: #d0d5dd;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.schedule-list {
+  display: grid;
+  gap: 12px;
+}
+
+.schedule-competition header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.fixture-table {
+  display: grid;
+  gap: 8px;
+}
+
+.fixture-row {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) minmax(160px, 0.4fr);
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 10px;
+}
+
+.fixture-row strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fixture-row em {
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  text-align: right;
+}
+
+

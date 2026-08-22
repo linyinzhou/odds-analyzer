@@ -17,7 +17,7 @@ This project should evolve into a GitHub-hosted football odds dashboard with a r
 |---|---|---|
 | Detail | Full readable match report | Match info, fundamentals, markets, recommendation, risks, sources |
 | Mismatch | Only matches that satisfy the mismatch rules | Reason, suggested Sporttery selection, line comparison |
-| Checker | Post-match review queue | Pre-match recommendation, pending final score, pending review result |
+| Checker | Post-match review queue | Pre-match recommendation, pending final score, pending review result |`n| Next Matchday | Upcoming fixture panel | Five major leagues plus Champions League proper; exclude Champions League qualifiers |
 
 ## Recommendation Format
 
@@ -44,7 +44,7 @@ The file is split into three lists:
 |---|---|
 | `current_matches` | Current queried slate only. Replace this list on the next daily query. |
 | `mismatch_history` | Historical matched mismatch opportunities. Append new matches first; do not clear daily. |
-| `checker_history` | Historical review queue. Append selected daily recommendations first; do not clear daily. |
+| `checker_history` | Historical review queue. Append selected daily recommendations first; do not clear daily. |`n| `next_matchday` | Upcoming fixtures for Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League proper. Replace on each evening refresh. |
 
 This is enough for GitHub Pages and for validating the UI/data model before adding scheduled data collection.
 
@@ -69,3 +69,11 @@ The first reliable sources to wire in are:
 | European odds | Paid odds API preferred; public pages only as fallback |
 | Weather | Open-Meteo or official weather API |
 | Checker result | Football-data result API or official league result feed |
+
+## Next Matchday Rules
+
+- The Next Matchday panel shows Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and UEFA Champions League proper.
+- Champions League qualifying, preliminary, and playoff rounds are excluded.
+- Champions League fixtures should appear only from the main stage/group-or-league phase onward.
+- If a competition has no available fixtures from the current data source, write an explicit status instead of fabricating fixtures.
+
