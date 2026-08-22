@@ -192,6 +192,19 @@ Handicap mismatch check:
 - If the lottery handicap is shallower than the Asian handicap and the favorite is supported by fundamentals and market structure, flag lottery handicap home + draw.
 - Example: Asian `home -0.5`, lottery `home 0`, and home side is favored by fundamentals/odds. Lottery home + draw becomes the high-coverage pair to inspect.
 
+
+## Codex Skill
+
+A local Codex skill is available at:
+
+```text
+C:\Users\zhoul\.codex\skills\football-odds-analyzer
+```
+
+Use it for repeatable football odds analysis workflows: fixture research, European odds / Asian handicap / Sporttery comparison, mismatch checks, bilingual Chinese-English reports, dashboard updates, and checker review.
+
+The skill references this repository as the implementation project and does not replace the dashboard. Match reports generated through the skill should include both Chinese and English versions unless a single language is explicitly requested.
 ## Responsible Use
 
 This project is an analysis assistant, not a guarantee of profit. Recommendations should include uncertainty, bankroll discipline, and data-quality warnings.
+
