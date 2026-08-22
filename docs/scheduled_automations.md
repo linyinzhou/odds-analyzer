@@ -30,7 +30,7 @@ Use `Run workflow` and choose:
 - `evening-report` to refresh the current slate report batch.
 - `result-review` to run the checker review path.
 
-Current limitation: the workflow validates and redeploys the dashboard payload. It is the stable manual entry point, but the real report-generation command still needs to be wired after live data source adapters can generate `dashboard/data/daily_matches.json` deterministically.
+Current limitation: the workflow validates the dashboard payload and publishes `dashboard/` to `gh-pages`. It is the stable manual entry point, but the real report-generation command still needs to be wired after live data source adapters can generate `dashboard/data/daily_matches.json` deterministically.
 ## Data Rules
 
 - `current_matches` is replaced on every evening refresh.

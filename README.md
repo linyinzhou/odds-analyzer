@@ -175,7 +175,7 @@ The workflow accepts:
 - `slate_date`: optional Beijing-time slate date, `YYYY-MM-DD`.
 - `note`: optional operator note.
 
-Until deterministic live data adapters are connected, the manual workflow validates and deploys the current dashboard payload. The report-generation command should be wired into this workflow once fixture, odds, Sporttery, and result adapters can produce `dashboard/data/daily_matches.json` without manual research.
+Until deterministic live data adapters are connected, the manual workflow validates the current dashboard payload and publishes `dashboard/` to the `gh-pages` branch. The report-generation command should be wired into this workflow once fixture, odds, Sporttery, and result adapters can produce `dashboard/data/daily_matches.json` without manual research.
 ## Run Tests
 
 ```bash

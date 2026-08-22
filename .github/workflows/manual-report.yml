@@ -21,9 +21,7 @@ on:
         type: string
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: manual-report-refresh
@@ -31,13 +29,12 @@ concurrency:
 
 jobs:
   refresh:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -57,14 +54,10 @@ jobs:
       - name: Run tests
         run: PYTHONPATH=src python -m unittest discover -s tests
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      - name: Publish dashboard to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git subtree split --prefix dashboard -b gh-pages-deploy
+          git push -f origin gh-pages-deploy:gh-pages
 
-      - name: Upload dashboard
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dashboard
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
