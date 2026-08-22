@@ -8,7 +8,7 @@ const state = {
   adhocHistory: [],
   fallbackRequests: [],
   nextMatchday: { generated_at: null, competitions: [] },
-  analysisCompetitionCodes: ["PL"],
+  analysisCompetitionCodes: ["PL", "PD", "SA"],
   activeView: "detail",
   checker: {},
   pages: {
@@ -105,7 +105,7 @@ function normalizePayload(payload) {
 function normalizeAnalysisCompetitionCodes(codes) {
   const supported = ["PL", "PD", "SA", "BL1", "FL1", "CL"];
   const normalized = Array.isArray(codes) ? codes.filter((code) => supported.includes(code)) : [];
-  return normalized.length ? normalized : ["PL"];
+  return normalized.length ? normalized : ["PL", "PD", "SA"];
 }
 
 function matchInAnalysisScope(match, codes) {
@@ -211,6 +211,7 @@ function renderMatchReport(match) {
         </div>
 
         ${renderSideBySide(match)}
+        ${renderTeamNews(match)}
         ${renderMarkets(match)}
 
         <section class="recommendation">
@@ -253,6 +254,40 @@ function renderSideBySide(match) {
       </table>
     </section>
   `;
+}
+
+function renderTeamNews(match) {
+  if (!match.team_news) return "";
+  return `
+    <section>
+      <h4>伤停与官方阵容</h4>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>${match.home_team}</th>
+            <th>${match.away_team}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${formatTeamNewsSide(match.team_news.home)}</td>
+            <td>${formatTeamNewsSide(match.team_news.away)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
+function formatTeamNewsSide(side) {
+  if (!side) return "本次查询未取得";
+  const absences = side.absences?.length
+    ? `确认缺阵：${side.absences.map((item) => `${item.player}（${item.reason}）`).join("、")}`
+    : "API 未返回已确认缺阵";
+  const lineup = side.lineup
+    ? `官方首发：${side.lineup.formation ?? "阵型待定"}；${side.lineup.starting_xi.join("、")}`
+    : "本次查询未取得官方首发";
+  return `${absences}<br>${lineup}`;
 }
 
 function renderMarkets(match) {

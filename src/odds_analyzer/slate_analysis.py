@@ -395,7 +395,17 @@ def _checker_text(prediction: dict[str, Any]) -> str:
 
 
 def _risks(match: dict[str, Any], prediction: dict[str, Any]) -> list[str]:
-    risks = ["赔率会临场变化，本报告只使用本次查询快照。", "官方首发和最新伤停尚未接入时，不作为已确认事实。"]
+    risks = ["赔率会临场变化，本报告只使用本次查询快照。"]
+    team_news = match.get("team_news") or {}
+    if team_news:
+        sides = [team_news.get("home") or {}, team_news.get("away") or {}]
+        absence_count = sum(len(side.get("absences") or []) for side in sides)
+        lineup_count = sum(1 for side in sides if side.get("lineup"))
+        risks.append(
+            f"API-Football 本次返回 {absence_count} 条确认缺阵，{lineup_count}/2 队官方首发；空结果不等同于确定无人缺阵。"
+        )
+    else:
+        risks.append("本次未取得已确认伤停和官方首发，不将预测阵容作为事实。")
     weather = match.get("weather_snapshot") or {}
     if (weather.get("precipitation_probability") or 0) >= 50:
         risks.append(f"开赛时降水概率约 {weather['precipitation_probability']:.0f}%，需关注湿滑场地对节奏的影响。")

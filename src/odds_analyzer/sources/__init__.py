@@ -1,5 +1,14 @@
 """Data source registry and adapters."""
 
+from odds_analyzer.sources.api_football import (
+    ApiFootballMatchNews,
+    ApiFootballNewsBatch,
+    ConfirmedLineup,
+    PlayerAbsence,
+    TeamNews,
+    fetch_evening_api_football_news,
+)
+
 from odds_analyzer.sources.football_data import (
     COMPETITION_CODES,
     FootballDataFixture,
@@ -44,6 +53,9 @@ from odds_analyzer.sources.weather import (
 )
 
 __all__ = [
+    "ApiFootballMatchNews",
+    "ApiFootballNewsBatch",
+    "ConfirmedLineup",
     "COMPETITION_CODES",
     "DataSourceCandidate",
     "DataSourcePurpose",
@@ -53,12 +65,15 @@ __all__ = [
     "FootballDataStanding",
     "LEAGUE_SPORT_KEYS",
     "OddsApiEvent",
+    "PlayerAbsence",
     "ReliabilityTier",
     "SportteryMarket",
     "SportteryMatch",
     "SportteryOutcome",
+    "TeamNews",
     "WeatherBatch",
     "WeatherSnapshot",
+    "fetch_evening_api_football_news",
     "fetch_evening_football_data",
     "fetch_evening_fixtures",
     "fetch_evening_odds_api_events",

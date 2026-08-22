@@ -11,9 +11,9 @@ GitHub Actions runs both the evening refresh and the morning result settlement.
 
 ## Analysis Scope
 
-The scheduled evening refresh defaults to `PL`, so only Premier League matches enter Detail, Mismatch, and Checker. The Next Matchday schedule remains the full five-major-leagues plus Champions League view.
+The scheduled evening refresh defaults to `PL,PD,SA`, so Premier League, La Liga, and Serie A matches enter Detail, Mismatch, and Checker. The Next Matchday schedule remains the full five-major-leagues plus Champions League view.
 
-Use the repository variable `ANALYSIS_COMPETITIONS` for the scheduled default, or the manual `analysis_competitions` input for a one-run override. Enable all supported competitions with:
+Use the manual `analysis_competitions` input for a one-run override. Enable all supported competitions with:
 
 ```text
 PL,PD,SA,BL1,FL1,CL
@@ -61,7 +61,7 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 ## Current Limitation
 
-The evening job depends on football-data.org, The Odds API, the public Sporttery endpoint, and Open-Meteo. Weather is matched to the football-data fixture and sampled near kickoff; unresolved locations remain missing. Injuries and confirmed lineups are not connected yet. Morning settlement requires football-data.org to publish a final score.
+The evening job depends on football-data.org, The Odds API, the public Sporttery endpoint, and Open-Meteo. Weather is matched to the football-data fixture and sampled near kickoff; unresolved locations remain missing. API-Football is optional: it provides fixture-linked injury/suspension reports and confirmed lineups, with lineup calls limited to matches within 90 minutes of kickoff. An empty injury response is displayed as unconfirmed, not as proof that no player is absent. Morning settlement requires football-data.org to publish a final score.
 
 Every report refresh now rebuilds structured `fallback_requests` for missing fundamentals, European odds, Asian handicap, and Sporttery data. Daily refreshes replace only daily-scope tasks and preserve ad hoc tasks. Weather and unpublished lineup data do not create fallback tasks. The workflow writes the pending count and fields to the GitHub Actions step summary.
 

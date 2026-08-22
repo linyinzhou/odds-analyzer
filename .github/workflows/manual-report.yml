@@ -101,7 +101,8 @@ jobs:
           SLATE_DATE: ${{ inputs.slate_date }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || vars.ANALYSIS_COMPETITIONS || 'PL' }}
+          API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
+          ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || 'PL,PD,SA' }}
       - name: Review checker results
         if: ${{ github.event.schedule == '0 0 * * *' || inputs.run_type == 'result-review' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.review_results --date "${SLATE_DATE}"
@@ -171,7 +172,7 @@ jobs:
               "actor": os.environ["GITHUB_ACTOR"],
               "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
               "note": os.environ.get("RUN_NOTE", ""),
-              "analysis_competitions": os.environ.get("RUN_ANALYSIS_COMPETITIONS", "PL"),
+              "analysis_competitions": os.environ.get("RUN_ANALYSIS_COMPETITIONS", "PL,PD,SA"),
           }
           with open("dashboard/data/run_status.json", "w", encoding="utf-8") as fh:
               json.dump(status, fh, ensure_ascii=False, indent=2)
@@ -181,7 +182,7 @@ jobs:
           RUN_TYPE: ${{ github.event.schedule == '0 0 * * *' && 'result-review' || github.event.schedule == '0 10 * * *' && 'evening-report' || inputs.run_type }}
           RUN_TRIGGER: ${{ github.event_name }}
           RUN_NOTE: ${{ inputs.note }}
-          RUN_ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || vars.ANALYSIS_COMPETITIONS || 'PL' }}
+          RUN_ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || 'PL,PD,SA' }}
 
       - name: Publish dashboard to gh-pages
         run: |

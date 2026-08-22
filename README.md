@@ -161,12 +161,13 @@ The GitHub Pages workflow in `.github/workflows/pages.yml` deploys the `dashboar
 
 ## Analysis Competition Switch
 
-Daily reports default to Premier League only. Detail, mismatch, and checker data are generated for the enabled competition codes, while Next Matchday continues to show all five major leagues and the Champions League proper.
+Daily reports default to Premier League, La Liga, and Serie A. Detail, mismatch, and checker data are generated for the enabled competition codes, while Next Matchday continues to show all five major leagues and the Champions League proper.
 
-Set the GitHub Actions repository variable `ANALYSIS_COMPETITIONS` or use the manual workflow input `analysis_competitions`:
+Use the manual workflow input `analysis_competitions` to override the scheduled default:
 
 ```text
 PL
+PL,PD,SA
 PL,PD,SA,BL1,FL1,CL
 ```
 
@@ -199,6 +200,7 @@ The automated refresh reads optional provider keys from environment variables or
 
 - `THE_ODDS_API_KEY`: European 1X2 odds and spreads from The Odds API.
 - `FOOTBALL_DATA_API_KEY`: fixtures, standings, venue, matchday, and recent result form from football-data.org.
+- `API_FOOTBALL_API_KEY`: fixture-linked injuries and suspensions from API-Football, plus confirmed lineups queried only within 90 minutes of kickoff.
 
 If a key is missing, the refresh skips that provider and records the skipped source in `dashboard/data/daily_matches.json`; it does not fabricate missing data.
 

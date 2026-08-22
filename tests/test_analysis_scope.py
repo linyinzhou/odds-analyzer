@@ -16,14 +16,14 @@ from odds_analyzer.jobs.refresh_evening_slate import (
     parse_analysis_competitions,
     refresh_evening_slate,
 )
-from odds_analyzer.sources import FootballDataSnapshot, parse_football_data_fixtures
+from odds_analyzer.sources import ApiFootballNewsBatch, FootballDataSnapshot, parse_football_data_fixtures
 
 
 class AnalysisScopeTest(unittest.TestCase):
-    def test_default_is_premier_league_and_all_enables_every_supported_code(self):
-        self.assertEqual(parse_analysis_competitions(None), ("PL",))
-        self.assertEqual(parse_analysis_competitions(""), ("PL",))
-        self.assertEqual(parse_analysis_competitions("invalid"), ("PL",))
+    def test_default_is_premier_league_la_liga_serie_a_and_all_enables_every_supported_code(self):
+        self.assertEqual(parse_analysis_competitions(None), ("PL", "PD", "SA"))
+        self.assertEqual(parse_analysis_competitions(""), ("PL", "PD", "SA"))
+        self.assertEqual(parse_analysis_competitions("invalid"), ("PL", "PD", "SA"))
         self.assertEqual(parse_analysis_competitions("PL,PD,PL"), ("PL", "PD"))
         self.assertEqual(parse_analysis_competitions("all"), ALLOWED_ANALYSIS_COMPETITIONS)
 
@@ -75,7 +75,7 @@ class AnalysisScopeTest(unittest.TestCase):
         self.assertIn("西甲", schedule_names)
         self.assertIn("欧冠", schedule_names)
 
-    def test_refresh_limits_source_calls_to_premier_league_by_default(self):
+    def test_refresh_limits_source_calls_to_enabled_default_leagues(self):
         project_root = Path(__file__).resolve().parents[1]
         existing = (project_root / "dashboard" / "data" / "daily_matches.json").read_text(encoding="utf-8")
         empty_snapshot = FootballDataSnapshot(fixtures=(), standings={}, forms={})
@@ -86,7 +86,11 @@ class AnalysisScopeTest(unittest.TestCase):
             with (
                 patch.dict(
                     os.environ,
-                    {"FOOTBALL_DATA_API_KEY": "football-key", "THE_ODDS_API_KEY": "odds-key"},
+                    {
+                        "FOOTBALL_DATA_API_KEY": "football-key",
+                        "THE_ODDS_API_KEY": "odds-key",
+                        "API_FOOTBALL_API_KEY": "news-key",
+                    },
                     clear=True,
                 ),
                 patch(
@@ -98,6 +102,14 @@ class AnalysisScopeTest(unittest.TestCase):
                     return_value=[],
                 ) as odds_api,
                 patch(
+                    "odds_analyzer.jobs.refresh_evening_slate.fetch_evening_api_football_news",
+                    return_value=ApiFootballNewsBatch(
+                        matches=(),
+                        requests_made=0,
+                        remaining_requests=100,
+                    ),
+                ) as api_football,
+                patch(
                     "odds_analyzer.jobs.refresh_evening_slate.fetch_official_sporttery_matches",
                     return_value=[],
                 ),
@@ -107,12 +119,17 @@ class AnalysisScopeTest(unittest.TestCase):
         football_data.assert_called_once_with(
             "football-key",
             "2026-08-22",
-            competition_codes=("PL",),
+            competition_codes=("PL", "PD", "SA"),
         )
         odds_api.assert_called_once_with(
             "odds-key",
             "2026-08-22",
-            sport_keys=("soccer_epl",),
+            sport_keys=("soccer_epl", "soccer_spain_la_liga", "soccer_italy_serie_a"),
+        )
+        api_football.assert_called_once_with(
+            "news-key",
+            "2026-08-22",
+            competition_codes=("PL", "PD", "SA"),
         )
     def test_workflow_and_frontend_expose_the_scope_switch(self):
         project_root = Path(__file__).resolve().parents[1]
@@ -120,10 +137,12 @@ class AnalysisScopeTest(unittest.TestCase):
         app = (project_root / "dashboard" / "app.js").read_text(encoding="utf-8")
 
         self.assertIn("analysis_competitions:", workflow)
-        self.assertIn("vars.ANALYSIS_COMPETITIONS", workflow)
-        self.assertIn("|| 'PL'", workflow)
-        self.assertIn('analysisCompetitionCodes: ["PL"]', app)
+        self.assertNotIn("vars.ANALYSIS_COMPETITIONS", workflow)
+        self.assertIn("|| 'PL,PD,SA'", workflow)
+        self.assertIn('analysisCompetitionCodes: ["PL", "PD", "SA"]', app)
+        self.assertIn('normalized.length ? normalized : ["PL", "PD", "SA"]', app)
         self.assertIn("matchInAnalysisScope", app)
+        self.assertIn("renderTeamNews", app)
 
 
 if __name__ == "__main__":

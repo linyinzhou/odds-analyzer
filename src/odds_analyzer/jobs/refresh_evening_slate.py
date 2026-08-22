@@ -11,11 +11,14 @@ from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.fallback_queue import build_fallback_requests
 from odds_analyzer.slate_analysis import analyze_slate_matches
 from odds_analyzer.sources import (
+    ApiFootballMatchNews,
+    ApiFootballNewsBatch,
     COMPETITION_CODES,
     FootballDataSnapshot,
     LEAGUE_SPORT_KEYS,
     OddsApiEvent,
     SportteryMatch,
+    fetch_evening_api_football_news,
     fetch_evening_football_data,
     fetch_evening_odds_api_events,
     fetch_fixture_weather,
@@ -28,7 +31,7 @@ from odds_analyzer.sources import (
 BEIJING = timezone(timedelta(hours=8), name="Asia/Shanghai")
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PAYLOAD_PATH = PROJECT_ROOT / "dashboard" / "data" / "daily_matches.json"
-DEFAULT_ANALYSIS_COMPETITIONS = ("PL",)
+DEFAULT_ANALYSIS_COMPETITIONS = ("PL", "PD", "SA")
 ALLOWED_ANALYSIS_COMPETITIONS = tuple(COMPETITION_CODES.values())
 COMPETITION_LABEL_BY_CODE = {code: label for label, code in COMPETITION_CODES.items()}
 SPORT_KEY_BY_COMPETITION = {
@@ -68,6 +71,7 @@ TEAM_ALIASES = {
     "Tottenham Hotspur": "热刺",
     "Tottenham Hotspur FC": "热刺",
     "Athletic Club": "毕尔巴鄂",
+    "Athletic Bilbao": "毕尔巴鄂",
     "Sevilla FC": "塞维利亚",
     "Valencia CF": "巴伦西亚",
     "Celta Vigo": "塞尔塔",
@@ -77,6 +81,7 @@ TEAM_ALIASES = {
     "Real Madrid": "皇马",
     "Real Madrid CF": "皇马",
     "Inter Milan": "国际米兰",
+    "Inter": "国际米兰",
     "FC Internazionale Milano": "国际米兰",
     "Monza": "蒙扎",
     "AC Monza": "蒙扎",
@@ -423,6 +428,65 @@ def _enrich_with_weather(matches: list[dict], forecasts: dict[int, object]) -> l
     return enriched
 
 
+def _enrich_with_api_football_news(
+    matches: list[dict], news_matches: list[ApiFootballMatchNews]
+) -> list[dict]:
+    index = {_api_football_news_key(item): item for item in news_matches}
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        news = index.get(_dashboard_match_key(copied))
+        if news is None:
+            enriched.append(copied)
+            continue
+        copied["team_news"] = {
+            "source": "API-Football",
+            "fixture_id": news.fixture_id,
+            "queried_at": news.queried_at,
+            "home": _team_news_payload(news.home),
+            "away": _team_news_payload(news.away),
+        }
+        sources = list(copied.get("sources", []))
+        if "API-Football" not in sources:
+            sources.append("API-Football")
+        copied["sources"] = sources
+        enriched.append(copied)
+    return enriched
+
+
+def _api_football_news_key(news: ApiFootballMatchNews) -> tuple[str, str, str, str]:
+    return (
+        _football_data_league_key(news.competition_code),
+        _kickoff_key(news.kickoff_time),
+        _normalize_team(news.home.team_name),
+        _normalize_team(news.away.team_name),
+    )
+
+
+def _team_news_payload(team) -> dict:
+    lineup = team.lineup
+    return {
+        "team_id": team.team_id,
+        "team_name": team.team_name,
+        "absences": [
+            {
+                "player": item.player_name,
+                "type": item.kind,
+                "reason": item.reason,
+            }
+            for item in team.absences
+        ],
+        "lineup": (
+            {
+                "status": "confirmed",
+                "formation": lineup.formation,
+                "starting_xi": list(lineup.starting_xi),
+            }
+            if lineup is not None
+            else None
+        ),
+    }
+
 def _weather_value(value: float | None, suffix: str) -> str:
     return "待补" if value is None else f"{value:.0f}{suffix}"
 
@@ -697,19 +761,36 @@ def _attach_bilingual_reports(matches: list[dict]) -> list[dict]:
         chinese_lottery = "已取得" if copied.get("chinese_lottery") else "未取得"
         european = "已取得" if copied.get("european_odds") else "未取得"
         asian = "已取得" if copied.get("asian_handicap") else "未取得"
+        team_news_zh, team_news_en = _team_news_report_status(copied)
         copied["report_zh"] = (
             f"{home} vs {away}，开球：{kickoff}。欧赔{european}、亚盘{asian}、竞彩{chinese_lottery}。"
+            f"{team_news_zh}。"
             f"{copied.get('market_read', '市场解读待补')} 预测：{market} {pick}（信心 {confidence}%）。"
         )
         copied["report_en"] = (
             f"{home} vs {away}, kickoff {kickoff}. Query-time snapshot: European 1X2 {european}, "
             f"Asian handicap {asian}, Sporttery {chinese_lottery}. "
+            f"{team_news_en}. "
             f"{copied.get('market_read_en', 'Market read unavailable.')} "
             f"Prediction: {prediction.get('market_en', market)} {prediction.get('pick_en', pick)} "
             f"(confidence {confidence}%)."
         )
         reports.append(copied)
     return reports
+
+def _team_news_report_status(match: dict) -> tuple[str, str]:
+    news = match.get("team_news") or {}
+    if not news:
+        return "伤停与官方首发未取得", "Injuries and confirmed lineups unavailable"
+    sides = [news.get("home") or {}, news.get("away") or {}]
+    absence_count = sum(len(side.get("absences") or []) for side in sides)
+    lineup_count = sum(1 for side in sides if side.get("lineup"))
+    return (
+        f"API-Football 返回 {absence_count} 条确认缺阵，{lineup_count}/2 队官方首发",
+        f"API-Football returned {absence_count} confirmed absences and official lineups for {lineup_count}/2 teams",
+    )
+
+
 def _dedupe_fixtures(fixtures: list[dict]) -> list[dict]:
     seen = set()
     result = []
@@ -793,6 +874,8 @@ def build_evening_slate_batch(
     football_data_source: str = "not requested",
     weather_forecasts: dict[int, object] | None = None,
     weather_source: str = "not requested",
+    api_football_news: list[ApiFootballMatchNews] | None = None,
+    team_news_source: str = "not requested",
     analysis_competitions: tuple[str, ...] = ALLOWED_ANALYSIS_COMPETITIONS,
 ) -> dict:
     current_by_id = {
@@ -815,6 +898,8 @@ def build_evening_slate_batch(
         current_matches = _enrich_with_football_data(current_matches, football_data_snapshot)
     if weather_forecasts:
         current_matches = _enrich_with_weather(current_matches, weather_forecasts)
+    if api_football_news:
+        current_matches = _enrich_with_api_football_news(current_matches, api_football_news)
     if sporttery_matches:
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
@@ -849,6 +934,7 @@ def build_evening_slate_batch(
             "odds_api_source": odds_api_source,
             "football_data_source": football_data_source,
             "weather_source": weather_source,
+            "team_news_source": team_news_source,
             "analysis_competitions": list(analysis_competitions),
             "analysis_scope": _analysis_scope_label(analysis_competitions),
         },
@@ -913,6 +999,22 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     else:
         weather_forecasts = {}
         weather_source = "Open-Meteo skipped: no football-data fixtures"
+    api_football_key = os.environ.get("API_FOOTBALL_API_KEY", "").strip()
+    if api_football_key:
+        try:
+            api_football_batch = fetch_evening_api_football_news(
+                api_football_key,
+                slate_date,
+                competition_codes=analysis_competitions,
+            )
+            api_football_news = list(api_football_batch.matches)
+            team_news_source = _api_football_source_status(api_football_batch)
+        except Exception as exc:
+            api_football_news = []
+            team_news_source = f"API-Football unavailable: {type(exc).__name__}"
+    else:
+        api_football_news = []
+        team_news_source = "API-Football skipped: missing API_FOOTBALL_API_KEY"
     try:
         sporttery_matches = fetch_official_sporttery_matches(slate_date)
         sporttery_source = "Sporttery official"
@@ -950,6 +1052,8 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         football_data_source=football_data_source,
         weather_forecasts=weather_forecasts,
         weather_source=weather_source,
+        api_football_news=api_football_news,
+        team_news_source=team_news_source,
         analysis_competitions=analysis_competitions,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
@@ -977,6 +1081,20 @@ def _weather_source_status(batch) -> str:
         return "Open-Meteo unavailable: " + "; ".join(batch.errors[:3])
     return "Open-Meteo empty: no forecasts"
 
+
+def _api_football_source_status(batch: ApiFootballNewsBatch) -> str:
+    quota = (
+        f"; remaining {batch.remaining_requests}"
+        if batch.remaining_requests is not None
+        else ""
+    )
+    if batch.matches and batch.errors:
+        return f"API-Football partial: {len(batch.matches)} fixtures; {len(batch.errors)} errors{quota}"
+    if batch.matches:
+        return f"API-Football: {len(batch.matches)} fixtures{quota}"
+    if batch.errors:
+        return "API-Football unavailable: " + "; ".join(batch.errors[:3])
+    return f"API-Football empty: no fixtures{quota}"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
