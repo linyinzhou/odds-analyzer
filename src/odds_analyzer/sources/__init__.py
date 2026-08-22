@@ -10,6 +10,7 @@ from odds_analyzer.sources.football_data import (
     fixture_dashboard_id,
     parse_football_data_fixtures,
     parse_football_data_forms,
+    parse_football_data_standing_forms,
     parse_football_data_standings,
 )
 from odds_analyzer.sources.odds_api import (
@@ -57,6 +58,7 @@ __all__ = [
     "get_sources_by_purpose",
     "parse_football_data_fixtures",
     "parse_football_data_forms",
+    "parse_football_data_standing_forms",
     "parse_football_data_standings",
     "parse_odds_api_events",
     "parse_official_sporttery",

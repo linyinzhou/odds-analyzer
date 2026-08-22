@@ -4,6 +4,7 @@ from io import BytesIO
 import json
 from pathlib import Path
 import sys
+from unittest.mock import patch
 from urllib.error import HTTPError
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -34,6 +35,7 @@ from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
 from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
     DataSourcePurpose,
+    fetch_evening_football_data,
     parse_football_data_standings,
     parse_football_data_forms,
     parse_football_data_fixtures,
@@ -437,6 +439,76 @@ class FootballDataSourceTest(unittest.TestCase):
         self.assertEqual(fixtures[0].venue, "Goodison Park")
         self.assertEqual(standings[62].position, 8)
         self.assertEqual(forms[62].results, ("W", "D"))
+
+    def test_fetch_uses_one_fixture_request_and_only_active_standings(self):
+        fixture_payload = {
+            "matches": [
+                {
+                    "id": 1001,
+                    "competition": {"code": "PL", "name": "Premier League"},
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "TIMED",
+                    "matchday": 1,
+                    "stage": "REGULAR_SEASON",
+                    "homeTeam": {"id": 62, "name": "Everton FC"},
+                    "awayTeam": {"id": 354, "name": "Crystal Palace FC"},
+                }
+            ]
+        }
+        standing_payload = {
+            "standings": [
+                {
+                    "type": "TOTAL",
+                    "table": [
+                        {
+                            "position": 8,
+                            "team": {"id": 62, "name": "Everton FC"},
+                            "playedGames": 10,
+                            "won": 4,
+                            "draw": 3,
+                            "lost": 3,
+                            "goalsFor": 14,
+                            "goalsAgainst": 12,
+                            "goalDifference": 2,
+                            "points": 15,
+                            "form": "W,D,L,W,W",
+                        }
+                    ],
+                }
+            ]
+        }
+
+        def fake_get_json(path, api_key, query, timeout):
+            self.assertEqual(api_key, "test-key")
+            if path == "/matches":
+                self.assertEqual(
+                    query,
+                    {
+                        "dateFrom": "2026-08-22",
+                        "dateTo": "2026-08-23",
+                        "competitions": "PL,PD,SA,BL1,FL1,CL",
+                    },
+                )
+                return fixture_payload
+            if path == "/competitions/PL/standings":
+                return standing_payload
+            self.fail(f"Unexpected football-data request: {path}")
+
+        with patch(
+            "odds_analyzer.sources.football_data._get_json",
+            side_effect=fake_get_json,
+        ) as get_json:
+            snapshot = fetch_evening_football_data(
+                "test-key",
+                "2026-08-22",
+                competition_codes=("PL", "PD", "SA", "BL1", "FL1", "CL"),
+            )
+
+        self.assertEqual(get_json.call_count, 2)
+        self.assertEqual(len(snapshot.fixtures), 1)
+        self.assertEqual(snapshot.standings[62].position, 8)
+        self.assertEqual(snapshot.forms[62].results, ("W", "D", "L", "W", "W"))
+        self.assertEqual(snapshot.errors, ())
 
     def test_football_data_snapshot_enriches_evening_batch_without_prediction(self):
         existing = {"current_matches": [], "next_matchday": {"competitions": []}}

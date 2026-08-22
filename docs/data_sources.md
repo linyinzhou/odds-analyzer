@@ -95,4 +95,5 @@ Current API progress:
 
 - `src/odds_analyzer/sources/football_data.py` can parse and fetch football-data.org fixtures, standings, and recent finished-match form.
 - Manual/evening refresh reads `FOOTBALL_DATA_API_KEY` and enriches the current slate with venue, round, ranking, points, goal difference, and recent W/D/L form when available.
+- The adapter batches the evening fixture query and requests standings only for competitions active in the slate, keeping the worst case at seven requests per refresh.
 - Missing API tokens or provider errors are recorded in `slate.football_data_source`; no missing fundamentals are fabricated.

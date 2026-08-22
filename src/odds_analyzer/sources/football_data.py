@@ -94,52 +94,57 @@ def fetch_evening_football_data(
         hour=18, minute=0, second=0, microsecond=0, tzinfo=BEIJING
     )
     end = start + timedelta(hours=12)
-    date_from = start.date().isoformat()
-    date_to = end.date().isoformat()
+    utc_start = start.astimezone(timezone.utc)
+    utc_end = end.astimezone(timezone.utc)
+    date_from = utc_start.date().isoformat()
+    date_to = (utc_end.date() + timedelta(days=1)).isoformat()
 
     fixtures: list[FootballDataFixture] = []
     standings: dict[int, FootballDataStanding] = {}
-    finished_matches: list[dict[str, Any]] = []
+    forms: dict[int, FootballDataForm] = {}
     errors: list[str] = []
+    requested_codes = set(competition_codes)
 
+    try:
+        fixture_payload = _get_json(
+            "/matches",
+            api_key,
+            {
+                "dateFrom": date_from,
+                "dateTo": date_to,
+                "competitions": ",".join(competition_codes),
+            },
+            timeout,
+        )
+        fixtures.extend(
+            fixture
+            for fixture in parse_football_data_fixtures(fixture_payload, "")
+            if fixture.competition_code in requested_codes
+            and start <= _parse_utc(fixture.utc_date).astimezone(BEIJING) < end
+        )
+    except Exception as exc:
+        return FootballDataSnapshot(
+            fixtures=(),
+            standings={},
+            forms={},
+            errors=(f"matches {_source_error(exc)}",),
+        )
+
+    active_codes = {fixture.competition_code for fixture in fixtures}
     for code in competition_codes:
-        try:
-            fixture_payload = _get_json(
-                f"/competitions/{code}/matches",
-                api_key,
-                {"dateFrom": date_from, "dateTo": date_to},
-                timeout,
-            )
-            fixtures.extend(
-                fixture
-                for fixture in parse_football_data_fixtures(fixture_payload, code)
-                if start <= _parse_utc(fixture.utc_date).astimezone(BEIJING) < end
-            )
-        except Exception as exc:
-            errors.append(f"{code} matches {_source_error(exc)}")
+        if code not in active_codes:
             continue
-
         try:
             standing_payload = _get_json(f"/competitions/{code}/standings", api_key, {}, timeout)
             standings.update(parse_football_data_standings(standing_payload))
+            forms.update(parse_football_data_standing_forms(standing_payload))
         except Exception as exc:
             errors.append(f"{code} standings {_source_error(exc)}")
-
-        try:
-            finished_payload = _get_json(
-                f"/competitions/{code}/matches",
-                api_key,
-                {"status": "FINISHED"},
-                timeout,
-            )
-            finished_matches.extend(finished_payload.get("matches") or [])
-        except Exception as exc:
-            errors.append(f"{code} finished {_source_error(exc)}")
 
     return FootballDataSnapshot(
         fixtures=tuple(fixtures),
         standings=standings,
-        forms=parse_football_data_forms(finished_matches),
+        forms=forms,
         errors=tuple(errors),
     )
 
@@ -178,19 +183,8 @@ def parse_football_data_fixtures(
 
 
 def parse_football_data_standings(payload: dict[str, Any]) -> dict[int, FootballDataStanding]:
-    total = next(
-        (
-            standing
-            for standing in payload.get("standings") or []
-            if standing.get("type") == "TOTAL"
-        ),
-        None,
-    )
-    if not total:
-        return {}
-
     standings = {}
-    for row in total.get("table") or []:
+    for row in _total_standing_rows(payload):
         team = row.get("team") or {}
         team_id = _int(team.get("id"))
         if team_id is None:
@@ -209,6 +203,24 @@ def parse_football_data_standings(payload: dict[str, Any]) -> dict[int, Football
             points=_int(row.get("points")) or 0,
         )
     return standings
+
+
+def parse_football_data_standing_forms(
+    payload: dict[str, Any], limit: int = 5
+) -> dict[int, FootballDataForm]:
+    forms = {}
+    for row in _total_standing_rows(payload):
+        team_id = _int((row.get("team") or {}).get("id"))
+        if team_id is None:
+            continue
+        results = tuple(
+            result
+            for result in re.split(r"[\s,;|-]+", _text(row.get("form")).upper())
+            if result in {"W", "D", "L"}
+        )[:limit]
+        if results:
+            forms[team_id] = FootballDataForm(team_id=team_id, results=results)
+    return forms
 
 
 def parse_football_data_forms(matches: list[dict[str, Any]], limit: int = 5) -> dict[int, FootballDataForm]:
@@ -286,6 +298,12 @@ def _text(value: Any) -> str:
 def _text_or_none(value: Any) -> str | None:
     text = _text(value)
     return text or None
+
+
+def _total_standing_rows(payload: dict[str, Any]):
+    for standing in payload.get("standings") or []:
+        if standing.get("type") == "TOTAL":
+            yield from standing.get("table") or []
 
 
 def _source_error(exc: Exception) -> str:
