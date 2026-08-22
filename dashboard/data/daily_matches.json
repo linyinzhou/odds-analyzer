@@ -242,15 +242,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
-          "draw": 3.15,
-          "away": 3
+          "home": 2.33,
+          "draw": 3.05,
+          "away": 2.7
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 5.4,
+          "draw": 3.95,
+          "away": 1.45
         }
       },
       "fundamentals": [
@@ -263,10 +263,10 @@
           "away": "桑德兰不败或一球小负路径都很清晰。"
         }
       ],
-      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1，整数盘明显偏深。",
+      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。",
       "mismatch": {
         "matched": true,
-        "reason": "欧盘均势、亚盘平手，不支持伊普斯维奇赢 2 球；竞彩主让 1 形成错位。",
+        "reason": "竞彩标准盘略偏主队，但亚盘仍在平手附近，不支持伊普斯维奇稳定赢 2 球；竞彩主让 1 形成错位。",
         "pick": "竞彩伊普斯维奇 -1：让平 + 让负"
       },
       "recommendation": {
@@ -315,15 +315,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.33,
-          "draw": 3.05,
-          "away": 2.7
+          "home": 2.09,
+          "draw": 3.15,
+          "away": 3.0
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.4,
-          "draw": 3.95,
-          "away": 1.45
+          "home": 4.6,
+          "draw": 3.7,
+          "away": 1.56
         }
       },
       "fundamentals": [
@@ -336,10 +336,10 @@
           "away": "利兹拿分或小负路径都能解释盘口。"
         }
       ],
-      "market_read": "亚盘森林 -0.25 左右，竞彩森林 -1，盘口差约 0.75。",
+      "market_read": "竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。",
       "mismatch": {
         "matched": true,
-        "reason": "亚盘只给森林轻让，竞彩却要求赢 2 球才让胜；主队大胜证据不足。",
+        "reason": "竞彩和亚盘都支持森林小优，但亚盘只给轻让，不支持稳定两球胜；竞彩主让 1 形成错位。",
         "pick": "竞彩诺丁汉森林 -1：让平 + 让负"
       },
       "recommendation": {
@@ -804,15 +804,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
-          "draw": 3.15,
-          "away": 3
+          "home": 2.33,
+          "draw": 3.05,
+          "away": 2.7
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 5.4,
+          "draw": 3.95,
+          "away": 1.45
         }
       },
       "fundamentals": [
@@ -825,10 +825,10 @@
           "away": "桑德兰不败或一球小负路径都很清晰。"
         }
       ],
-      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1，整数盘明显偏深。",
+      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。",
       "mismatch": {
         "matched": true,
-        "reason": "欧盘均势、亚盘平手，不支持伊普斯维奇赢 2 球；竞彩主让 1 形成错位。",
+        "reason": "竞彩标准盘略偏主队，但亚盘仍在平手附近，不支持伊普斯维奇稳定赢 2 球；竞彩主让 1 形成错位。",
         "pick": "竞彩伊普斯维奇 -1：让平 + 让负"
       },
       "recommendation": {
@@ -878,15 +878,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.33,
-          "draw": 3.05,
-          "away": 2.7
+          "home": 2.09,
+          "draw": 3.15,
+          "away": 3.0
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.4,
-          "draw": 3.95,
-          "away": 1.45
+          "home": 4.6,
+          "draw": 3.7,
+          "away": 1.56
         }
       },
       "fundamentals": [
@@ -899,10 +899,10 @@
           "away": "利兹拿分或小负路径都能解释盘口。"
         }
       ],
-      "market_read": "亚盘森林 -0.25 左右，竞彩森林 -1，盘口差约 0.75。",
+      "market_read": "竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。",
       "mismatch": {
         "matched": true,
-        "reason": "亚盘只给森林轻让，竞彩却要求赢 2 球才让胜；主队大胜证据不足。",
+        "reason": "竞彩和亚盘都支持森林小优，但亚盘只给轻让，不支持稳定两球胜；竞彩主让 1 形成错位。",
         "pick": "竞彩诺丁汉森林 -1：让平 + 让负"
       },
       "recommendation": {
@@ -1250,15 +1250,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.09,
-          "draw": 3.15,
-          "away": 3
+          "home": 2.33,
+          "draw": 3.05,
+          "away": 2.7
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 4.6,
-          "draw": 3.7,
-          "away": 1.56
+          "home": 5.4,
+          "draw": 3.95,
+          "away": 1.45
         }
       },
       "fundamentals": [
@@ -1271,10 +1271,10 @@
           "away": "桑德兰不败或一球小负路径都很清晰。"
         }
       ],
-      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1，整数盘明显偏深。",
+      "market_read": "亚盘平手附近，竞彩伊普斯维奇 -1；主胜方向略有支持，但整数让球仍偏深。",
       "mismatch": {
         "matched": true,
-        "reason": "欧盘均势、亚盘平手，不支持伊普斯维奇赢 2 球；竞彩主让 1 形成错位。",
+        "reason": "竞彩标准盘略偏主队，但亚盘仍在平手附近，不支持伊普斯维奇稳定赢 2 球；竞彩主让 1 形成错位。",
         "pick": "竞彩伊普斯维奇 -1：让平 + 让负"
       },
       "recommendation": {
@@ -1324,15 +1324,15 @@
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.33,
-          "draw": 3.05,
-          "away": 2.7
+          "home": 2.09,
+          "draw": 3.15,
+          "away": 3.0
         },
         "handicap": -1,
         "handicap_odds": {
-          "home": 5.4,
-          "draw": 3.95,
-          "away": 1.45
+          "home": 4.6,
+          "draw": 3.7,
+          "away": 1.56
         }
       },
       "fundamentals": [
@@ -1345,10 +1345,10 @@
           "away": "利兹拿分或小负路径都能解释盘口。"
         }
       ],
-      "market_read": "亚盘森林 -0.25 左右，竞彩森林 -1，盘口差约 0.75。",
+      "market_read": "竞彩标准盘支持森林主胜，亚盘森林 -0.25 左右；竞彩森林 -1 仍比亚盘更深。",
       "mismatch": {
         "matched": true,
-        "reason": "亚盘只给森林轻让，竞彩却要求赢 2 球才让胜；主队大胜证据不足。",
+        "reason": "竞彩和亚盘都支持森林小优，但亚盘只给轻让，不支持稳定两球胜；竞彩主让 1 形成错位。",
         "pick": "竞彩诺丁汉森林 -1：让平 + 让负"
       },
       "recommendation": {
