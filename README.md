@@ -161,7 +161,7 @@ The GitHub Pages workflow in `.github/workflows/pages.yml` deploys the `dashboar
 
 ## Manual Report Trigger
 
-Besides the scheduled 18:00 Beijing-time evening refresh, the dashboard exposes a manual trigger entry in the top bar. The 08:00 result-review job remains a later milestone.
+Besides the scheduled 18:00 evening refresh and 08:00 result review (Beijing time), the dashboard exposes a manual trigger entry in the top bar.
 
 Current manual trigger target:
 

@@ -2,6 +2,7 @@ name: Manual report refresh
 
 on:
   schedule:
+    - cron: "0 0 * * *"
     - cron: "0 10 * * *"
   workflow_dispatch:
     inputs:
@@ -58,12 +59,19 @@ jobs:
           echo "Dispatch accepted."
 
       - name: Refresh evening slate
-        if: ${{ github.event_name == 'schedule' || inputs.run_type == 'evening-report' }}
+        if: ${{ github.event.schedule == '0 10 * * *' || inputs.run_type == 'evening-report' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.refresh_evening_slate --date "${SLATE_DATE}"
         env:
           SLATE_DATE: ${{ inputs.slate_date }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+      - name: Review checker results
+        if: ${{ github.event.schedule == '0 0 * * *' || inputs.run_type == 'result-review' }}
+        run: PYTHONPATH=src python -m odds_analyzer.jobs.review_results --date "${SLATE_DATE}"
+        env:
+          SLATE_DATE: ${{ inputs.slate_date }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+
       - name: Validate dashboard data
         run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
 
@@ -78,7 +86,7 @@ jobs:
           from datetime import datetime, timezone
           status = {
               "status": "success",
-              "trigger": "workflow_dispatch",
+              "trigger": os.environ.get("RUN_TRIGGER", "workflow_dispatch"),
               "run_type": os.environ.get("RUN_TYPE", "manual-report"),
               "run_id": os.environ["GITHUB_RUN_ID"],
               "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
@@ -93,7 +101,8 @@ jobs:
               fh.write("\n")
           PY
         env:
-          RUN_TYPE: ${{ github.event_name == 'schedule' && 'evening-report' || inputs.run_type }}
+          RUN_TYPE: ${{ github.event.schedule == '0 0 * * *' && 'result-review' || github.event.schedule == '0 10 * * *' && 'evening-report' || inputs.run_type }}
+          RUN_TRIGGER: ${{ github.event_name }}
           RUN_NOTE: ${{ inputs.note }}
 
       - name: Publish dashboard to gh-pages

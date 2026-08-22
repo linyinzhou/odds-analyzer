@@ -1,6 +1,6 @@
 # Scheduled Automations
 
-GitHub Actions runs the evening refresh. Morning result settlement is documented below but is not active yet.
+GitHub Actions runs both the evening refresh and the morning result settlement.
 
 ## Evening Slate Refresh
 
@@ -11,8 +11,9 @@ GitHub Actions runs the evening refresh. Morning result settlement is documented
 
 ## Morning Result Review
 
-- Status: not implemented yet
-- Target time: daily 08:00 Beijing time
+- Status: active
+- Time: daily 08:00 Beijing time (`0 0 * * *` UTC)
+- Runtime: GitHub Actions
 - Purpose: check final scores from the previous evening slate, settle the exact stored `prediction.market` and `prediction.pick`, update checker review fields, test, commit, push, and refresh GitHub Pages.
 
 
@@ -29,7 +30,7 @@ Use `Run workflow` and choose:
 - `evening-report` to refresh the current slate report batch.
 - `result-review` to run the checker review path.
 
-The `evening-report` option runs the deterministic refresh and prediction job before publishing. The `result-review` option is reserved for the morning settlement implementation and currently does not fetch or settle results.
+The `evening-report` option runs the deterministic refresh and prediction job before publishing. The `result-review` option fetches final scores from football-data.org and settles the exact stored prediction.
 
 ## Visible Run Status
 
@@ -46,7 +47,7 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 ## Current Limitation
 
-The evening job depends on football-data.org, The Odds API, and the public Sporttery endpoint. Injuries, confirmed lineups, weather, and automatic result settlement are not connected yet; unavailable inputs are shown as missing rather than carried forward from an older query.
+The evening job depends on football-data.org, The Odds API, and the public Sporttery endpoint. Injuries, confirmed lineups, and weather are not connected yet; unavailable inputs are shown as missing rather than carried forward from an older query. Morning settlement requires football-data.org to publish a final score.
 
 
 ## Next Matchday Display

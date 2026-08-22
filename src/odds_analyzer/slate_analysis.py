@@ -251,6 +251,9 @@ def _prediction(
             "pick_en": _selection_labels_en(mismatch["selections"]),
             "detail_en": mismatch["recommendation_en"],
             "basis": "fresh_three_market_snapshot",
+            "market_type": "sporttery_handicap",
+            "home_handicap": lottery_line,
+            "selection_keys": [selection.value for selection in mismatch["selections"]],
         }
 
     asian = match.get("asian_handicap")
@@ -300,6 +303,9 @@ def _prediction(
         "pick_en": f"{team} {line}",
         "detail_en": detail_en,
         "basis": "fresh_european_asian_snapshot",
+        "market_type": "asian_handicap",
+        "home_handicap": home_line,
+        "selection_keys": ["home" if pick_home else "away"],
     }
 
 
@@ -407,6 +413,8 @@ def _no_prediction() -> dict[str, Any]:
         "pick_en": "Skip",
         "detail_en": "Current fundamentals, European odds or Asian handicap data is incomplete.",
         "basis": "insufficient_current_data",
+        "market_type": "none",
+        "selection_keys": [],
     }
 
 

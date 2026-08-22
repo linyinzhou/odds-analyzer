@@ -50,10 +50,10 @@ Use review data to adjust rule weights:
 
 ## Current Prototype
 
-The current dashboard stores checker input in browser `localStorage` and shows a basic learning summary:
+The dashboard persists automated result reviews in `dashboard/data/daily_matches.json`; browser `localStorage` remains available for manual notes. Persistent JSON reviews take precedence and feed the learning summary:
 
 ```text
 全部建议 / 错盘命中规则 / 非错盘建议
 ```
 
-This is enough to validate the review workflow locally. For real learning across days and devices, the next step is to persist reviews to a JSON file, SQLite database, or remote store.
+This provides a cross-device historical review ledger. It is a measurement loop, not automatic model training; future weighting changes should require enough settled samples by rule, league, and line gap.

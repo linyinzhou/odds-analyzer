@@ -108,7 +108,7 @@ function renderSummary() {
   const pendingMatches = state.currentMatches.filter((match) => match.status === "pending").length;
   const checkerIds = new Set(getCheckerMatches().map((match) => match.id));
   const reviews = getCheckerMatches().map(getCheckerReview).filter((review) => checkerIds.has(review.id));
-  const reviewed = reviews.filter((review) => review.reviewed).length;
+  const reviewed = reviews.filter((review) => review.reviewed && !review.void).length;
   const hits = reviews.filter((review) => review.reviewed && review.hit).length;
 
   elements.totalMatches.textContent = String(state.currentMatches.length);
@@ -295,7 +295,7 @@ function renderCheckerView() {
   const matches = getCheckerMatches();
   const checkerIds = new Set(matches.map((match) => match.id));
   const reviews = getCheckerMatches().map(getCheckerReview).filter((review) => checkerIds.has(review.id));
-  const reviewed = reviews.filter((review) => review.reviewed).length;
+  const reviewed = reviews.filter((review) => review.reviewed && !review.void).length;
   const hits = reviews.filter((review) => review.reviewed && review.hit).length;
   const paged = paginate(matches, state.pages.checker);
   const learning = buildLearningSummary();
@@ -340,7 +340,8 @@ function renderCheckerItem(match) {
           <select data-field="review" data-id="${match.id}">
             <option value="" ${!item.reviewed ? "selected" : ""}>待复盘</option>
             <option value="hit" ${item.reviewed && item.hit ? "selected" : ""}>命中</option>
-            <option value="miss" ${item.reviewed && !item.hit ? "selected" : ""}>未中</option>
+            <option value="miss" ${item.reviewed && !item.hit && !item.void ? "selected" : ""}>未中</option>
+            <option value="void" ${item.reviewed && item.void ? "selected" : ""}>走盘</option>
           </select>
         </label>
         <label class="checker-note">
@@ -365,7 +366,8 @@ function updateChecker(field) {
   if (field.dataset.field === "note") current.note = field.value.trim();
   if (field.dataset.field === "review") {
     current.reviewed = field.value !== "";
-    current.hit = field.value === "hit";
+    current.void = field.value === "void";
+    current.hit = current.void ? null : field.value === "hit";
   }
   state.checker[id] = current;
   saveChecker();
@@ -388,7 +390,7 @@ function saveChecker() {
 function buildLearningSummary() {
   const reviewed = state.checkerHistory
     .map((match) => ({ match, review: getCheckerReview(match) }))
-    .filter((item) => item.review?.reviewed);
+    .filter((item) => item.review?.reviewed && !item.review?.void);
 
   const groups = [
     {
@@ -448,8 +450,8 @@ function getCheckerMatches() {
 function getCheckerReview(match) {
   return {
     id: match.id,
-    ...(match.review ?? {}),
     ...(state.checker[match.id] ?? {}),
+    ...(match.review ?? {}),
   };
 }
 
@@ -588,4 +590,3 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
-

@@ -36,11 +36,13 @@ from odds_analyzer.jobs.refresh_evening_slate import (
     _normalize_team,
     build_evening_slate_batch,
 )
+from odds_analyzer.jobs.review_results import review_checker_results, settle_saved_prediction
 from odds_analyzer.slate_analysis import analyze_slate_match
 from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
     DataSourcePurpose,
     fetch_evening_football_data,
+    fetch_evening_fixtures,
     parse_football_data_standings,
     parse_football_data_forms,
     parse_football_data_fixtures,
@@ -195,6 +197,67 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertEqual(analyzed["prediction"]["market"], "竞彩让球 +1")
         self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让胜")
 
+class ResultReviewTest(unittest.TestCase):
+    def test_sporttery_handicap_combination_is_settled_from_saved_market(self):
+        match = analyze_slate_match(dynamic_analysis_match(include_lottery=True))
+
+        decision = settle_saved_prediction(match, MatchScore(home_goals=1, away_goals=0))
+
+        self.assertTrue(decision["hit"])
+        self.assertFalse(decision["void"])
+        self.assertEqual(decision["settlement"], "draw")
+
+    def test_asian_push_is_void_not_a_miss(self):
+        match = analyze_slate_match(dynamic_analysis_match(include_lottery=False))
+        match["prediction"]["home_handicap"] = -1.0
+        match["prediction"]["pick"] = "主队 -1"
+
+        decision = settle_saved_prediction(match, MatchScore(home_goals=1, away_goals=0))
+
+        self.assertIsNone(decision["hit"])
+        self.assertTrue(decision["void"])
+        self.assertEqual(decision["outcome"], "push")
+
+    def test_legacy_sporttery_standard_pick_is_supported(self):
+        match = {"prediction": {"market": "竞彩胜平负", "pick": "客胜"}}
+
+        decision = settle_saved_prediction(match, MatchScore(home_goals=0, away_goals=2))
+
+        self.assertTrue(decision["hit"])
+        self.assertEqual(decision["settlement"], "away")
+
+    def test_review_updates_only_target_batch(self):
+        target = analyze_slate_match(dynamic_analysis_match(include_lottery=True))
+        target["batch_date"] = "2026-08-22"
+        target["football_data_snapshot"] = {"match_id": 1001}
+        older = sample_match("older", 55, batch_date="2026-08-21")
+        fixture_payload = {
+            "competition": {"code": "PL", "name": "Premier League"},
+            "matches": [
+                {
+                    "id": 1001,
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "FINISHED",
+                    "homeTeam": {"id": 1, "name": "主队"},
+                    "awayTeam": {"id": 2, "name": "客队"},
+                    "score": {"fullTime": {"home": 1, "away": 0}},
+                }
+            ],
+        }
+        fixtures = parse_football_data_fixtures(fixture_payload, "PL")
+
+        reviewed, counts = review_checker_results(
+            {"checker_history": [target, older]},
+            "2026-08-22",
+            fixtures,
+            "2026-08-23T08:00:00+08:00",
+        )
+
+        self.assertEqual(counts["reviewed"], 1)
+        self.assertTrue(reviewed["checker_history"][0]["review"]["hit"])
+        self.assertEqual(reviewed["checker_history"][0]["review"]["final_score"], "1-0")
+        self.assertNotIn("review", reviewed["checker_history"][1])
+
 class SearchPlanTest(unittest.TestCase):
     def test_build_match_search_plan_includes_core_market_queries(self):
         match = MatchRequest(
@@ -340,7 +403,9 @@ class WorkflowConfigurationTest(unittest.TestCase):
         workflow = workflow_path.read_text(encoding="utf-8")
 
         self.assertIn('cron: "0 10 * * *"', workflow)
-        self.assertIn("github.event_name == 'schedule'", workflow)
+        self.assertIn("github.event.schedule == '0 10 * * *'", workflow)
+        self.assertIn('cron: "0 0 * * *"', workflow)
+        self.assertIn("odds_analyzer.jobs.review_results", workflow)
 
 
 class EveningSlateRefreshJobTest(unittest.TestCase):
@@ -650,6 +715,31 @@ class FootballDataSourceTest(unittest.TestCase):
         self.assertEqual(standings[62].position, 8)
         self.assertEqual(forms[62].results, ("W", "D"))
 
+    def test_result_fixture_fetch_uses_one_request_and_parses_final_score(self):
+        payload = {
+            "matches": [
+                {
+                    "id": 1001,
+                    "competition": {"code": "PL", "name": "Premier League"},
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "FINISHED",
+                    "homeTeam": {"id": 62, "name": "Everton FC"},
+                    "awayTeam": {"id": 354, "name": "Crystal Palace FC"},
+                    "score": {"fullTime": {"home": 2, "away": 1}},
+                }
+            ]
+        }
+
+        with patch(
+            "odds_analyzer.sources.football_data._get_json",
+            return_value=payload,
+        ) as get_json:
+            fixtures = fetch_evening_fixtures("test-key", "2026-08-22")
+
+        self.assertEqual(get_json.call_count, 1)
+        self.assertEqual(fixtures[0].home_score, 2)
+        self.assertEqual(fixtures[0].away_score, 1)
+        self.assertEqual(fixtures[0].status, "FINISHED")
     def test_fetch_uses_one_fixture_request_and_only_active_standings(self):
         fixture_payload = {
             "matches": [

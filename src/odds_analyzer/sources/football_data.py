@@ -48,6 +48,8 @@ class FootballDataFixture:
     stage: str | None
     status: str
     venue: str | None = None
+    home_score: int | None = None
+    away_score: int | None = None
 
 
 @dataclass(frozen=True)
@@ -149,6 +151,37 @@ def fetch_evening_football_data(
     )
 
 
+def fetch_evening_fixtures(
+    api_key: str,
+    slate_date: str,
+    competition_codes: tuple[str, ...] = tuple(COMPETITION_CODES.values()),
+    timeout: float = 20,
+) -> tuple[FootballDataFixture, ...]:
+    start = datetime.fromisoformat(slate_date).replace(
+        hour=18, minute=0, second=0, microsecond=0, tzinfo=BEIJING
+    )
+    end = start + timedelta(hours=12)
+    utc_start = start.astimezone(timezone.utc)
+    utc_end = end.astimezone(timezone.utc)
+    payload = _get_json(
+        "/matches",
+        api_key,
+        {
+            "dateFrom": utc_start.date().isoformat(),
+            "dateTo": (utc_end.date() + timedelta(days=1)).isoformat(),
+            "competitions": ",".join(competition_codes),
+        },
+        timeout,
+    )
+    requested_codes = set(competition_codes)
+    return tuple(
+        fixture
+        for fixture in parse_football_data_fixtures(payload, "")
+        if fixture.competition_code in requested_codes
+        and start <= _parse_utc(fixture.utc_date).astimezone(BEIJING) < end
+    )
+
+
 def parse_football_data_fixtures(
     payload: dict[str, Any], fallback_competition_code: str
 ) -> tuple[FootballDataFixture, ...]:
@@ -158,6 +191,7 @@ def parse_football_data_fixtures(
         home = item.get("homeTeam") or {}
         away = item.get("awayTeam") or {}
         competition = item.get("competition") or payload.get("competition") or {}
+        full_time = ((item.get("score") or {}).get("fullTime") or {})
         utc_date = _text(item.get("utcDate"))
         if not utc_date or not _text(home.get("name")) or not _text(away.get("name")):
             continue
@@ -177,6 +211,8 @@ def parse_football_data_fixtures(
                 stage=_text_or_none(item.get("stage")),
                 status=_text(item.get("status")),
                 venue=_text_or_none(item.get("venue")),
+                home_score=_int(full_time.get("home")),
+                away_score=_int(full_time.get("away")),
             )
         )
     return tuple(parsed)
