@@ -1,6 +1,8 @@
 name: Manual report refresh
 
 on:
+  schedule:
+    - cron: "0 10 * * *"
   workflow_dispatch:
     inputs:
       run_type:
@@ -56,7 +58,7 @@ jobs:
           echo "Dispatch accepted."
 
       - name: Refresh evening slate
-        if: ${{ inputs.run_type == 'evening-report' }}
+        if: ${{ github.event_name == 'schedule' || inputs.run_type == 'evening-report' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.refresh_evening_slate --date "${SLATE_DATE}"
         env:
           SLATE_DATE: ${{ inputs.slate_date }}
@@ -91,7 +93,7 @@ jobs:
               fh.write("\n")
           PY
         env:
-          RUN_TYPE: ${{ inputs.run_type }}
+          RUN_TYPE: ${{ github.event_name == 'schedule' && 'evening-report' || inputs.run_type }}
           RUN_NOTE: ${{ inputs.note }}
 
       - name: Publish dashboard to gh-pages

@@ -1,19 +1,18 @@
 # Scheduled Automations
 
-Two local Codex cron automations keep the deployed dashboard fresh.
+GitHub Actions runs the evening refresh. Morning result settlement is documented below but is not active yet.
 
 ## Evening Slate Refresh
 
-- Name: `Odds Analyzer evening slate refresh`
-- Time: daily 18:00 local Beijing-time machine schedule
-- Automation id: `odds-analyzer-evening-slate-refresh`
+- Name: `Manual report refresh`
+- Time: daily 18:00 Beijing time (`0 10 * * *` UTC)
+- Runtime: GitHub Actions
 - Purpose: query fixtures from tonight through the next early morning, refresh `current_matches`, refresh `next_matchday`, upsert new `mismatch_history`, upsert the daily top 5-8 concrete predictions to `checker_history`, test, commit, push, and refresh GitHub Pages.
 
 ## Morning Result Review
 
-- Name: `Odds Analyzer morning result review`
-- Time: daily 08:00 local Beijing-time machine schedule
-- Automation id: `odds-analyzer-morning-result-review`
+- Status: not implemented yet
+- Target time: daily 08:00 Beijing time
 - Purpose: check final scores from the previous evening slate, settle the exact stored `prediction.market` and `prediction.pick`, update checker review fields, test, commit, push, and refresh GitHub Pages.
 
 
@@ -30,7 +29,7 @@ Use `Run workflow` and choose:
 - `evening-report` to refresh the current slate report batch.
 - `result-review` to run the checker review path.
 
-Current limitation: the workflow validates the dashboard payload and publishes `dashboard/` to `gh-pages`. It is the stable manual entry point, but the real report-generation command still needs to be wired after live data source adapters can generate `dashboard/data/daily_matches.json` deterministically.
+The `evening-report` option runs the deterministic refresh and prediction job before publishing. The `result-review` option is reserved for the morning settlement implementation and currently does not fetch or settle results.
 
 ## Visible Run Status
 
@@ -47,7 +46,7 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 ## Current Limitation
 
-These automations still depend on live source availability and agent-side research. A later milestone should replace this with deterministic source adapters and a repeatable data job.
+The evening job depends on football-data.org, The Odds API, and the public Sporttery endpoint. Injuries, confirmed lineups, weather, and automatic result settlement are not connected yet; unavailable inputs are shown as missing rather than carried forward from an older query.
 
 
 ## Next Matchday Display
@@ -67,4 +66,3 @@ The Next Matchday panel must show the fixtures after the current detail slate. D
 ## Next Matchday Selection Rule
 
 The Next Matchday panel should show the nearest unplayed fixtures for each competition by actual kickoff time after the current query time. Do not prioritize round number over time: if a newer round starts before postponed lower-round fixtures, show the newer round first, then show postponed fixtures when they become the next upcoming fixtures. Do not duplicate fixtures already present in `current_matches`.
-

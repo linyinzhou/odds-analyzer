@@ -32,9 +32,11 @@ from odds_analyzer import (
     settle_chinese_lottery,
 )
 from odds_analyzer.jobs.refresh_evening_slate import (
+    _checker_candidates,
     _normalize_team,
     build_evening_slate_batch,
 )
+from odds_analyzer.slate_analysis import analyze_slate_match
 from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
     DataSourcePurpose,
@@ -137,6 +139,61 @@ class HandicapAnalysisTest(unittest.TestCase):
 
         self.assertEqual(check.status, "lottery_shallower_favorite_supported")
         self.assertEqual(check.preferred_selections, (Selection.HOME, Selection.DRAW))
+
+class DynamicSlateAnalysisTest(unittest.TestCase):
+    def test_complete_three_market_snapshot_generates_mismatch_prediction(self):
+        match = dynamic_analysis_match(include_lottery=True)
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertTrue(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["mismatch"]["status"], "lottery_deeper_small_win")
+        self.assertEqual(analyzed["prediction"]["market"], "竞彩让球 -1")
+        self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让负")
+        self.assertEqual(analyzed["prediction"]["basis"], "fresh_three_market_snapshot")
+        self.assertGreaterEqual(analyzed["prediction"]["confidence"], 60)
+
+    def test_european_asian_snapshot_generates_exact_asian_recommendation(self):
+        match = dynamic_analysis_match(include_lottery=False)
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertFalse(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["prediction"]["market"], "亚盘 Pinnacle")
+        self.assertEqual(analyzed["prediction"]["pick"], "主队 -0.25")
+        self.assertEqual(analyzed["prediction"]["basis"], "fresh_european_asian_snapshot")
+        self.assertIn("本次竞彩未取得", analyzed["market_read"])
+
+    def test_line_gap_without_played_sample_is_not_flagged_as_mismatch(self):
+        match = dynamic_analysis_match(include_lottery=True)
+        match["fundamental_context"]["home"]["played_games"] = 0
+        match["fundamental_context"]["away"]["played_games"] = 0
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertFalse(analyzed["mismatch"]["matched"])
+        self.assertIn("样本不足", analyzed["mismatch"]["reason"])
+
+    def test_away_favorite_mismatch_reverses_sporttery_selections(self):
+        match = dynamic_analysis_match(include_lottery=True)
+        match["european_odds"] = {"home": 3.80, "draw": 3.30, "away": 2.00}
+        match["asian_handicap"] = {
+            "provider": "Pinnacle",
+            "handicap": 0.25,
+            "home_odds": 1.95,
+            "away_odds": 1.95,
+        }
+        match["chinese_lottery"]["handicap"] = 1
+        match["fundamental_context"]["home"]["points"] = 11
+        match["fundamental_context"]["home"]["goal_difference"] = -5
+        match["fundamental_context"]["away"]["points"] = 21
+        match["fundamental_context"]["away"]["goal_difference"] = 7
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertTrue(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["prediction"]["market"], "竞彩让球 +1")
+        self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让胜")
 
 class SearchPlanTest(unittest.TestCase):
     def test_build_match_search_plan_includes_core_market_queries(self):
@@ -260,6 +317,32 @@ class DashboardPrototypeTest(unittest.TestCase):
         for key in ("status", "run_type", "run_id", "commit", "branch", "actor", "updated_at"):
             self.assertIn(key, payload)
 
+class CheckerCandidateTest(unittest.TestCase):
+    def test_small_batch_keeps_only_top_three(self):
+        matches = [sample_match(f"match-{index}", confidence) for index, confidence in enumerate((51, 55, 53, 52))]
+
+        selected = _checker_candidates(matches, "2026-08-22")
+
+        self.assertEqual([item["prediction"]["confidence"] for item in selected], [55, 53, 52])
+
+    def test_large_batch_is_capped_at_eight(self):
+        matches = [sample_match(f"match-{index}", 50 + index) for index in range(10)]
+
+        selected = _checker_candidates(matches, "2026-08-22")
+
+        self.assertEqual(len(selected), 8)
+        self.assertEqual(selected[0]["prediction"]["confidence"], 59)
+
+
+class WorkflowConfigurationTest(unittest.TestCase):
+    def test_evening_workflow_runs_daily_at_beijing_18(self):
+        workflow_path = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "manual-report.yml"
+        workflow = workflow_path.read_text(encoding="utf-8")
+
+        self.assertIn('cron: "0 10 * * *"', workflow)
+        self.assertIn("github.event_name == 'schedule'", workflow)
+
+
 class EveningSlateRefreshJobTest(unittest.TestCase):
     def test_build_evening_slate_for_aug_22_contains_window_matches_only(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
@@ -318,7 +401,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["chinese_lottery"]["handicap"], -1)
         self.assertEqual(athletic["chinese_lottery"]["handicap_odds"]["home"], 2.10)
         self.assertEqual(athletic["sporttery_snapshot"]["match_no"], "周六016")
-        self.assertEqual(athletic["signal_label"], "竞彩已抓取")
+        self.assertEqual(athletic["signal_label"], "数据不足")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
 
     def test_odds_api_enrichment_fills_missing_european_and_asian_odds(self):
@@ -358,7 +441,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["european_odds"]["home"], 1.95)
         self.assertEqual(athletic["asian_handicap"]["handicap"], -0.5)
         self.assertEqual(athletic["odds_api_snapshot"]["bookmaker_key"], "pinnacle")
-        self.assertEqual(athletic["signal_label"], "盘口已抓取")
+        self.assertEqual(athletic["signal_label"], "数据不足")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
     def test_official_team_names_share_keys_with_curated_slate_names(self):
         pairs = (
@@ -466,6 +549,24 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(match["asian_handicap"]["handicap"], -0.5)
         self.assertEqual(match["chinese_lottery"]["handicap"], -1)
 
+    def test_refresh_clears_stale_market_snapshots_when_sources_are_unavailable(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+
+        batch = build_evening_slate_batch(existing, "2026-08-22")
+        everton = next(
+            match
+            for match in batch["current_matches"]
+            if match["id"] == "2026-08-22-everton-crystal-palace"
+        )
+
+        self.assertIsNone(everton["european_odds"])
+        self.assertIsNone(everton["asian_handicap"])
+        self.assertIsNone(everton["chinese_lottery"])
+        self.assertNotIn("odds_api_snapshot", everton)
+        self.assertNotIn("sporttery_snapshot", everton)
+        self.assertEqual(everton["prediction"]["market"], "无推荐")
+        self.assertFalse(everton["mismatch"]["matched"])
     def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -823,6 +924,45 @@ class DashboardPayloadMergeTest(unittest.TestCase):
 
         self.assertEqual(len(merged["mismatch_history"]), 2)
         self.assertEqual([item["batch_date"] for item in merged["mismatch_history"]], ["2026-08-23", "2026-08-22"])
+
+def dynamic_analysis_match(include_lottery):
+    lottery = None
+    if include_lottery:
+        lottery = {
+            "standard": {"home": 2.10, "draw": 3.30, "away": 3.50},
+            "handicap": -1,
+            "handicap_odds": {"home": 4.50, "draw": 3.55, "away": 1.60},
+            "source": "Sporttery official",
+        }
+    return {
+        "id": "dynamic-home-away",
+        "kickoff_time": "2026-08-22 22:00",
+        "competition": "英超 第 1 轮",
+        "home_team": "主队",
+        "away_team": "客队",
+        "football_data_snapshot": {"match_id": 1, "source": "football-data.org"},
+        "fundamental_context": {
+            "home": {
+                "played_games": 10,
+                "points": 20,
+                "goal_difference": 6,
+            },
+            "away": {
+                "played_games": 10,
+                "points": 13,
+                "goal_difference": -2,
+            },
+        },
+        "european_odds": {"home": 2.10, "draw": 3.30, "away": 3.50},
+        "asian_handicap": {
+            "provider": "Pinnacle",
+            "handicap": -0.25,
+            "home_odds": 1.90,
+            "away_odds": 2.00,
+        },
+        "chinese_lottery": lottery,
+        "sources": ["football-data.org", "The Odds API"],
+    }
 
 def sample_match(match_id, confidence, batch_date=None):
     item = {

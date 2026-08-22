@@ -8,6 +8,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
+from odds_analyzer.slate_analysis import analyze_slate_matches
 from odds_analyzer.sources import (
     FootballDataSnapshot,
     OddsApiEvent,
@@ -270,6 +271,15 @@ def _placeholder_match(fixture: dict) -> dict:
 
 
 
+def _refresh_seed_match(match: dict) -> dict:
+    fixture = {
+        key: deepcopy(match[key])
+        for key in ("id", "kickoff_time", "competition", "home_team", "away_team", "round")
+        if key in match
+    }
+    return _placeholder_match(fixture)
+
+
 def _add_football_data_fixtures(matches: list[dict], snapshot: FootballDataSnapshot) -> list[dict]:
     result = [deepcopy(match) for match in matches]
     existing_keys = {_dashboard_match_key(match) for match in result}
@@ -315,6 +325,10 @@ def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapsh
         copied["competition"] = _football_data_competition_label(fixture)
         copied["round"] = _football_data_round_label(fixture)
         copied["football_data_snapshot"] = _football_data_fixture_snapshot(fixture)
+        copied["fundamental_context"] = {
+            "home": _fundamental_context(fixture.home_team_id, snapshot),
+            "away": _fundamental_context(fixture.away_team_id, snapshot),
+        }
         copied["fundamentals"] = [
             {
                 "home": _fundamental_summary(
@@ -402,6 +416,28 @@ def _fundamental_summary(team_name: str, team_id: int | None, snapshot: Football
     else:
         parts.append("近5场待补")
     return "：".join((parts[0], "；".join(parts[1:])))
+def _fundamental_context(team_id: int | None, snapshot: FootballDataSnapshot) -> dict:
+    if team_id is None:
+        return {}
+    standing = snapshot.standings.get(team_id)
+    form = snapshot.forms.get(team_id)
+    if standing is None:
+        return {"team_id": team_id, "form": list(form.results) if form else []}
+    return {
+        "team_id": team_id,
+        "position": standing.position,
+        "played_games": standing.played_games,
+        "won": standing.won,
+        "draw": standing.draw,
+        "lost": standing.lost,
+        "goals_for": standing.goals_for,
+        "goals_against": standing.goals_against,
+        "goal_difference": standing.goal_difference,
+        "points": standing.points,
+        "form": list(form.results) if form else [],
+    }
+
+
 def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) -> list[dict]:
     index = {_odds_api_key(event): event for event in odds_events}
     enriched = []
@@ -594,7 +630,9 @@ def _attach_bilingual_reports(matches: list[dict]) -> list[dict]:
         copied["report_en"] = (
             f"{home} vs {away}, kickoff {kickoff}. Query-time snapshot: European 1X2 {european}, "
             f"Asian handicap {asian}, Sporttery {chinese_lottery}. "
-            f"Prediction: {market} {pick} (confidence {confidence}%)."
+            f"{copied.get('market_read_en', 'Market read unavailable.')} "
+            f"Prediction: {prediction.get('market_en', market)} {prediction.get('pick_en', pick)} "
+            f"(confidence {confidence}%)."
         )
         reports.append(copied)
     return reports
@@ -686,7 +724,7 @@ def build_evening_slate_batch(
     current_matches = []
     for match_id in EXISTING_DETAIL_IDS_BY_DATE.get(slate_date, []):
         if match_id in current_by_id:
-            match = deepcopy(current_by_id[match_id])
+            match = _refresh_seed_match(current_by_id[match_id])
             match["batch_date"] = slate_date
             current_matches.append(match)
 
@@ -702,6 +740,7 @@ def build_evening_slate_batch(
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
         current_matches = _enrich_with_odds_api(current_matches, odds_api_events)
+    current_matches = analyze_slate_matches(current_matches)
     current_matches = _attach_bilingual_reports(current_matches)
 
     next_matchday = _filter_next_matchday(
@@ -746,7 +785,8 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
         key=lambda match: match.get("prediction", {}).get("confidence", 0),
         reverse=True,
     )
-    return candidates[:8]
+    limit = 8 if len(candidates) >= 5 else 3
+    return candidates[:limit]
 
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
