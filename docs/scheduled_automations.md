@@ -72,7 +72,7 @@ Every report refresh now rebuilds structured `fallback_requests` for missing fun
 - 08:00 Beijing: GitHub Actions settles checker results through football-data.org.
 - 08:20 Beijing: Codex researches only checker matches that remain unreviewed.
 
-The Codex passes read the live `gh-pages` payload, preserve API-backed values, require source URLs and query timestamps for supplements, and do not fabricate unresolved data.
+The Codex passes read the live `gh-pages` payload, preserve API-backed values, require source URLs and query timestamps for supplements, and do not fabricate unresolved data. The evening pass writes a temporary structured result file and applies it through `odds_analyzer.jobs.apply_fallback_results`; it must not edit the live payload directly. See [fallback_results.md](fallback_results.md) for the validated contract.
 
 
 ## Next Matchday Display

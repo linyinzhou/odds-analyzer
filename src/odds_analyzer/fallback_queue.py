@@ -63,6 +63,9 @@ def merge_fallback_requests(
     return result
 
 
+def missing_fields_for_match(match: dict[str, Any]) -> list[str]:
+    return _missing_fields(match)
+
 def _missing_fields(match: dict[str, Any]) -> list[str]:
     fields = []
     if not _has_fundamentals(match):
