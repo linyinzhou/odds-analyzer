@@ -176,6 +176,10 @@ The workflow accepts:
 - `note`: optional operator note.
 
 Until deterministic live data adapters are connected, the manual workflow validates the current dashboard payload and publishes `dashboard/` to the `gh-pages` branch. The report-generation command should be wired into this workflow once fixture, odds, Sporttery, and result adapters can produce `dashboard/data/daily_matches.json` without manual research.
+
+## Run Status
+
+The dashboard reads `dashboard/data/run_status.json` and shows the latest workflow run in the top status row. GitHub Actions updates this file before publishing `dashboard/` to `gh-pages`, so the page can show the last run status, run type, run id, commit, actor, and timestamp.
 ## Run Tests
 
 ```bash

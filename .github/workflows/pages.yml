@@ -33,6 +33,29 @@ jobs:
       - name: Run tests
         run: PYTHONPATH=src python -m unittest discover -s tests
 
+      - name: Write run status
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          status = {
+              "status": "success",
+              "trigger": os.environ["GITHUB_EVENT_NAME"],
+              "run_type": "pages-deploy",
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "commit": os.environ["GITHUB_SHA"][:7],
+              "branch": os.environ["GITHUB_REF_NAME"],
+              "actor": os.environ["GITHUB_ACTOR"],
+              "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "note": "Automatic dashboard publish.",
+          }
+          with open("dashboard/data/run_status.json", "w", encoding="utf-8") as fh:
+              json.dump(status, fh, ensure_ascii=False, indent=2)
+              fh.write("\n")
+          PY
+
       - name: Publish dashboard to gh-pages
         run: |
           git config user.name "github-actions[bot]"

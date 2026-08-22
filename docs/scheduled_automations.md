@@ -31,6 +31,10 @@ Use `Run workflow` and choose:
 - `result-review` to run the checker review path.
 
 Current limitation: the workflow validates the dashboard payload and publishes `dashboard/` to `gh-pages`. It is the stable manual entry point, but the real report-generation command still needs to be wired after live data source adapters can generate `dashboard/data/daily_matches.json` deterministically.
+
+## Visible Run Status
+
+The dashboard displays the latest workflow status from `dashboard/data/run_status.json`. Manual and Pages workflows write this file before publishing to `gh-pages`, including status, run type, run id, commit, actor, branch, and timestamp.
 ## Data Rules
 
 - `current_matches` is replaced on every evening refresh.

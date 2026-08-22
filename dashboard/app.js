@@ -1,4 +1,4 @@
-const APP_VERSION = "20260822-5";
+const APP_VERSION = "20260822-6";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -22,6 +22,10 @@ const elements = {
   pendingMatches: document.querySelector("#pendingMatches"),
   checkerCount: document.querySelector("#checkerCount"),
   viewButtons: document.querySelectorAll(".view-button"),
+  runStatusLabel: document.querySelector("#runStatusLabel"),
+  runType: document.querySelector("#runType"),
+  runUpdatedAt: document.querySelector("#runUpdatedAt"),
+  runLink: document.querySelector("#runLink"),
   viewEyebrow: document.querySelector("#viewEyebrow"),
   viewTitle: document.querySelector("#viewTitle"),
   viewCounter: document.querySelector("#viewCounter"),
@@ -39,7 +43,33 @@ async function loadDashboard() {
   state.checker = loadChecker();
   elements.slateDate.textContent = payload.slate.date;
   elements.slateWindow.textContent = payload.slate.window;
+  loadRunStatus();
   render();
+}
+
+async function loadRunStatus() {
+  try {
+    const response = await fetch(`./data/run_status.json?v=${APP_VERSION}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    renderRunStatus(await response.json());
+  } catch {
+    renderRunStatus({ status: "unknown", run_type: "--", updated_at: null, run_id: null });
+  }
+}
+
+function renderRunStatus(status) {
+  const label = status.status ?? "unknown";
+  elements.runStatusLabel.textContent = formatRunStatus(label);
+  elements.runStatusLabel.className = `run-state ${normalizeText(label)}`;
+  elements.runType.textContent = status.run_type ?? status.trigger ?? "--";
+  elements.runUpdatedAt.textContent = formatRunTime(status.updated_at);
+  if (status.run_id && status.run_id !== "local-seed") {
+    elements.runLink.href = `https://github.com/linyinzhou/odds-analyzer/actions/runs/${status.run_id}`;
+    elements.runLink.textContent = `#${status.run_id}`;
+  } else {
+    elements.runLink.href = "https://github.com/linyinzhou/odds-analyzer/actions";
+    elements.runLink.textContent = "Actions";
+  }
 }
 
 function normalizePayload(payload) {
@@ -529,6 +559,21 @@ function formatLine(value) {
   return String(value);
 }
 
+function formatRunStatus(value) {
+  if (value === "success") return "Success";
+  if (value === "failure") return "Failed";
+  if (value === "cancelled") return "Cancelled";
+  if (value === "in_progress") return "Running";
+  return "Unknown";
+}
+
+function formatRunTime(value) {
+  if (!value) return "--";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("zh-CN", { hour12: false });
+}
+
 function escapeAttribute(value) {
   return String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
 }
@@ -543,8 +588,4 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
-
-
-
-
 

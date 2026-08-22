@@ -215,6 +215,13 @@ class DashboardPrototypeTest(unittest.TestCase):
 
         self.assertIn(first["status"], {"mismatch", "pending", "watch"})
 
+    def test_run_status_payload_has_required_fields(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "run_status.json"
+        payload = json.loads(payload_path.read_text(encoding="utf-8-sig"))
+
+        for key in ("status", "run_type", "run_id", "commit", "branch", "actor", "updated_at"):
+            self.assertIn(key, payload)
+
 class SportterySourceTest(unittest.TestCase):
     def test_parse_official_sporttery_supports_hhad_only_match(self):
         fixture_path = Path(__file__).resolve().parent / "fixtures" / "sporttery_official_sample.json"

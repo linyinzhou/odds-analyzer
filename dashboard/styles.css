@@ -158,6 +158,48 @@ h4 {
   font-size: 12px;
 }
 
+
+.run-status {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.4fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+}
+
+.run-status span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.run-status strong,
+.run-status a {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.run-status a {
+  color: var(--accent);
+}
+
+.run-state.success {
+  color: var(--accent);
+}
+
+.run-state.failure,
+.run-state.failed {
+  color: var(--danger);
+}
+
+.run-state.in_progress,
+.run-state.running {
+  color: var(--watch);
+}
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -653,7 +695,4 @@ h4 {
   font-style: normal;
   text-align: right;
 }
-
-
-
 
