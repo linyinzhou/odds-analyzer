@@ -63,7 +63,16 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 The evening job depends on football-data.org, The Odds API, the public Sporttery endpoint, and Open-Meteo. Weather is matched to the football-data fixture and sampled near kickoff; unresolved locations remain missing. Injuries and confirmed lineups are not connected yet. Morning settlement requires football-data.org to publish a final score.
 
-Every report refresh now rebuilds structured `fallback_requests` for missing fundamentals, European odds, Asian handicap, and Sporttery data. Daily refreshes replace only daily-scope tasks and preserve ad hoc tasks. Weather and unpublished lineup data do not create fallback tasks. The workflow writes the pending count and fields to the GitHub Actions step summary; a separate Codex automation is still required to research and resolve those tasks.
+Every report refresh now rebuilds structured `fallback_requests` for missing fundamentals, European odds, Asian handicap, and Sporttery data. Daily refreshes replace only daily-scope tasks and preserve ad hoc tasks. Weather and unpublished lineup data do not create fallback tasks. The workflow writes the pending count and fields to the GitHub Actions step summary.
+
+## Codex Fallback Passes
+
+- 18:00 Beijing: GitHub Actions queries structured APIs and creates `fallback_requests`.
+- 18:20 Beijing: Codex reads the live queue and researches only pending fields; an empty queue is a no-op.
+- 08:00 Beijing: GitHub Actions settles checker results through football-data.org.
+- 08:20 Beijing: Codex researches only checker matches that remain unreviewed.
+
+The Codex passes read the live `gh-pages` payload, preserve API-backed values, require source URLs and query timestamps for supplements, and do not fabricate unresolved data.
 
 
 ## Next Matchday Display
