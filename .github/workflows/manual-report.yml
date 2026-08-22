@@ -18,6 +18,10 @@ on:
         description: "Optional slate date, Asia/Shanghai YYYY-MM-DD"
         required: false
         type: string
+      analysis_competitions:
+        description: "Optional analysis codes: PL or PL,PD,SA,BL1,FL1,CL"
+        required: false
+        type: string
       note:
         description: "Optional operator note"
         required: false
@@ -55,6 +59,7 @@ jobs:
         run: |
           echo "run_type=${{ inputs.run_type }}"
           echo "slate_date=${{ inputs.slate_date }}"
+          echo "analysis_competitions=${{ inputs.analysis_competitions }}"
           echo "note=${{ inputs.note }}"
           echo "Dispatch accepted."
 
@@ -65,6 +70,7 @@ jobs:
           SLATE_DATE: ${{ inputs.slate_date }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || vars.ANALYSIS_COMPETITIONS || 'PL' }}
       - name: Review checker results
         if: ${{ github.event.schedule == '0 0 * * *' || inputs.run_type == 'result-review' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.review_results --date "${SLATE_DATE}"
@@ -95,6 +101,7 @@ jobs:
               "actor": os.environ["GITHUB_ACTOR"],
               "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
               "note": os.environ.get("RUN_NOTE", ""),
+              "analysis_competitions": os.environ.get("RUN_ANALYSIS_COMPETITIONS", "PL"),
           }
           with open("dashboard/data/run_status.json", "w", encoding="utf-8") as fh:
               json.dump(status, fh, ensure_ascii=False, indent=2)
@@ -104,6 +111,7 @@ jobs:
           RUN_TYPE: ${{ github.event.schedule == '0 0 * * *' && 'result-review' || github.event.schedule == '0 10 * * *' && 'evening-report' || inputs.run_type }}
           RUN_TRIGGER: ${{ github.event_name }}
           RUN_NOTE: ${{ inputs.note }}
+          RUN_ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || vars.ANALYSIS_COMPETITIONS || 'PL' }}
 
       - name: Publish dashboard to gh-pages
         run: |

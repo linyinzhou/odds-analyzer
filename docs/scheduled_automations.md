@@ -9,6 +9,16 @@ GitHub Actions runs both the evening refresh and the morning result settlement.
 - Runtime: GitHub Actions
 - Purpose: query fixtures from tonight through the next early morning, refresh `current_matches`, refresh `next_matchday`, upsert new `mismatch_history`, upsert the daily top 5-8 concrete predictions to `checker_history`, test, commit, push, and refresh GitHub Pages.
 
+## Analysis Scope
+
+The scheduled evening refresh defaults to `PL`, so only Premier League matches enter Detail, Mismatch, and Checker. The Next Matchday schedule remains the full five-major-leagues plus Champions League view.
+
+Use the repository variable `ANALYSIS_COMPETITIONS` for the scheduled default, or the manual `analysis_competitions` input for a one-run override. Enable all supported competitions with:
+
+```text
+PL,PD,SA,BL1,FL1,CL
+```
+
 ## Morning Result Review
 
 - Status: active

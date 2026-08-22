@@ -1,4 +1,4 @@
-const APP_VERSION = "20260822-7";
+const APP_VERSION = "20260822-8";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -6,6 +6,7 @@ const state = {
   mismatchHistory: [],
   checkerHistory: [],
   nextMatchday: { generated_at: null, competitions: [] },
+  analysisCompetitionCodes: ["PL"],
   activeView: "detail",
   checker: {},
   pages: {
@@ -40,9 +41,11 @@ async function loadDashboard() {
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
   state.nextMatchday = normalized.nextMatchday;
+  state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
   elements.slateDate.textContent = payload.slate.date;
-  elements.slateWindow.textContent = payload.slate.window;
+  const scope = payload.slate.analysis_scope ?? competitionScopeLabel(normalized.analysisCompetitionCodes);
+  elements.slateWindow.textContent = payload.slate.window + " · 分析：" + scope;
   loadRunStatus();
   render();
 }
@@ -73,16 +76,38 @@ function renderRunStatus(status) {
 }
 
 function normalizePayload(payload) {
-  const currentMatches = payload.current_matches ?? payload.matches ?? [];
-  const mismatchHistory = payload.mismatch_history ?? currentMatches.filter((match) => match.mismatch?.matched);
-  const checkerHistory = payload.checker_history ?? getTopCheckerCandidates(currentMatches);
+  const analysisCompetitionCodes = normalizeAnalysisCompetitionCodes(payload.slate?.analysis_competitions);
+  const inScope = (match) => matchInAnalysisScope(match, analysisCompetitionCodes);
+  const allCurrentMatches = payload.current_matches ?? payload.matches ?? [];
+  const currentMatches = allCurrentMatches.filter(inScope);
+  const mismatchHistory = (payload.mismatch_history ?? allCurrentMatches.filter((match) => match.mismatch?.matched)).filter(inScope);
+  const checkerHistory = (payload.checker_history ?? getTopCheckerCandidates(currentMatches)).filter(inScope);
   const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
   return {
     currentMatches,
     mismatchHistory,
     checkerHistory,
     nextMatchday,
+    analysisCompetitionCodes,
   };
+}
+
+function normalizeAnalysisCompetitionCodes(codes) {
+  const supported = ["PL", "PD", "SA", "BL1", "FL1", "CL"];
+  const normalized = Array.isArray(codes) ? codes.filter((code) => supported.includes(code)) : [];
+  return normalized.length ? normalized : ["PL"];
+}
+
+function matchInAnalysisScope(match, codes) {
+  const snapshotCode = match.football_data_snapshot?.competition_code;
+  if (snapshotCode) return codes.includes(snapshotCode);
+  const labels = { PL: "英超", PD: "西甲", SA: "意甲", BL1: "德甲", FL1: "法甲", CL: "欧冠" };
+  return codes.some((code) => String(match.competition ?? "").startsWith(labels[code]));
+}
+
+function competitionScopeLabel(codes) {
+  const labels = { PL: "英超", PD: "西甲", SA: "意甲", BL1: "德甲", FL1: "法甲", CL: "欧冠" };
+  return codes.map((code) => labels[code]).filter(Boolean).join(" + ");
 }
 
 function render() {

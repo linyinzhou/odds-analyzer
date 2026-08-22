@@ -159,6 +159,19 @@ http://127.0.0.1:8026/
 The GitHub Pages workflow in `.github/workflows/pages.yml` deploys the `dashboard/` folder.
 
 
+## Analysis Competition Switch
+
+Daily reports default to Premier League only. Detail, mismatch, and checker data are generated for the enabled competition codes, while Next Matchday continues to show all five major leagues and the Champions League proper.
+
+Set the GitHub Actions repository variable `ANALYSIS_COMPETITIONS` or use the manual workflow input `analysis_competitions`:
+
+```text
+PL
+PL,PD,SA,BL1,FL1,CL
+```
+
+Supported codes are `PL`, `PD`, `SA`, `BL1`, `FL1`, and `CL`. Missing or invalid values fall back to `PL`.
+
 ## Manual Report Trigger
 
 Besides the scheduled 18:00 evening refresh and 08:00 result review (Beijing time), the dashboard exposes a manual trigger entry in the top bar.

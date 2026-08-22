@@ -10,7 +10,9 @@ from pathlib import Path
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.slate_analysis import analyze_slate_matches
 from odds_analyzer.sources import (
+    COMPETITION_CODES,
     FootballDataSnapshot,
+    LEAGUE_SPORT_KEYS,
     OddsApiEvent,
     SportteryMatch,
     fetch_evening_football_data,
@@ -25,6 +27,13 @@ from odds_analyzer.sources import (
 BEIJING = timezone(timedelta(hours=8), name="Asia/Shanghai")
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_PAYLOAD_PATH = PROJECT_ROOT / "dashboard" / "data" / "daily_matches.json"
+DEFAULT_ANALYSIS_COMPETITIONS = ("PL",)
+ALLOWED_ANALYSIS_COMPETITIONS = tuple(COMPETITION_CODES.values())
+COMPETITION_LABEL_BY_CODE = {code: label for label, code in COMPETITION_CODES.items()}
+SPORT_KEY_BY_COMPETITION = {
+    COMPETITION_CODES[label]: sport_key
+    for label, sport_key in LEAGUE_SPORT_KEYS.items()
+}
 
 EXISTING_DETAIL_IDS_BY_DATE = {
     "2026-08-22": [
@@ -217,6 +226,28 @@ CURATED_FIXTURES_BY_DATE = {
 
 def _today_beijing() -> str:
     return datetime.now(BEIJING).date().isoformat()
+
+
+def parse_analysis_competitions(value: str | None) -> tuple[str, ...]:
+    tokens = [token.strip().upper() for token in (value or "").split(",") if token.strip()]
+    if any(token in {"ALL", "*"} for token in tokens):
+        return ALLOWED_ANALYSIS_COMPETITIONS
+    enabled = tuple(dict.fromkeys(token for token in tokens if token in ALLOWED_ANALYSIS_COMPETITIONS))
+    return enabled or DEFAULT_ANALYSIS_COMPETITIONS
+
+
+def _analysis_scope_label(codes: tuple[str, ...]) -> str:
+    if codes == ALLOWED_ANALYSIS_COMPETITIONS:
+        return "五大联赛 + 欧冠"
+    return " + ".join(COMPETITION_LABEL_BY_CODE[code] for code in codes)
+
+
+def _match_competition_code(match: dict) -> str | None:
+    snapshot_code = (match.get("football_data_snapshot") or {}).get("competition_code")
+    if snapshot_code in ALLOWED_ANALYSIS_COMPETITIONS:
+        return snapshot_code
+    label = str(match.get("competition", ""))
+    return next((code for name, code in COMPETITION_CODES.items() if label.startswith(name)), None)
 
 
 def _load_payload(path: Path) -> dict:
@@ -761,6 +792,7 @@ def build_evening_slate_batch(
     football_data_source: str = "not requested",
     weather_forecasts: dict[int, object] | None = None,
     weather_source: str = "not requested",
+    analysis_competitions: tuple[str, ...] = ALLOWED_ANALYSIS_COMPETITIONS,
 ) -> dict:
     current_by_id = {
         match.get("id"): match for match in existing_payload.get("current_matches", [])
@@ -786,6 +818,9 @@ def build_evening_slate_batch(
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
         current_matches = _enrich_with_odds_api(current_matches, odds_api_events)
+    current_matches = [
+        match for match in current_matches if _match_competition_code(match) in analysis_competitions
+    ]
     current_matches = analyze_slate_matches(current_matches)
     current_matches = _attach_bilingual_reports(current_matches)
 
@@ -808,6 +843,8 @@ def build_evening_slate_batch(
             "odds_api_source": odds_api_source,
             "football_data_source": football_data_source,
             "weather_source": weather_source,
+            "analysis_competitions": list(analysis_competitions),
+            "analysis_scope": _analysis_scope_label(analysis_competitions),
         },
         "current_matches": current_matches,
         "mismatch_history": [
@@ -838,10 +875,15 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     existing_payload = _load_payload(path)
+    analysis_competitions = parse_analysis_competitions(os.environ.get("ANALYSIS_COMPETITIONS"))
     football_data_key = os.environ.get("FOOTBALL_DATA_API_KEY", "").strip()
     if football_data_key:
         try:
-            football_data_snapshot = fetch_evening_football_data(football_data_key, slate_date)
+            football_data_snapshot = fetch_evening_football_data(
+                football_data_key,
+                slate_date,
+                competition_codes=analysis_competitions,
+            )
             football_data_source = _football_data_source_status(football_data_snapshot)
         except Exception as exc:
             football_data_snapshot = None
@@ -869,7 +911,16 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     odds_api_key = os.environ.get("THE_ODDS_API_KEY", "").strip()
     if odds_api_key:
         try:
-            odds_api_events = fetch_evening_odds_api_events(odds_api_key, slate_date)
+            sport_keys = tuple(
+                SPORT_KEY_BY_COMPETITION[code]
+                for code in analysis_competitions
+                if code in SPORT_KEY_BY_COMPETITION
+            )
+            odds_api_events = fetch_evening_odds_api_events(
+                odds_api_key,
+                slate_date,
+                sport_keys=sport_keys,
+            )
             odds_api_source = "The Odds API"
         except Exception as exc:
             odds_api_events = []
@@ -888,6 +939,7 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         football_data_source=football_data_source,
         weather_forecasts=weather_forecasts,
         weather_source=weather_source,
+        analysis_competitions=analysis_competitions,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
     _write_payload(path, merged_payload)
