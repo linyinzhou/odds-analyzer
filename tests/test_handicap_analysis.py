@@ -31,12 +31,14 @@ from odds_analyzer import (
 from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
 from odds_analyzer.sources import (
     DataSourcePurpose,
+    OddsApiEvent,
     SportteryMarket,
     SportteryMatch,
     SportteryOutcome,
     ReliabilityTier,
     get_data_source_candidates,
     get_sources_by_purpose,
+    parse_odds_api_events,
     parse_official_sporttery,
 )
 
@@ -290,6 +292,45 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["signal_label"], "竞彩已抓取")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
 
+    def test_odds_api_enrichment_fills_missing_european_and_asian_odds(self):
+        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
+        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+        odds_event = OddsApiEvent(
+            event_id="event-1",
+            sport_key="soccer_spain_la_liga",
+            commence_time="2026-08-22T15:00:00Z",
+            home_team="Athletic Club",
+            away_team="Sevilla FC",
+            bookmaker="Pinnacle",
+            bookmaker_key="pinnacle",
+            updated_at="2026-08-22T10:00:00Z",
+            european_odds=ThreeWayOdds(home=1.95, draw=3.40, away=3.80),
+            asian_handicap=AsianHandicapOdds(
+                handicap=-0.5,
+                home_odds=1.91,
+                away_odds=1.99,
+                provider="Pinnacle",
+            ),
+        )
+
+        batch = build_evening_slate_batch(
+            existing,
+            "2026-08-22",
+            odds_api_events=[odds_event],
+            odds_api_source="The Odds API",
+        )
+        athletic = next(
+            match
+            for match in batch["current_matches"]
+            if match["id"] == "2026-08-22-athletic-club-sevilla-fc"
+        )
+
+        self.assertEqual(batch["slate"]["odds_api_source"], "The Odds API")
+        self.assertEqual(athletic["european_odds"]["home"], 1.95)
+        self.assertEqual(athletic["asian_handicap"]["handicap"], -0.5)
+        self.assertEqual(athletic["odds_api_snapshot"]["bookmaker_key"], "pinnacle")
+        self.assertEqual(athletic["signal_label"], "盘口已抓取")
+        self.assertEqual(athletic["prediction"]["market"], "无推荐")
     def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -309,6 +350,52 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["checker_history"]})
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
 
+class OddsApiSourceTest(unittest.TestCase):
+    def test_parse_odds_api_events_extracts_h2h_and_spread(self):
+        payload = [
+            {
+                "id": "event-1",
+                "sport_key": "soccer_spain_la_liga",
+                "commence_time": "2026-08-22T15:00:00Z",
+                "home_team": "Athletic Club",
+                "away_team": "Sevilla FC",
+                "bookmakers": [
+                    {
+                        "key": "pinnacle",
+                        "title": "Pinnacle",
+                        "last_update": "2026-08-22T10:00:00Z",
+                        "markets": [
+                            {
+                                "key": "h2h",
+                                "outcomes": [
+                                    {"name": "Athletic Club", "price": 1.95},
+                                    {"name": "Draw", "price": 3.40},
+                                    {"name": "Sevilla FC", "price": 3.80},
+                                ],
+                            },
+                            {
+                                "key": "spreads",
+                                "outcomes": [
+                                    {"name": "Athletic Club", "price": 1.91, "point": -0.5},
+                                    {"name": "Sevilla FC", "price": 1.99, "point": 0.5},
+                                ],
+                            },
+                        ],
+                    }
+                ],
+            }
+        ]
+
+        events = parse_odds_api_events(payload, "soccer_spain_la_liga")
+        event = events[0]
+
+        self.assertEqual(event.home_team, "Athletic Club")
+        self.assertEqual(event.european_odds.home, 1.95)
+        self.assertEqual(event.european_odds.draw, 3.40)
+        self.assertEqual(event.european_odds.away, 3.80)
+        self.assertEqual(event.asian_handicap.handicap, -0.5)
+        self.assertEqual(event.asian_handicap.home_odds, 1.91)
+        self.assertEqual(event.asian_handicap.away_odds, 1.99)
 class SportterySourceTest(unittest.TestCase):
     def test_parse_official_sporttery_supports_hhad_only_match(self):
         fixture_path = Path(__file__).resolve().parent / "fixtures" / "sporttery_official_sample.json"

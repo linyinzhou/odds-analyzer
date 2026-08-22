@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
-from odds_analyzer.sources import SportteryMatch, fetch_official_sporttery_matches
+from odds_analyzer.sources import (
+    OddsApiEvent,
+    SportteryMatch,
+    fetch_evening_odds_api_events,
+    fetch_official_sporttery_matches,
+)
 
 
 BEIJING = timezone(timedelta(hours=8), name="Asia/Shanghai")
@@ -25,6 +31,16 @@ EXISTING_DETAIL_IDS_BY_DATE = {
 }
 
 TEAM_ALIASES = {
+    "Hull City": "赫尔城",
+    "Manchester United": "曼联",
+    "Everton": "埃弗顿",
+    "Crystal Palace": "水晶宫",
+    "Ipswich Town": "伊普斯",
+    "Sunderland": "桑德兰",
+    "Nottingham Forest": "诺丁汉",
+    "Leeds United": "利兹联",
+    "Brentford": "布伦特",
+    "Tottenham Hotspur": "热刺",
     "Athletic Club": "毕尔巴鄂",
     "Sevilla FC": "塞维利亚",
     "Valencia CF": "巴伦西亚",
@@ -214,6 +230,82 @@ def _placeholder_match(fixture: dict) -> dict:
 
 
 
+
+def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) -> list[dict]:
+    index = {_odds_api_key(event): event for event in odds_events}
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        event = index.get(_dashboard_match_key(copied))
+        if event is not None:
+            if copied.get("european_odds") is None and event.european_odds is not None:
+                copied["european_odds"] = {
+                    "home": event.european_odds.home,
+                    "draw": event.european_odds.draw,
+                    "away": event.european_odds.away,
+                }
+            if copied.get("asian_handicap") is None and event.asian_handicap is not None:
+                copied["asian_handicap"] = {
+                    "provider": event.asian_handicap.provider,
+                    "handicap": event.asian_handicap.handicap,
+                    "home_odds": event.asian_handicap.home_odds,
+                    "away_odds": event.asian_handicap.away_odds,
+                }
+            copied["odds_api_snapshot"] = {
+                "event_id": event.event_id,
+                "sport_key": event.sport_key,
+                "bookmaker": event.bookmaker,
+                "bookmaker_key": event.bookmaker_key,
+                "updated_at": event.updated_at,
+                "source": "The Odds API",
+            }
+            sources = list(copied.get("sources", []))
+            if "The Odds API" not in sources:
+                sources.append("The Odds API")
+            copied["sources"] = sources
+            if copied.get("status") == "pending" and (
+                copied.get("european_odds") is not None or copied.get("asian_handicap") is not None
+            ):
+                copied["signal_label"] = "盘口已抓取" if copied.get("chinese_lottery") is None else "竞彩/盘口已抓取"
+                copied["market_read"] = "欧赔/亚盘数据已抓取；基本面仍待补，暂不生成投注建议。"
+                copied["recommendation"] = {
+                    "fundamental": "基本面数据不足，暂不形成赛前方向。",
+                    "mismatch": "盘口数据已补充，但缺少完整基本面校验；暂不进入错盘建议。",
+                }
+        enriched.append(copied)
+    return enriched
+
+
+def _odds_api_key(event: OddsApiEvent) -> tuple[str, str, str, str]:
+    return (
+        _league_from_sport_key(event.sport_key),
+        _kickoff_key(_beijing_time_key(event.commence_time)),
+        _normalize_team(event.home_team),
+        _normalize_team(event.away_team),
+    )
+
+
+def _league_from_sport_key(sport_key: str) -> str:
+    mapping = {
+        "soccer_epl": "英超",
+        "soccer_spain_la_liga": "西甲",
+        "soccer_italy_serie_a": "意甲",
+        "soccer_germany_bundesliga": "德甲",
+        "soccer_france_ligue_one": "法甲",
+        "soccer_uefa_champs_league": "欧冠",
+    }
+    return mapping.get(sport_key, sport_key)
+
+
+def _beijing_time_key(value: str) -> str:
+    if not value:
+        return ""
+    normalized = value.replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return value
+    return parsed.astimezone(BEIJING).strftime("%Y-%m-%d %H:%M")
 def _enrich_with_sporttery(matches: list[dict], sporttery_matches: list[SportteryMatch]) -> list[dict]:
     index = {_sporttery_key(match): match for match in sporttery_matches}
     enriched = []
@@ -343,6 +435,8 @@ def build_evening_slate_batch(
     slate_date: str,
     sporttery_matches: list[SportteryMatch] | None = None,
     sporttery_source: str = "not requested",
+    odds_api_events: list[OddsApiEvent] | None = None,
+    odds_api_source: str = "not requested",
 ) -> dict:
     current_by_id = {
         match.get("id"): match for match in existing_payload.get("current_matches", [])
@@ -361,6 +455,8 @@ def build_evening_slate_batch(
 
     if sporttery_matches:
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
+    if odds_api_events:
+        current_matches = _enrich_with_odds_api(current_matches, odds_api_events)
 
     current_ids = {match["id"] for match in current_matches}
     next_matchday = _filter_next_matchday(
@@ -377,6 +473,7 @@ def build_evening_slate_batch(
             "generated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
             "source": "manual evening-report job",
             "sporttery_source": sporttery_source,
+            "odds_api_source": odds_api_source,
         },
         "current_matches": current_matches,
         "mismatch_history": [
@@ -412,11 +509,24 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     except Exception as exc:
         sporttery_matches = []
         sporttery_source = f"Sporttery unavailable: {type(exc).__name__}"
+    odds_api_key = os.environ.get("THE_ODDS_API_KEY", "").strip()
+    if odds_api_key:
+        try:
+            odds_api_events = fetch_evening_odds_api_events(odds_api_key, slate_date)
+            odds_api_source = "The Odds API"
+        except Exception as exc:
+            odds_api_events = []
+            odds_api_source = f"The Odds API unavailable: {type(exc).__name__}"
+    else:
+        odds_api_events = []
+        odds_api_source = "The Odds API skipped: missing THE_ODDS_API_KEY"
     batch_payload = build_evening_slate_batch(
         existing_payload,
         slate_date,
         sporttery_matches=sporttery_matches,
         sporttery_source=sporttery_source,
+        odds_api_events=odds_api_events,
+        odds_api_source=odds_api_source,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
     _write_payload(path, merged_payload)
