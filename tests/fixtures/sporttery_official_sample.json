@@ -1,0 +1,43 @@
+{
+  "value": {
+    "lastUpdateTime": "2026-08-21 17:00:00",
+    "matchInfoList": [
+      {
+        "matchNumDate": "260821",
+        "businessDate": "2026-08-21",
+        "weekday": "周五",
+        "subMatchList": [
+          {
+            "matchId": "3003849",
+            "matchNumStr": "周五010",
+            "businessDate": "2026-08-21",
+            "matchDate": "2026-08-22",
+            "matchTime": "03:00:00",
+            "leagueAbbName": "英超",
+            "homeTeamAbbName": "阿森纳",
+            "awayTeamAbbName": "考文垂",
+            "hhad": {
+              "goalLineValue": "-2",
+              "h": "2.32",
+              "d": "3.80",
+              "a": "2.30",
+              "hf": "0",
+              "df": "0",
+              "af": "0"
+            },
+            "ttg": {
+              "s0": "18.00",
+              "s1": "6.50",
+              "s2": "3.60",
+              "s3": "3.65",
+              "s4": "4.80",
+              "s5": "8.50",
+              "s6": "15.00",
+              "s7": "24.00"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
