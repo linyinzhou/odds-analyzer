@@ -8,6 +8,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
+from odds_analyzer.fallback_queue import build_fallback_requests
 from odds_analyzer.slate_analysis import analyze_slate_matches
 from odds_analyzer.sources import (
     COMPETITION_CODES,
@@ -823,6 +824,11 @@ def build_evening_slate_batch(
     ]
     current_matches = analyze_slate_matches(current_matches)
     current_matches = _attach_bilingual_reports(current_matches)
+    source_status = {
+        "football_data_source": football_data_source,
+        "odds_api_source": odds_api_source,
+        "sporttery_source": sporttery_source,
+    }
 
     next_matchday = _filter_next_matchday(
         existing_payload.get("next_matchday", {}),
@@ -853,6 +859,11 @@ def build_evening_slate_batch(
             if match.get("mismatch", {}).get("matched") is True
         ],
         "checker_history": _checker_candidates(current_matches, slate_date),
+        "fallback_requests": build_fallback_requests(
+            current_matches,
+            source_status,
+            scope="daily",
+        ),
         "next_matchday": next_matchday,
         "replace_history_batch": True,
     }

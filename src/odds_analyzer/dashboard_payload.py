@@ -3,6 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from odds_analyzer.fallback_queue import merge_fallback_requests
+
 MatchRecord = dict[str, Any]
 Payload = dict[str, Any]
 
@@ -24,6 +26,12 @@ def merge_dashboard_payload(existing: Payload, batch: Payload) -> Payload:
     merged["current_matches"] = current_matches
     if "next_matchday" in batch:
         merged["next_matchday"] = deepcopy(batch["next_matchday"])
+    if "fallback_requests" in batch:
+        merged["fallback_requests"] = merge_fallback_requests(
+            existing.get("fallback_requests", []),
+            batch["fallback_requests"],
+            replace_scope="daily",
+        )
 
     existing_mismatch = existing.get("mismatch_history", [])
     existing_checker = existing.get("checker_history", [])

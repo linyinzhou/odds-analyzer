@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from odds_analyzer.dashboard_payload import upsert_history
+from odds_analyzer.fallback_queue import build_fallback_requests, merge_fallback_requests
 from odds_analyzer.jobs.refresh_evening_slate import (
     BEIJING,
     DEFAULT_PAYLOAD_PATH,
@@ -122,6 +123,21 @@ def refresh_adhoc_match(
     match = _attach_bilingual_reports([match])[0]
 
     existing["adhoc_history"] = upsert_history(existing.get("adhoc_history", []), [match])
+    adhoc_status = {
+        "football_data_source": source_status["football_data"],
+        "odds_api_source": source_status["odds_api"],
+        "sporttery_source": source_status["sporttery"],
+    }
+    fallback_id = f"adhoc:{match['id']}"
+    existing_fallback = [
+        item
+        for item in existing.get("fallback_requests", [])
+        if item.get("id") != fallback_id
+    ]
+    existing["fallback_requests"] = merge_fallback_requests(
+        existing_fallback,
+        build_fallback_requests([match], adhoc_status, scope="adhoc"),
+    )
     existing["last_adhoc"] = {
         "generated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
         "match_date": match_date,

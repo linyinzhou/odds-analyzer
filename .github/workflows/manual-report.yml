@@ -135,6 +135,22 @@ jobs:
       - name: Validate dashboard data
         run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
 
+      - name: Summarize fallback queue
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          with open("dashboard/data/daily_matches.json", encoding="utf-8") as fh:
+              payload = json.load(fh)
+          pending = [item for item in payload.get("fallback_requests", []) if item.get("status") == "pending"]
+          lines = ["## API fallback queue", "", f"Pending Codex search tasks: **{len(pending)}**"]
+          for item in pending[:20]:
+              fields = ", ".join(item.get("missing_fields", []))
+              lines.append(f"- {item.get('home_team')} vs {item.get('away_team')}: {fields}")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+              fh.write("\n".join(lines) + "\n")
+          PY
+
       - name: Run tests
         run: PYTHONPATH=src python -m unittest discover -s tests
 

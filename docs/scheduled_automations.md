@@ -63,6 +63,8 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 
 The evening job depends on football-data.org, The Odds API, the public Sporttery endpoint, and Open-Meteo. Weather is matched to the football-data fixture and sampled near kickoff; unresolved locations remain missing. Injuries and confirmed lineups are not connected yet. Morning settlement requires football-data.org to publish a final score.
 
+Every report refresh now rebuilds structured `fallback_requests` for missing fundamentals, European odds, Asian handicap, and Sporttery data. Daily refreshes replace only daily-scope tasks and preserve ad hoc tasks. Weather and unpublished lineup data do not create fallback tasks. The workflow writes the pending count and fields to the GitHub Actions step summary; a separate Codex automation is still required to research and resolve those tasks.
+
 
 ## Next Matchday Display
 

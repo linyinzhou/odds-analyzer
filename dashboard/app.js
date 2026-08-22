@@ -1,4 +1,4 @@
-const APP_VERSION = "20260822-9";
+const APP_VERSION = "20260822-10";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -6,6 +6,7 @@ const state = {
   mismatchHistory: [],
   checkerHistory: [],
   adhocHistory: [],
+  fallbackRequests: [],
   nextMatchday: { generated_at: null, competitions: [] },
   analysisCompetitionCodes: ["PL"],
   activeView: "detail",
@@ -24,6 +25,7 @@ const elements = {
   mismatchMatches: document.querySelector("#mismatchMatches"),
   pendingMatches: document.querySelector("#pendingMatches"),
   checkerCount: document.querySelector("#checkerCount"),
+  fallbackCount: document.querySelector("#fallbackCount"),
   viewButtons: document.querySelectorAll(".view-button"),
   runStatusLabel: document.querySelector("#runStatusLabel"),
   runType: document.querySelector("#runType"),
@@ -43,6 +45,7 @@ async function loadDashboard() {
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
   state.adhocHistory = normalized.adhocHistory;
+  state.fallbackRequests = normalized.fallbackRequests;
   state.nextMatchday = normalized.nextMatchday;
   state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
@@ -86,12 +89,14 @@ function normalizePayload(payload) {
   const mismatchHistory = (payload.mismatch_history ?? allCurrentMatches.filter((match) => match.mismatch?.matched)).filter(inScope);
   const checkerHistory = (payload.checker_history ?? getTopCheckerCandidates(currentMatches)).filter(inScope);
   const adhocHistory = payload.adhoc_history ?? [];
+  const fallbackRequests = payload.fallback_requests ?? [];
   const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
   return {
     currentMatches,
     mismatchHistory,
     checkerHistory,
     adhocHistory,
+    fallbackRequests,
     nextMatchday,
     analysisCompetitionCodes,
   };
@@ -149,6 +154,7 @@ function renderSummary() {
   elements.mismatchMatches.textContent = String(mismatchMatches);
   elements.pendingMatches.textContent = String(pendingMatches);
   elements.checkerCount.textContent = `${hits}/${reviewed}`;
+  elements.fallbackCount.textContent = String(state.fallbackRequests.filter((item) => item.status === "pending").length);
 }
 
 function renderActiveButton() {

@@ -202,6 +202,8 @@ The automated refresh reads optional provider keys from environment variables or
 
 If a key is missing, the refresh skips that provider and records the skipped source in `dashboard/data/daily_matches.json`; it does not fabricate missing data.
 
+After each daily or ad hoc refresh, missing fundamentals, European odds, Asian handicap, or Sporttery data is written to `fallback_requests`. The dashboard shows the pending count and GitHub Actions lists the first tasks in its run summary. This queue is the handoff contract for a later Codex web-search automation; creating the queue does not itself claim that missing data was found.
+
 ## Run Status
 
 The dashboard reads `dashboard/data/run_status.json` and shows the latest workflow run in the top status row. GitHub Actions updates this file before publishing `dashboard/` to `gh-pages`, so the page can show the last run status, run type, run id, commit, actor, and timestamp.
