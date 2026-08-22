@@ -291,7 +291,23 @@ def _text_or_none(value: Any) -> str | None:
 def _source_error(exc: Exception) -> str:
     if isinstance(exc, HTTPError):
         reason = getattr(exc, "reason", "") or ""
-        return f"HTTP {exc.code} {reason}".strip()
+        message = _http_error_message(exc)
+        detail = f": {message}" if message else ""
+        return f"HTTP {exc.code} {reason}{detail}".strip()
     if isinstance(exc, URLError):
         return f"URL error {exc.reason}"
     return type(exc).__name__
+
+
+def _http_error_message(exc: HTTPError) -> str:
+    try:
+        payload = json.loads(exc.read(4096).decode("utf-8", errors="replace"))
+    except (AttributeError, json.JSONDecodeError, OSError, UnicodeError):
+        return ""
+
+    if not isinstance(payload, dict):
+        return ""
+    message = payload.get("message") or payload.get("error")
+    if not isinstance(message, str):
+        return ""
+    return re.sub(r"\s+", " ", message).strip()[:200]

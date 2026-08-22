@@ -1,8 +1,10 @@
 import unittest
 from datetime import date, datetime, timedelta, timezone as fixed_timezone
+from io import BytesIO
 import json
 from pathlib import Path
 import sys
+from urllib.error import HTTPError
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -29,6 +31,7 @@ from odds_analyzer import (
     settle_chinese_lottery,
 )
 from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
+from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
     DataSourcePurpose,
     parse_football_data_standings,
@@ -45,6 +48,23 @@ from odds_analyzer.sources import (
     parse_odds_api_events,
     parse_official_sporttery,
 )
+
+
+class FootballDataSourceErrorTest(unittest.TestCase):
+    def test_http_error_includes_safe_api_message(self):
+        error = HTTPError(
+            url="https://api.football-data.org/v4/competitions/PL/matches",
+            code=400,
+            msg="Bad Request",
+            hdrs=None,
+            fp=BytesIO(b'{"message":"Your API token is invalid.","errorCode":400}'),
+        )
+
+        self.assertEqual(
+            _source_error(error),
+            "HTTP 400 Bad Request: Your API token is invalid.",
+        )
+
 
 class HandicapSettlementTest(unittest.TestCase):
     def test_chinese_lottery_draw_when_home_gives_one_and_wins_by_one(self):
