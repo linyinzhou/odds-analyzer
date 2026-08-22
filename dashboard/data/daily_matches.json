@@ -1587,7 +1587,7 @@
   ],
   "next_matchday": {
     "generated_at": "2026-08-22",
-    "scope_note": "按当前时间之后各联赛最近的未赛赛程展示；如果当前轮尚未结束，优先显示当前轮剩余比赛，不直接跳到下一轮。只显示联赛、对阵和日期；到比赛日再生成详细报告。",
+    "scope_note": "按实际开球时间显示当前时间之后最近的未赛赛程；如果较高轮次早于延期的低轮次比赛开踢，先显示较高轮次。只显示联赛、对阵和日期；到比赛日再生成详细报告。",
     "sources": [
       "Premier League / 当前英超样例批次",
       "LALIGA official calendar 2026-2027",
@@ -1657,22 +1657,47 @@
       {
         "name": "西甲",
         "country": "西班牙",
-        "matchday": "2026/27 第 1 轮剩余",
+        "matchday": "2026/27 第 2 轮剩余",
         "fixtures": [
           {
-            "kickoff_time": "08-26 03:00",
+            "kickoff_time": "08-22 23:00",
+            "home_team": "Athletic Club",
+            "away_team": "Sevilla FC"
+          },
+          {
+            "kickoff_time": "08-23 01:30",
             "home_team": "Valencia CF",
-            "away_team": "Real Betis"
+            "away_team": "Celta Vigo"
           },
           {
-            "kickoff_time": "08-27 03:00",
-            "home_team": "Real Madrid",
-            "away_team": "Real Sociedad"
+            "kickoff_time": "08-23 03:30",
+            "home_team": "Espanyol",
+            "away_team": "Real Madrid"
           },
           {
-            "kickoff_time": "08-28 03:00",
-            "home_team": "FC Barcelona",
-            "away_team": "Athletic Club"
+            "kickoff_time": "08-23 23:00",
+            "home_team": "Atletico Madrid",
+            "away_team": "Villarreal CF"
+          },
+          {
+            "kickoff_time": "08-24 01:30",
+            "home_team": "Getafe CF",
+            "away_team": "Racing Club"
+          },
+          {
+            "kickoff_time": "08-24 03:30",
+            "home_team": "Elche CF",
+            "away_team": "FC Barcelona"
+          },
+          {
+            "kickoff_time": "08-25 01:30",
+            "home_team": "Osasuna",
+            "away_team": "Levante UD"
+          },
+          {
+            "kickoff_time": "08-25 03:30",
+            "home_team": "Malaga CF",
+            "away_team": "RC Deportivo"
           }
         ]
       },

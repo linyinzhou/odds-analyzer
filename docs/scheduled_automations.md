@@ -62,4 +62,5 @@ The Next Matchday panel must show the fixtures after the current detail slate. D
 
 ## Next Matchday Selection Rule
 
-The Next Matchday panel should show the nearest unplayed fixtures for each competition after the current query time. If a competition's current round is not finished, show the remaining fixtures from that round instead of jumping to the next full round. Only move to the next round after the current round has no remaining fixtures. Do not duplicate fixtures already present in `current_matches`.
+The Next Matchday panel should show the nearest unplayed fixtures for each competition by actual kickoff time after the current query time. Do not prioritize round number over time: if a newer round starts before postponed lower-round fixtures, show the newer round first, then show postponed fixtures when they become the next upcoming fixtures. Do not duplicate fixtures already present in `current_matches`.
+
