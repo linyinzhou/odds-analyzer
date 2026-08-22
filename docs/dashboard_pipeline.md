@@ -93,4 +93,6 @@ Checker entries should include batch_date when generated. Display newest batches
 
 The Next Matchday panel must show the fixtures after the current detail slate. Do not repeat any fixture already present in current_matches. The frontend also filters accidental duplicates, but the data generator should avoid writing them.
 
+## Next Matchday Selection Rule
 
+The Next Matchday panel should show the nearest unplayed fixtures for each competition after the current query time. If a competition's current round is not finished, show the remaining fixtures from that round instead of jumping to the next full round. Only move to the next round after the current round has no remaining fixtures. Do not duplicate fixtures already present in `current_matches`.
