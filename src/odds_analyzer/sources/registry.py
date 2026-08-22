@@ -43,6 +43,15 @@ def get_data_source_candidates() -> tuple[DataSourceCandidate, ...]:
             automation_risk="Official app/web data access must be validated; public API availability is unclear.",
         ),
         DataSourceCandidate(
+            key="football_data_org",
+            name="football-data.org",
+            homepage="https://www.football-data.org/",
+            tier=ReliabilityTier.PRIMARY,
+            purposes=(DataSourcePurpose.FIXTURES, DataSourcePurpose.FUNDAMENTALS),
+            strengths="Structured fixtures, standings, matchday, venue, and recent result history for major competitions.",
+            automation_risk="Requires API token; free-tier request limits mean enrichment should be cached and scoped.",
+        ),
+        DataSourceCandidate(
             key="api_football",
             name="API-Football",
             homepage="https://www.api-football.com/",

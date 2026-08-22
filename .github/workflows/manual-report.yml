@@ -54,6 +54,7 @@ jobs:
         env:
           SLATE_DATE: ${{ inputs.slate_date }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
       - name: Validate dashboard data
         run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
 

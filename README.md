@@ -177,6 +177,16 @@ The workflow accepts:
 
 Until deterministic live data adapters are connected, the manual workflow validates the current dashboard payload and publishes `dashboard/` to the `gh-pages` branch. The report-generation command should be wired into this workflow once fixture, odds, Sporttery, and result adapters can produce `dashboard/data/daily_matches.json` without manual research.
 
+
+## API Keys
+
+The automated refresh reads optional provider keys from environment variables or GitHub Actions secrets:
+
+- `THE_ODDS_API_KEY`: European 1X2 odds and spreads from The Odds API.
+- `FOOTBALL_DATA_API_KEY`: fixtures, standings, venue, matchday, and recent result form from football-data.org.
+
+If a key is missing, the refresh skips that provider and records the skipped source in `dashboard/data/daily_matches.json`; it does not fabricate missing data.
+
 ## Run Status
 
 The dashboard reads `dashboard/data/run_status.json` and shows the latest workflow run in the top status row. GitHub Actions updates this file before publishing `dashboard/` to `gh-pages`, so the page can show the last run status, run type, run id, commit, actor, and timestamp.
@@ -195,6 +205,7 @@ Shortlist:
 - China Sports Lottery / Sporttery for official Chinese lottery schedules and SP odds.
 - API-Football or Sportmonks for fixtures, standings, injuries, lineups, H2H, and weather.
 - HKJC Football for Asian handicap and related football markets.
+- football-data.org for structured fixtures, standings, matchday, venue, and recent finished-match form.
 - The Odds API for structured European odds and spreads where coverage is available.
 - 500.com, OddsPortal, and Oddschecker as validation sources.
 
@@ -229,4 +240,3 @@ The skill references this repository as the implementation project and does not 
 ## Responsible Use
 
 This project is an analysis assistant, not a guarantee of profit. Recommendations should include uncertainty, bankroll discipline, and data-quality warnings.
-

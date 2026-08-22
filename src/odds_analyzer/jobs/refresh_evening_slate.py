@@ -9,10 +9,13 @@ from pathlib import Path
 
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.sources import (
+    FootballDataSnapshot,
     OddsApiEvent,
     SportteryMatch,
+    fetch_evening_football_data,
     fetch_evening_odds_api_events,
     fetch_official_sporttery_matches,
+    fixture_dashboard_id,
 )
 
 
@@ -231,6 +234,139 @@ def _placeholder_match(fixture: dict) -> dict:
 
 
 
+
+def _add_football_data_fixtures(matches: list[dict], snapshot: FootballDataSnapshot) -> list[dict]:
+    result = [deepcopy(match) for match in matches]
+    existing_keys = {_dashboard_match_key(match) for match in result}
+    for fixture in snapshot.fixtures:
+        candidate = _match_from_football_data_fixture(fixture)
+        if _dashboard_match_key(candidate) in existing_keys:
+            continue
+        existing_keys.add(_dashboard_match_key(candidate))
+        result.append(candidate)
+    return result
+
+
+def _match_from_football_data_fixture(fixture) -> dict:
+    competition = _football_data_competition_label(fixture)
+    match = _placeholder_match(
+        {
+            "id": fixture_dashboard_id(fixture),
+            "kickoff_time": fixture.kickoff_time,
+            "competition": competition,
+            "home_team": fixture.home_team,
+            "away_team": fixture.away_team,
+            "round": _football_data_round_label(fixture),
+        }
+    )
+    match["venue"] = fixture.venue or "待补"
+    match["football_data_snapshot"] = _football_data_fixture_snapshot(fixture)
+    match["sources"] = ["football-data.org"]
+    return match
+
+
+def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapshot) -> list[dict]:
+    fixture_index = {_football_data_fixture_key(fixture): fixture for fixture in snapshot.fixtures}
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        fixture = fixture_index.get(_dashboard_match_key(copied))
+        if fixture is None:
+            enriched.append(copied)
+            continue
+
+        if fixture.venue:
+            copied["venue"] = fixture.venue
+        copied["competition"] = _football_data_competition_label(fixture)
+        copied["round"] = _football_data_round_label(fixture)
+        copied["football_data_snapshot"] = _football_data_fixture_snapshot(fixture)
+        copied["fundamentals"] = [
+            {
+                "home": _fundamental_summary(
+                    fixture.home_team,
+                    fixture.home_team_id,
+                    snapshot,
+                ),
+                "away": _fundamental_summary(
+                    fixture.away_team,
+                    fixture.away_team_id,
+                    snapshot,
+                ),
+            }
+        ]
+        sources = list(copied.get("sources", []))
+        if "football-data.org" not in sources:
+            sources.append("football-data.org")
+        copied["sources"] = sources
+        if copied.get("status") == "pending":
+            copied["signal_label"] = "基本面已抓取"
+        enriched.append(copied)
+    return enriched
+
+
+def _football_data_fixture_key(fixture) -> tuple[str, str, str, str]:
+    return (
+        _football_data_league_key(fixture.competition_code),
+        _kickoff_key(fixture.kickoff_time),
+        _normalize_team(fixture.home_team),
+        _normalize_team(fixture.away_team),
+    )
+
+
+def _football_data_league_key(code: str) -> str:
+    mapping = {
+        "PL": "英超",
+        "PD": "西甲",
+        "SA": "意甲",
+        "BL1": "德甲",
+        "FL1": "法甲",
+        "CL": "欧冠",
+    }
+    return mapping.get(code, code)
+
+
+def _football_data_competition_label(fixture) -> str:
+    league = _football_data_league_key(fixture.competition_code)
+    round_label = _football_data_round_label(fixture)
+    return f"{league} {round_label}" if round_label else league
+
+
+def _football_data_round_label(fixture) -> str:
+    if fixture.matchday is not None:
+        return f"第 {fixture.matchday} 轮"
+    if fixture.stage:
+        return fixture.stage.replace("_", " ")
+    return ""
+
+
+def _football_data_fixture_snapshot(fixture) -> dict:
+    return {
+        "match_id": fixture.match_id,
+        "competition_code": fixture.competition_code,
+        "utc_date": fixture.utc_date,
+        "status": fixture.status,
+        "source": "football-data.org",
+    }
+
+
+def _fundamental_summary(team_name: str, team_id: int | None, snapshot: FootballDataSnapshot) -> str:
+    if team_id is None:
+        return f"{team_name}：football-data.org 未返回球队 ID，排名和近况待补。"
+    standing = snapshot.standings.get(team_id)
+    form = snapshot.forms.get(team_id)
+    parts = [team_name]
+    if standing is not None:
+        parts.append(
+            f"排名第 {standing.position}，{standing.played_games} 场 {standing.won}胜{standing.draw}平{standing.lost}负，"
+            f"进{standing.goals_for}失{standing.goals_against}，净胜{standing.goal_difference:+d}，{standing.points}分"
+        )
+    else:
+        parts.append("排名待补")
+    if form is not None:
+        parts.append(f"近5场 {form.display}")
+    else:
+        parts.append("近5场待补")
+    return "：".join((parts[0], "；".join(parts[1:])))
 def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) -> list[dict]:
     index = {_odds_api_key(event): event for event in odds_events}
     enriched = []
@@ -437,6 +573,8 @@ def build_evening_slate_batch(
     sporttery_source: str = "not requested",
     odds_api_events: list[OddsApiEvent] | None = None,
     odds_api_source: str = "not requested",
+    football_data_snapshot: FootballDataSnapshot | None = None,
+    football_data_source: str = "not requested",
 ) -> dict:
     current_by_id = {
         match.get("id"): match for match in existing_payload.get("current_matches", [])
@@ -453,6 +591,9 @@ def build_evening_slate_batch(
         match["batch_date"] = slate_date
         current_matches.append(match)
 
+    if football_data_snapshot is not None:
+        current_matches = _add_football_data_fixtures(current_matches, football_data_snapshot)
+        current_matches = _enrich_with_football_data(current_matches, football_data_snapshot)
     if sporttery_matches:
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
@@ -474,6 +615,7 @@ def build_evening_slate_batch(
             "source": "manual evening-report job",
             "sporttery_source": sporttery_source,
             "odds_api_source": odds_api_source,
+            "football_data_source": football_data_source,
         },
         "current_matches": current_matches,
         "mismatch_history": [
@@ -503,6 +645,17 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     existing_payload = _load_payload(path)
+    football_data_key = os.environ.get("FOOTBALL_DATA_API_KEY", "").strip()
+    if football_data_key:
+        try:
+            football_data_snapshot = fetch_evening_football_data(football_data_key, slate_date)
+            football_data_source = "football-data.org"
+        except Exception as exc:
+            football_data_snapshot = None
+            football_data_source = f"football-data.org unavailable: {type(exc).__name__}"
+    else:
+        football_data_snapshot = None
+        football_data_source = "football-data.org skipped: missing FOOTBALL_DATA_API_KEY"
     try:
         sporttery_matches = fetch_official_sporttery_matches(slate_date)
         sporttery_source = "Sporttery official"
@@ -527,6 +680,8 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         sporttery_source=sporttery_source,
         odds_api_events=odds_api_events,
         odds_api_source=odds_api_source,
+        football_data_snapshot=football_data_snapshot,
+        football_data_source=football_data_source,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
     _write_payload(path, merged_payload)

@@ -16,7 +16,8 @@ The first production goal is to automatically build a daily slate and compare:
 | Source | Best For | Notes |
 | --- | --- | --- |
 | China Sports Lottery / Sporttery | Chinese lottery official match list, SP odds, handicap win/draw/loss | Highest authority for Chinese lottery. Automation feasibility still needs a spike against official web/app data. |
-| API-Football | Fixtures, standings, injuries, lineups, H2H, broad league coverage | Strong candidate for Eredivisie, Primeira Liga, J1, and smaller leagues during top-five-league off-season. |
+| football-data.org | Fixtures, standings, matchday, venue, recent results | First implemented fundamentals adapter. Requires `FOOTBALL_DATA_API_KEY`; useful for five major leagues and Champions League proper. |
+| API-Football | Fixtures, standings, injuries, lineups, H2H, broad league coverage | Strong candidate for injuries, lineups, H2H, Eredivisie, Primeira Liga, J1, and smaller leagues. |
 | Sportmonks | Fixtures, lineups, sidelined players, xG, odds, weather, predictions | Commercial API with broad football coverage and rich includes. |
 
 ### Tier B: Market Sources
@@ -89,3 +90,9 @@ Output target:
 - Store the raw source payload during spikes so parser bugs can be replayed.
 - Never hard-code one source as the single authority for team names; fixture matching will need aliases.
 - Record data timestamps because odds can move quickly before kickoff.
+
+Current API progress:
+
+- `src/odds_analyzer/sources/football_data.py` can parse and fetch football-data.org fixtures, standings, and recent finished-match form.
+- Manual/evening refresh reads `FOOTBALL_DATA_API_KEY` and enriches the current slate with venue, round, ranking, points, goal difference, and recent W/D/L form when available.
+- Missing API tokens or provider errors are recorded in `slate.football_data_source`; no missing fundamentals are fabricated.

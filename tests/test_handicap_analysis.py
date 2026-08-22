@@ -31,6 +31,10 @@ from odds_analyzer import (
 from odds_analyzer.jobs.refresh_evening_slate import build_evening_slate_batch
 from odds_analyzer.sources import (
     DataSourcePurpose,
+    parse_football_data_standings,
+    parse_football_data_forms,
+    parse_football_data_fixtures,
+    FootballDataSnapshot,
     OddsApiEvent,
     SportteryMarket,
     SportteryMatch,
@@ -349,6 +353,139 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertFalse(athletic["mismatch"]["matched"])
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["checker_history"]})
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
+
+class FootballDataSourceTest(unittest.TestCase):
+    def test_parse_football_data_fixtures_standings_and_forms(self):
+        fixture_payload = {
+            "competition": {"code": "PL", "name": "Premier League"},
+            "matches": [
+                {
+                    "id": 1001,
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "TIMED",
+                    "matchday": 1,
+                    "stage": "REGULAR_SEASON",
+                    "venue": "Goodison Park",
+                    "homeTeam": {"id": 62, "name": "Everton FC"},
+                    "awayTeam": {"id": 354, "name": "Crystal Palace FC"},
+                }
+            ],
+        }
+        standing_payload = {
+            "standings": [
+                {
+                    "type": "TOTAL",
+                    "table": [
+                        {
+                            "position": 8,
+                            "team": {"id": 62, "name": "Everton FC"},
+                            "playedGames": 10,
+                            "won": 4,
+                            "draw": 3,
+                            "lost": 3,
+                            "goalsFor": 14,
+                            "goalsAgainst": 12,
+                            "goalDifference": 2,
+                            "points": 15,
+                        }
+                    ],
+                }
+            ]
+        }
+        finished_matches = [
+            {
+                "utcDate": "2026-08-15T14:00:00Z",
+                "status": "FINISHED",
+                "homeTeam": {"id": 62},
+                "awayTeam": {"id": 354},
+                "score": {"fullTime": {"home": 2, "away": 1}},
+            },
+            {
+                "utcDate": "2026-08-10T14:00:00Z",
+                "status": "FINISHED",
+                "homeTeam": {"id": 99},
+                "awayTeam": {"id": 62},
+                "score": {"fullTime": {"home": 0, "away": 0}},
+            },
+        ]
+
+        fixtures = parse_football_data_fixtures(fixture_payload, "PL")
+        standings = parse_football_data_standings(standing_payload)
+        forms = parse_football_data_forms(finished_matches)
+
+        self.assertEqual(fixtures[0].kickoff_time, "2026-08-22 22:00")
+        self.assertEqual(fixtures[0].venue, "Goodison Park")
+        self.assertEqual(standings[62].position, 8)
+        self.assertEqual(forms[62].results, ("W", "D"))
+
+    def test_football_data_snapshot_enriches_evening_batch_without_prediction(self):
+        existing = {"current_matches": [], "next_matchday": {"competitions": []}}
+        fixture_payload = {
+            "competition": {"code": "PL", "name": "Premier League"},
+            "matches": [
+                {
+                    "id": 1001,
+                    "utcDate": "2026-08-22T14:00:00Z",
+                    "status": "TIMED",
+                    "matchday": 1,
+                    "stage": "REGULAR_SEASON",
+                    "venue": "Goodison Park",
+                    "homeTeam": {"id": 62, "name": "Everton FC"},
+                    "awayTeam": {"id": 354, "name": "Crystal Palace FC"},
+                }
+            ],
+        }
+        standing_payload = {
+            "standings": [
+                {
+                    "type": "TOTAL",
+                    "table": [
+                        {
+                            "position": 8,
+                            "team": {"id": 62, "name": "Everton FC"},
+                            "playedGames": 10,
+                            "won": 4,
+                            "draw": 3,
+                            "lost": 3,
+                            "goalsFor": 14,
+                            "goalsAgainst": 12,
+                            "goalDifference": 2,
+                            "points": 15,
+                        },
+                        {
+                            "position": 11,
+                            "team": {"id": 354, "name": "Crystal Palace FC"},
+                            "playedGames": 10,
+                            "won": 3,
+                            "draw": 4,
+                            "lost": 3,
+                            "goalsFor": 11,
+                            "goalsAgainst": 11,
+                            "goalDifference": 0,
+                            "points": 13,
+                        },
+                    ],
+                }
+            ]
+        }
+        snapshot = FootballDataSnapshot(
+            fixtures=parse_football_data_fixtures(fixture_payload, "PL"),
+            standings=parse_football_data_standings(standing_payload),
+            forms=parse_football_data_forms([]),
+        )
+
+        batch = build_evening_slate_batch(
+            existing,
+            "2026-08-22",
+            football_data_snapshot=snapshot,
+            football_data_source="football-data.org",
+        )
+        match = next(item for item in batch["current_matches"] if item["home_team"] == "Everton FC")
+
+        self.assertEqual(batch["slate"]["football_data_source"], "football-data.org")
+        self.assertEqual(match["venue"], "Goodison Park")
+        self.assertIn("排名第 8", match["fundamentals"][0]["home"])
+        self.assertEqual(match["prediction"]["market"], "无推荐")
 
 class OddsApiSourceTest(unittest.TestCase):
     def test_parse_odds_api_events_extracts_h2h_and_spread(self):
