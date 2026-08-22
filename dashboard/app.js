@@ -1,10 +1,11 @@
-const APP_VERSION = "20260822-8";
+const APP_VERSION = "20260822-9";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
   currentMatches: [],
   mismatchHistory: [],
   checkerHistory: [],
+  adhocHistory: [],
   nextMatchday: { generated_at: null, competitions: [] },
   analysisCompetitionCodes: ["PL"],
   activeView: "detail",
@@ -12,6 +13,7 @@ const state = {
   pages: {
     mismatch: 1,
     checker: 1,
+    adhoc: 1,
   },
 };
 
@@ -40,6 +42,7 @@ async function loadDashboard() {
   state.currentMatches = normalized.currentMatches;
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
+  state.adhocHistory = normalized.adhocHistory;
   state.nextMatchday = normalized.nextMatchday;
   state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
@@ -82,11 +85,13 @@ function normalizePayload(payload) {
   const currentMatches = allCurrentMatches.filter(inScope);
   const mismatchHistory = (payload.mismatch_history ?? allCurrentMatches.filter((match) => match.mismatch?.matched)).filter(inScope);
   const checkerHistory = (payload.checker_history ?? getTopCheckerCandidates(currentMatches)).filter(inScope);
+  const adhocHistory = payload.adhoc_history ?? [];
   const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
   return {
     currentMatches,
     mismatchHistory,
     checkerHistory,
+    adhocHistory,
     nextMatchday,
     analysisCompetitionCodes,
   };
@@ -125,6 +130,10 @@ function render() {
     renderScheduleView();
     return;
   }
+  if (state.activeView === "adhoc") {
+    renderAdhocView();
+    return;
+  }
   renderDetailView();
 }
 
@@ -160,6 +169,22 @@ function renderDetailView() {
   `;
 }
 
+function renderAdhocView() {
+  const matches = [...state.adhocHistory].sort(
+    (a, b) => String(b.generated_at ?? "").localeCompare(String(a.generated_at ?? "")) || sortByKickoffDesc(a, b),
+  );
+  const paged = paginate(matches, state.pages.adhoc);
+  elements.viewEyebrow.textContent = "Ad Hoc";
+  elements.viewTitle.textContent = "自选比赛";
+  elements.viewCounter.textContent = `${matches.length} 场`;
+  elements.viewBody.innerHTML = `
+    <div class="report-list">
+      ${paged.items.map(renderMatchReport).join("") || `<p class="empty">暂无自选比赛报告。请从“手动更新”选择 adhoc-report 生成。</p>`}
+    </div>
+    ${renderPagination("adhoc", paged)}
+  `;
+  bindPagination();
+}
 function renderMatchReport(match) {
   return `
     <details class="match-report">

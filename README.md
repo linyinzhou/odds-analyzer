@@ -184,11 +184,13 @@ https://github.com/linyinzhou/odds-analyzer/actions/workflows/manual-report.yml
 
 The workflow accepts:
 
-- `run_type`: `evening-report` or `result-review`.
+- `run_type`: `evening-report`, `result-review`, or `adhoc-report`.
 - `slate_date`: optional Beijing-time slate date, `YYYY-MM-DD`.
 - `note`: optional operator note.
 
 The `evening-report` path runs the live refresh, clears stale query-time snapshots, generates market-led recommendations and mismatch checks, validates the payload, runs tests, and publishes `dashboard/` to `gh-pages`.
+
+For a one-match report outside the enabled daily competitions, choose `adhoc-report` and enter `adhoc_date`, `home_team`, and `away_team`. `competition_label`, `kickoff_time`, and The Odds API `odds_sport_key` are optional. The result is stored in `adhoc_history`, shown in the Ad Hoc dashboard panel, and does not replace the daily Detail, Mismatch, Checker, or Next Matchday data. Missing provider data is reported as unavailable rather than estimated.
 
 
 ## API Keys

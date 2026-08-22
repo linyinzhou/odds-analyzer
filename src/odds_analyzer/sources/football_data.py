@@ -151,6 +151,26 @@ def fetch_evening_football_data(
     )
 
 
+def fetch_fixtures_for_beijing_date(
+    api_key: str,
+    match_date: str,
+    timeout: float = 20,
+) -> tuple[FootballDataFixture, ...]:
+    target = datetime.fromisoformat(match_date).date()
+    date_from = (target - timedelta(days=1)).isoformat()
+    payload = _get_json(
+        "/matches",
+        api_key,
+        {"dateFrom": date_from, "dateTo": target.isoformat()},
+        timeout,
+    )
+    return tuple(
+        fixture
+        for fixture in parse_football_data_fixtures(payload, "")
+        if _parse_utc(fixture.utc_date).astimezone(BEIJING).date() == target
+    )
+
+
 def fetch_evening_fixtures(
     api_key: str,
     slate_date: str,

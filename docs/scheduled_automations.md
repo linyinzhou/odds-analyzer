@@ -39,8 +39,11 @@ Use `Run workflow` and choose:
 
 - `evening-report` to refresh the current slate report batch.
 - `result-review` to run the checker review path.
+- `adhoc-report` to generate one independently requested match report from `adhoc_date`, `home_team`, and `away_team`.
 
 The `evening-report` option runs the deterministic refresh and prediction job before publishing. The `result-review` option fetches final scores from football-data.org and settles the exact stored prediction.
+
+For `adhoc-report`, optionally provide `competition_label`, `kickoff_time`, and an Odds API `odds_sport_key`. This flow appends or replaces the same `match date + teams` entry in `adhoc_history`; it does not modify the current daily slate or its historical mismatch/checker lists.
 
 ## Visible Run Status
 
@@ -51,6 +54,7 @@ The dashboard displays the latest workflow status from `dashboard/data/run_statu
 - `mismatch_history` is never cleared by the daily refresh, but entries with the same `batch_date + id` are overwritten by the newest run.
 - `checker_history` is never cleared by the daily refresh, but entries with the same `batch_date + id` are overwritten by the newest run.
 - `next_matchday` must include the five major leagues plus Champions League proper; Champions League qualifiers/preliminary/playoffs are excluded.
+- `adhoc_history` preserves manual one-match reports and replaces a duplicate `match date + teams` request with the newest snapshot.
 - Checker candidates must be concrete predictions, not vague match-direction notes.
 - Each prediction must include `market`, `pick`, `confidence`, and `detail`.
 - Morning review must not evaluate a different market than the one originally recommended.

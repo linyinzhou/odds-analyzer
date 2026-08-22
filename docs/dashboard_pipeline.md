@@ -10,6 +10,7 @@ This project should evolve into a GitHub-hosted football odds dashboard with a r
 4. Render each match report in the dashboard detail panel.
 5. Render only matched handicap-mismatch opportunities in the mismatch panel.
 6. Write every daily recommendation to the checker panel for post-match review.
+7. Support independent ad hoc team/date requests without changing the enabled daily competition scope.
 
 ## Dashboard Panels
 
@@ -19,6 +20,7 @@ This project should evolve into a GitHub-hosted football odds dashboard with a r
 | Mismatch | Only matches that satisfy the mismatch rules | Reason, suggested Sporttery selection, line comparison |
 | Checker | Post-match review queue | Pre-match recommendation, pending final score, pending review result |
 | Next Matchday | Upcoming fixture panel | Five major leagues plus Champions League proper; exclude Champions League qualifiers |
+| Ad Hoc | Independently requested match reports | User-supplied date and teams, with available fundamentals and market snapshots |
 
 ## Recommendation Format
 
@@ -39,7 +41,7 @@ The current dashboard is static and reads:
 dashboard/data/daily_matches.json
 ```
 
-The file is split into three lists:
+The dashboard payload contains these primary collections:
 
 | Field | Behavior |
 |---|---|
@@ -47,6 +49,7 @@ The file is split into three lists:
 | `mismatch_history` | Historical matched mismatch opportunities. Preserve older batches, but upsert same `batch_date + id` with the newest run data. |
 | `checker_history` | Historical review queue. Preserve older batches, but upsert same `batch_date + id` with the newest run data. |
 | `next_matchday` | Upcoming fixtures for Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League proper. Replace on each evening refresh. |
+| `adhoc_history` | Manual one-match reports. Preserve history and upsert the same match date plus deterministic fixture id. |
 
 This is enough for GitHub Pages and for validating the UI/data model before adding scheduled data collection.
 
@@ -96,4 +99,3 @@ The Next Matchday panel must show the fixtures after the current detail slate. D
 ## Next Matchday Selection Rule
 
 The Next Matchday panel should show the nearest unplayed fixtures for each competition by actual kickoff time after the current query time. Do not prioritize round number over time: if a newer round starts before postponed lower-round fixtures, show the newer round first, then show postponed fixtures when they become the next upcoming fixtures. Do not duplicate fixtures already present in `current_matches`.
-

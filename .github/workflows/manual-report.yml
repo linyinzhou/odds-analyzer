@@ -14,12 +14,37 @@ on:
         options:
           - evening-report
           - result-review
+          - adhoc-report
       slate_date:
         description: "Optional slate date, Asia/Shanghai YYYY-MM-DD"
         required: false
         type: string
       analysis_competitions:
         description: "Optional analysis codes: PL or PL,PD,SA,BL1,FL1,CL"
+        required: false
+        type: string
+      adhoc_date:
+        description: "Ad hoc match date, Asia/Shanghai YYYY-MM-DD"
+        required: false
+        type: string
+      home_team:
+        description: "Ad hoc home team"
+        required: false
+        type: string
+      away_team:
+        description: "Ad hoc away team"
+        required: false
+        type: string
+      competition_label:
+        description: "Optional competition label, e.g. Eredivisie"
+        required: false
+        type: string
+      kickoff_time:
+        description: "Optional kickoff time, e.g. 20:00"
+        required: false
+        type: string
+      odds_sport_key:
+        description: "Optional The Odds API sport key, e.g. soccer_netherlands_eredivisie"
         required: false
         type: string
       note:
@@ -60,6 +85,12 @@ jobs:
           echo "run_type=${{ inputs.run_type }}"
           echo "slate_date=${{ inputs.slate_date }}"
           echo "analysis_competitions=${{ inputs.analysis_competitions }}"
+          echo "adhoc_date=${{ inputs.adhoc_date }}"
+          echo "home_team=${{ inputs.home_team }}"
+          echo "away_team=${{ inputs.away_team }}"
+          echo "competition_label=${{ inputs.competition_label }}"
+          echo "kickoff_time=${{ inputs.kickoff_time }}"
+          echo "odds_sport_key=${{ inputs.odds_sport_key }}"
           echo "note=${{ inputs.note }}"
           echo "Dispatch accepted."
 
@@ -78,6 +109,29 @@ jobs:
           SLATE_DATE: ${{ inputs.slate_date }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
 
+      - name: Generate ad hoc match report
+        if: ${{ inputs.run_type == 'adhoc-report' }}
+        run: |
+          if [ -z "$ADHOC_DATE" ] || [ -z "$HOME_TEAM" ] || [ -z "$AWAY_TEAM" ]; then
+            echo "adhoc_date, home_team and away_team are required for adhoc-report."
+            exit 1
+          fi
+          PYTHONPATH=src python -m odds_analyzer.jobs.refresh_adhoc_match \
+            --date "$ADHOC_DATE" \
+            --home "$HOME_TEAM" \
+            --away "$AWAY_TEAM" \
+            --competition "$COMPETITION_LABEL" \
+            --kickoff "$KICKOFF_TIME" \
+            --odds-sport-key "$ODDS_SPORT_KEY"
+        env:
+          ADHOC_DATE: ${{ inputs.adhoc_date }}
+          HOME_TEAM: ${{ inputs.home_team }}
+          AWAY_TEAM: ${{ inputs.away_team }}
+          COMPETITION_LABEL: ${{ inputs.competition_label }}
+          KICKOFF_TIME: ${{ inputs.kickoff_time }}
+          ODDS_SPORT_KEY: ${{ inputs.odds_sport_key }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
       - name: Validate dashboard data
         run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
 
