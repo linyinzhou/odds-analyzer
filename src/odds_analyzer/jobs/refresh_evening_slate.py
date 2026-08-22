@@ -649,7 +649,7 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     if football_data_key:
         try:
             football_data_snapshot = fetch_evening_football_data(football_data_key, slate_date)
-            football_data_source = "football-data.org"
+            football_data_source = _football_data_source_status(football_data_snapshot)
         except Exception as exc:
             football_data_snapshot = None
             football_data_source = f"football-data.org unavailable: {type(exc).__name__}"
@@ -687,6 +687,16 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     _write_payload(path, merged_payload)
     return merged_payload
 
+
+
+def _football_data_source_status(snapshot: FootballDataSnapshot) -> str:
+    if snapshot.fixtures and snapshot.errors:
+        return "football-data.org partial: " + "; ".join(snapshot.errors[:6])
+    if snapshot.fixtures:
+        return "football-data.org"
+    if snapshot.errors:
+        return "football-data.org unavailable: " + "; ".join(snapshot.errors[:6])
+    return "football-data.org empty: no fixtures in slate window"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(

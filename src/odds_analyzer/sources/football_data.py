@@ -5,6 +5,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -80,6 +81,7 @@ class FootballDataSnapshot:
     standings: dict[int, FootballDataStanding]
     forms: dict[int, FootballDataForm]
     source: str = "football-data.org"
+    errors: tuple[str, ...] = ()
 
 
 def fetch_evening_football_data(
@@ -98,25 +100,30 @@ def fetch_evening_football_data(
     fixtures: list[FootballDataFixture] = []
     standings: dict[int, FootballDataStanding] = {}
     finished_matches: list[dict[str, Any]] = []
+    errors: list[str] = []
 
     for code in competition_codes:
-        fixture_payload = _get_json(
-            f"/competitions/{code}/matches",
-            api_key,
-            {"dateFrom": date_from, "dateTo": date_to},
-            timeout,
-        )
-        fixtures.extend(
-            fixture
-            for fixture in parse_football_data_fixtures(fixture_payload, code)
-            if start <= _parse_utc(fixture.utc_date).astimezone(BEIJING) < end
-        )
+        try:
+            fixture_payload = _get_json(
+                f"/competitions/{code}/matches",
+                api_key,
+                {"dateFrom": date_from, "dateTo": date_to},
+                timeout,
+            )
+            fixtures.extend(
+                fixture
+                for fixture in parse_football_data_fixtures(fixture_payload, code)
+                if start <= _parse_utc(fixture.utc_date).astimezone(BEIJING) < end
+            )
+        except Exception as exc:
+            errors.append(f"{code} matches {_source_error(exc)}")
+            continue
 
         try:
             standing_payload = _get_json(f"/competitions/{code}/standings", api_key, {}, timeout)
             standings.update(parse_football_data_standings(standing_payload))
-        except Exception:
-            pass
+        except Exception as exc:
+            errors.append(f"{code} standings {_source_error(exc)}")
 
         try:
             finished_payload = _get_json(
@@ -126,13 +133,14 @@ def fetch_evening_football_data(
                 timeout,
             )
             finished_matches.extend(finished_payload.get("matches") or [])
-        except Exception:
-            pass
+        except Exception as exc:
+            errors.append(f"{code} finished {_source_error(exc)}")
 
     return FootballDataSnapshot(
         fixtures=tuple(fixtures),
         standings=standings,
         forms=parse_football_data_forms(finished_matches),
+        errors=tuple(errors),
     )
 
 
@@ -278,3 +286,12 @@ def _text(value: Any) -> str:
 def _text_or_none(value: Any) -> str | None:
     text = _text(value)
     return text or None
+
+
+def _source_error(exc: Exception) -> str:
+    if isinstance(exc, HTTPError):
+        reason = getattr(exc, "reason", "") or ""
+        return f"HTTP {exc.code} {reason}".strip()
+    if isinstance(exc, URLError):
+        return f"URL error {exc.reason}"
+    return type(exc).__name__
