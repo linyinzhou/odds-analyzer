@@ -209,7 +209,11 @@ function renderMismatchView() {
 
 
 function renderScheduleView() {
-  const competitions = state.nextMatchday.competitions ?? [];
+  const currentFixtureKeys = new Set(state.currentMatches.map(fixtureIdentity));
+  const competitions = (state.nextMatchday.competitions ?? []).map((competition) => ({
+    ...competition,
+    fixtures: (competition.fixtures ?? []).filter((fixture) => !currentFixtureKeys.has(fixtureIdentity(fixture))),
+  }));
   const fixtureCount = competitions.reduce((total, competition) => total + (competition.fixtures?.length ?? 0), 0);
   elements.viewEyebrow.textContent = "Schedule";
   elements.viewTitle.textContent = "下个比赛日";
@@ -461,6 +465,26 @@ function bindPagination() {
   });
 }
 
+function sortCheckerHistory(a, b) {
+  return (
+    historyBatchKey(b).localeCompare(historyBatchKey(a)) ||
+    predictionConfidence(b) - predictionConfidence(a) ||
+    kickoffKey(a).localeCompare(kickoffKey(b))
+  );
+}
+
+function historyBatchKey(match) {
+  return match.batch_date ?? match.generated_at ?? kickoffKey(match).slice(0, 5);
+}
+
+function fixtureIdentity(fixture) {
+  return `${normalizeText(fixture.home_team)}|${normalizeText(fixture.away_team)}|${fixture.kickoff_time ?? ""}`;
+}
+
+function normalizeText(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
 function sortByKickoffAsc(a, b) {
   return kickoffKey(a).localeCompare(kickoffKey(b));
 }
@@ -513,6 +537,9 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
+
+
 
 
 

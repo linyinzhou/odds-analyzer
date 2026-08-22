@@ -17,7 +17,8 @@ This project should evolve into a GitHub-hosted football odds dashboard with a r
 |---|---|---|
 | Detail | Full readable match report | Match info, fundamentals, markets, recommendation, risks, sources |
 | Mismatch | Only matches that satisfy the mismatch rules | Reason, suggested Sporttery selection, line comparison |
-| Checker | Post-match review queue | Pre-match recommendation, pending final score, pending review result |`n| Next Matchday | Upcoming fixture panel | Five major leagues plus Champions League proper; exclude Champions League qualifiers |
+| Checker | Post-match review queue | Pre-match recommendation, pending final score, pending review result |
+| Next Matchday | Upcoming fixture panel | Five major leagues plus Champions League proper; exclude Champions League qualifiers |
 
 ## Recommendation Format
 
@@ -44,7 +45,8 @@ The file is split into three lists:
 |---|---|
 | `current_matches` | Current queried slate only. Replace this list on the next daily query. |
 | `mismatch_history` | Historical matched mismatch opportunities. Append new matches first; do not clear daily. |
-| `checker_history` | Historical review queue. Append selected daily recommendations first; do not clear daily. |`n| `next_matchday` | Upcoming fixtures for Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League proper. Replace on each evening refresh. |
+| `checker_history` | Historical review queue. Append selected daily recommendations first; do not clear daily. |
+| `next_matchday` | Upcoming fixtures for Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and Champions League proper. Replace on each evening refresh. |
 
 This is enough for GitHub Pages and for validating the UI/data model before adding scheduled data collection.
 
@@ -81,4 +83,16 @@ The first reliable sources to wire in are:
 ## Schedule-Only Display Rule
 
 The Next Matchday panel is schedule-only. Show only competition, fixture, and date/time. Do not include analysis, odds, venues, weather, predictions, or reports there; those belong in current_matches on the actual match day.
+
+
+## checker_history sorting rule
+
+Checker entries should include batch_date when generated. Display newest batches first; within the same batch, sort by prediction.confidence descending. New daily candidates should be prepended or otherwise sorted ahead of older batches.
+
+## next_matchday must not duplicate current_matches
+
+The Next Matchday panel must show the fixtures after the current detail slate. Do not repeat any fixture already present in current_matches. The frontend also filters accidental duplicates, but the data generator should avoid writing them.
+
+
+
 

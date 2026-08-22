@@ -778,7 +778,8 @@
         "pick": "让平 + 让负",
         "confidence": 64,
         "detail": "埃弗顿只有轻微主场优势，欧亚盘不支持大胜；明确建议是竞彩让球 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -851,7 +852,8 @@
         "pick": "让平 + 让负",
         "confidence": 67,
         "detail": "双方接近均势，亚盘平手附近；明确建议是竞彩伊普斯维奇 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -924,7 +926,8 @@
         "pick": "让平 + 让负",
         "confidence": 66,
         "detail": "森林只是主场小优，亚盘 -0.25 不支持两球胜；明确建议是竞彩森林 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -997,7 +1000,8 @@
         "pick": "让负，防让平",
         "confidence": 69,
         "detail": "欧赔接近均势、亚盘平手，竞彩主让 1 偏深；明确建议是竞彩布伦特福德 -1 让负为主，防让平。"
-      }
+      },
+      "batch_date": "2026-08-22"
     }
   ],
   "checker_history": [
@@ -1072,7 +1076,8 @@
         "pick": "客胜",
         "confidence": 70,
         "detail": "基本面倾向曼联客胜；不作为错盘机会，明确建议是竞彩胜平负客胜，胜差盘只做观察。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-23-brentford-tottenham",
@@ -1145,7 +1150,8 @@
         "pick": "让负，防让平",
         "confidence": 69,
         "detail": "欧赔接近均势、亚盘平手，竞彩主让 1 偏深；明确建议是竞彩布伦特福德 -1 让负为主，防让平。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-23-man-city-bournemouth",
@@ -1218,7 +1224,8 @@
         "pick": "让胜 + 让平",
         "confidence": 68,
         "detail": "基本面支持曼城胜且有两球胜路径；竞彩 -1 比亚盘 -1.25 更浅，明确建议是竞彩让胜 + 让平。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-22-ipswich-sunderland",
@@ -1291,7 +1298,8 @@
         "pick": "让平 + 让负",
         "confidence": 67,
         "detail": "双方接近均势，亚盘平手附近；明确建议是竞彩伊普斯维奇 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-22-nottingham-forest-leeds",
@@ -1364,7 +1372,8 @@
         "pick": "让平 + 让负",
         "confidence": 66,
         "detail": "森林只是主场小优，亚盘 -0.25 不支持两球胜；明确建议是竞彩森林 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-22-everton-crystal-palace",
@@ -1437,7 +1446,8 @@
         "pick": "让平 + 让负",
         "confidence": 64,
         "detail": "埃弗顿只有轻微主场优势，欧亚盘不支持大胜；明确建议是竞彩让球 -1 选让平 + 让负。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-23-newcastle-liverpool",
@@ -1510,7 +1520,8 @@
         "pick": "让平，小防让胜",
         "confidence": 58,
         "detail": "利物浦方向占优但强强战不支持稳定赢 2 球；明确建议是竞彩纽卡 +1 让平，小防让胜。"
-      }
+      },
+      "batch_date": "2026-08-22"
     },
     {
       "id": "2026-08-25-fulham-chelsea",
@@ -1570,7 +1581,8 @@
         "pick": "切尔西 -0.5",
         "confidence": 57,
         "detail": "竞彩未返回，明确建议只落在亚盘切尔西 -0.5，客胜方向但不重仓。"
-      }
+      },
+      "batch_date": "2026-08-22"
     }
   ],
   "next_matchday": {
@@ -1588,57 +1600,57 @@
       {
         "name": "英超",
         "country": "英格兰",
-        "matchday": "2026/27 第 1 轮",
+        "matchday": "2026/27 第 2 轮",
         "fixtures": [
           {
-            "kickoff_time": "08-22 03:00",
-            "home_team": "阿森纳",
-            "away_team": "考文垂"
+            "kickoff_time": "08-29 03:00",
+            "home_team": "Crystal Palace",
+            "away_team": "Manchester City"
           },
           {
-            "kickoff_time": "08-22 19:30",
-            "home_team": "赫尔城",
-            "away_team": "曼联"
+            "kickoff_time": "08-29 19:30",
+            "home_team": "Liverpool",
+            "away_team": "Nottingham Forest"
           },
           {
-            "kickoff_time": "08-22 22:00",
-            "home_team": "埃弗顿",
-            "away_team": "水晶宫"
+            "kickoff_time": "08-29 22:00",
+            "home_team": "Bournemouth",
+            "away_team": "Everton"
           },
           {
-            "kickoff_time": "08-22 22:00",
-            "home_team": "伊普斯维奇",
-            "away_team": "桑德兰"
+            "kickoff_time": "08-29 22:00",
+            "home_team": "Coventry City",
+            "away_team": "Hull City"
           },
           {
-            "kickoff_time": "08-22 22:00",
-            "home_team": "诺丁汉森林",
-            "away_team": "利兹联"
+            "kickoff_time": "08-30 00:30",
+            "home_team": "Tottenham Hotspur",
+            "away_team": "Newcastle United"
           },
           {
-            "kickoff_time": "08-23 00:30",
-            "home_team": "布伦特福德",
-            "away_team": "热刺"
+            "kickoff_time": "08-30 21:00",
+            "home_team": "Chelsea",
+            "away_team": "Brighton & Hove Albion"
           },
           {
-            "kickoff_time": "08-23 21:00",
-            "home_team": "布莱顿",
-            "away_team": "阿斯顿维拉"
+            "kickoff_time": "08-30 21:00",
+            "home_team": "Leeds United",
+            "away_team": "Brentford"
           },
           {
-            "kickoff_time": "08-23 21:00",
-            "home_team": "曼城",
-            "away_team": "伯恩茅斯"
+            "kickoff_time": "08-30 21:00",
+            "home_team": "Sunderland",
+            "away_team": "Fulham"
           },
           {
-            "kickoff_time": "08-23 23:30",
-            "home_team": "纽卡斯尔",
-            "away_team": "利物浦"
+            "kickoff_time": "08-30 23:30",
+            "home_team": "Manchester United",
+            "away_team": "Ipswich Town"
           },
           {
-            "kickoff_time": "08-25 03:00",
-            "home_team": "富勒姆",
-            "away_team": "切尔西"
+            "kickoff_time": "09-01 03:00",
+            "home_team": "Aston Villa",
+            "away_team": "Arsenal"
           }
         ]
       },
