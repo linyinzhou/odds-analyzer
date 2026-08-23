@@ -745,7 +745,7 @@ def _normalize_team(value: str) -> str:
     folded = unicodedata.normalize("NFKD", canonical).encode("ascii", "ignore").decode("ascii")
     folded = folded.replace("&", " and ")
     tokens = re.findall(r"[a-z0-9]+", folded)
-    ignored = {"afc", "bc", "calcio", "cf", "cfc", "club", "de", "fc"}
+    ignored = {"afc", "bc", "calcio", "cf", "cfc", "club", "de", "fc", "us"}
     return "".join(token for token in tokens if token not in ignored)
 
 

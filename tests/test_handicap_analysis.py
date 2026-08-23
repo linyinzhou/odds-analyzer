@@ -550,6 +550,8 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
             ("Brighton and Hove Albion", "Brighton & Hove Albion FC"),
             ("Manchester City", "Manchester City FC"),
             ("Atletico Madrid", "Club Atl\u00e9tico de Madrid"),
+            ("Lecce", "US Lecce"),
+            ("Sassuolo", "US Sassuolo Calcio"),
             ("Frosinone", "Frosinone Calcio"),
             ("Barcelona", "FC Barcelona"),
         )
