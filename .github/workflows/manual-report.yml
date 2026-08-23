@@ -153,7 +153,11 @@ jobs:
           PY
 
       - name: Run tests
-        run: PYTHONPATH=src python -m unittest discover -s tests
+        run: |
+          cp dashboard/data/daily_matches.json /tmp/generated_daily_matches.json
+          git checkout -- dashboard/data/daily_matches.json
+          PYTHONPATH=src python -m unittest discover -s tests
+          cp /tmp/generated_daily_matches.json dashboard/data/daily_matches.json
 
       - name: Write run status
         run: |
