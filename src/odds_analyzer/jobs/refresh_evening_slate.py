@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
+import unicodedata
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -578,10 +580,16 @@ def _fundamental_context(team_id: int | None, snapshot: FootballDataSnapshot) ->
 
 def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) -> list[dict]:
     index = {_odds_api_key(event): event for event in odds_events}
+    team_index: dict[tuple[str, str, str], OddsApiEvent | None] = {}
+    for event in odds_events:
+        key = _odds_api_team_key(event)
+        team_index[key] = event if key not in team_index else None
     enriched = []
     for match in matches:
         copied = deepcopy(match)
         event = index.get(_dashboard_match_key(copied))
+        if event is None:
+            event = team_index.get(_dashboard_team_key(copied))
         if event is not None:
             if event.european_odds is not None:
                 copied["european_odds"] = {
@@ -625,6 +633,14 @@ def _odds_api_key(event: OddsApiEvent) -> tuple[str, str, str, str]:
     return (
         _league_from_sport_key(event.sport_key),
         _kickoff_key(_beijing_time_key(event.commence_time)),
+        _normalize_team(event.home_team),
+        _normalize_team(event.away_team),
+    )
+
+
+def _odds_api_team_key(event: OddsApiEvent) -> tuple[str, str, str]:
+    return (
+        _league_from_sport_key(event.sport_key),
         _normalize_team(event.home_team),
         _normalize_team(event.away_team),
     )
@@ -697,6 +713,14 @@ def _dashboard_match_key(match: dict) -> tuple[str, str, str, str]:
     )
 
 
+def _dashboard_team_key(match: dict) -> tuple[str, str, str]:
+    return (
+        _competition_key(match.get("competition")),
+        _normalize_team(str(match.get("home_team", ""))),
+        _normalize_team(str(match.get("away_team", ""))),
+    )
+
+
 def _competition_key(value: object) -> str:
     text = str(value or "")
     for league in ("英超", "西甲", "意甲", "德甲", "法甲", "欧冠"):
@@ -715,7 +739,14 @@ def _kickoff_key(value: str) -> str:
 
 
 def _normalize_team(value: str) -> str:
-    return TEAM_ALIASES.get(value, value).replace(" ", "").strip().casefold()
+    canonical = TEAM_ALIASES.get(value, value).strip().casefold()
+    if any("\u4e00" <= character <= "\u9fff" for character in canonical):
+        return canonical.replace(" ", "")
+    folded = unicodedata.normalize("NFKD", canonical).encode("ascii", "ignore").decode("ascii")
+    folded = folded.replace("&", " and ")
+    tokens = re.findall(r"[a-z0-9]+", folded)
+    ignored = {"afc", "bc", "calcio", "cf", "cfc", "club", "de", "fc"}
+    return "".join(token for token in tokens if token not in ignored)
 
 
 def _sporttery_lottery_payload(match: SportteryMatch) -> dict:
@@ -1034,7 +1065,7 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
                 slate_date,
                 sport_keys=sport_keys,
             )
-            odds_api_source = "The Odds API"
+            odds_api_source = f"The Odds API: {len(odds_api_events)} events"
         except Exception as exc:
             odds_api_events = []
             odds_api_source = f"The Odds API unavailable: {type(exc).__name__}"

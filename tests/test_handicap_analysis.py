@@ -33,6 +33,7 @@ from odds_analyzer import (
 )
 from odds_analyzer.jobs.refresh_evening_slate import (
     _checker_candidates,
+    _enrich_with_odds_api,
     _normalize_team,
     build_evening_slate_batch,
 )
@@ -508,6 +509,33 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["odds_api_snapshot"]["bookmaker_key"], "pinnacle")
         self.assertEqual(athletic["signal_label"], "数据不足")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
+
+    def test_odds_api_team_fallback_tolerates_name_and_minute_differences(self):
+        event = OddsApiEvent(
+            event_id="event-current",
+            sport_key="soccer_epl",
+            commence_time="2026-08-23T11:35:00Z",
+            home_team="Brighton and Hove Albion",
+            away_team="Aston Villa",
+            bookmaker="Pinnacle",
+            bookmaker_key="pinnacle",
+            updated_at="2026-08-23T10:00:00Z",
+            european_odds=ThreeWayOdds(home=2.30, draw=3.40, away=3.10),
+            asian_handicap=None,
+        )
+        matches = [{
+            "competition": "英超 第 1 轮",
+            "kickoff_time": "2026-08-23 19:30",
+            "home_team": "Brighton & Hove Albion FC",
+            "away_team": "Aston Villa FC",
+            "sources": [],
+        }]
+
+        enriched = _enrich_with_odds_api(matches, [event])
+
+        self.assertEqual(enriched[0]["european_odds"]["home"], 2.30)
+        self.assertEqual(enriched[0]["odds_api_snapshot"]["event_id"], "event-current")
+
     def test_official_team_names_share_keys_with_curated_slate_names(self):
         pairs = (
             ("Hull City", "Hull City AFC"),
@@ -519,6 +547,11 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
             ("Le Mans", "Le Mans FC"),
             ("Brest", "Stade Brestois 29"),
             ("Troyes", "ES Troyes AC"),
+            ("Brighton and Hove Albion", "Brighton & Hove Albion FC"),
+            ("Manchester City", "Manchester City FC"),
+            ("Atletico Madrid", "Club Atl\u00e9tico de Madrid"),
+            ("Frosinone", "Frosinone Calcio"),
+            ("Barcelona", "FC Barcelona"),
         )
 
         for curated_name, official_name in pairs:
