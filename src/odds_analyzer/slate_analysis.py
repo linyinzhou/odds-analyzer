@@ -237,8 +237,9 @@ def _mismatch_read(
             "The fundamentals oppose the favorite required by this mismatch pattern.",
         )
 
+    polymarket_validation = _polymarket_lottery_validation(match, check.status)
     check_reason = check.reason
-    check_reason += _polymarket_mismatch_note(match, check.status)
+    check_reason += polymarket_validation["note_zh"]
     if fundamentals_conflict:
         check_reason = check_reason.rstrip("。") + "；基本面偏受让方，进一步不支持热门方大胜。"
 
@@ -249,15 +250,31 @@ def _mismatch_read(
     matched = check.status in {
         "lottery_deeper_small_win",
         "lottery_shallower_favorite_supported",
-    }
+    } and polymarket_validation["status"] != "conflict"
     pick = _lottery_pick(selections) if matched else "不进入错盘栏"
-    recommendation = f"符合错盘规则；竞彩让球 {lottery_value:+d}：{pick}。" if matched else f"不符合明确错盘条件：{check.reason}"
+    if matched:
+        recommendation = (
+            f"符合错盘规则；竞彩让球 {lottery_value:+d}：{pick}。"
+            f"{polymarket_validation['recommendation_zh']}"
+        )
+    elif polymarket_validation["status"] == "conflict":
+        recommendation = (
+            "竞彩与欧亚盘存在错盘形态，但Polymarket有效市场给出反向信号，"
+            "本次降级为观察，不进入竞彩建议。"
+        )
+    else:
+        recommendation = f"不符合明确错盘条件：{check.reason}"
     recommendation_en = (
-        f"Mismatch confirmed; Sporttery handicap {lottery_value:+d}: {_selection_labels_en(selections)}."
+        f"Mismatch confirmed; Sporttery handicap {lottery_value:+d}: {_selection_labels_en(selections)}. "
+        f"{polymarket_validation['recommendation_en']}"
         if matched
-        else "No confirmed mismatch opportunity after the line, market and fundamental checks."
+        else (
+            "The line pattern exists, but a liquid Polymarket signal conflicts with the Sporttery selection; watch only."
+            if polymarket_validation["status"] == "conflict"
+            else "No confirmed mismatch opportunity after the line, market and fundamental checks."
+        )
     )
-    return _mismatch_payload(
+    payload = _mismatch_payload(
         matched,
         check_reason,
         pick,
@@ -267,6 +284,8 @@ def _mismatch_read(
         check.line_gap,
         selections,
     )
+    payload["dashboard"]["polymarket_validation"] = polymarket_validation["status"]
+    return payload
 
 
 def _prediction(
@@ -347,25 +366,62 @@ def _prediction(
     }
 
 
-def _polymarket_mismatch_note(match: dict[str, Any], status: str) -> str:
+def _polymarket_lottery_validation(match: dict[str, Any], status: str) -> dict[str, str]:
     market = match.get("polymarket") or {}
     if not market.get("signal_eligible"):
-        return ""
+        return {
+            "status": "unavailable",
+            "note_zh": "；Polymarket无有效流动性信号，本次不参与竞彩验证",
+            "recommendation_zh": "Polymarket本次不可用于验证。",
+            "recommendation_en": "Polymarket is unavailable for validation.",
+        }
     if status == "lottery_deeper_small_win" and not market.get("spread_signal_eligible"):
-        return ""
+        return {
+            "status": "unavailable",
+            "note_zh": "；Polymarket对应让球市场流动性不足，本次不参与竞彩验证",
+            "recommendation_zh": "Polymarket让球市场本次不可用于验证。",
+            "recommendation_en": "The corresponding Polymarket spread is unavailable for validation.",
+        }
     if status == "lottery_deeper_small_win":
         spread = market.get("favorite_spread") or {}
         probability = spread.get("probability")
         if isinstance(probability, (int, float)) and probability <= 0.40:
-            return f"；Polymarket热门方 -1.5 支持率约 {probability:.0%}，进一步不支持热门方净胜两球"
+            return {
+                "status": "support",
+                "note_zh": f"；Polymarket热门方 -1.5 支持率约 {probability:.0%}，验证热门方难以净胜两球",
+                "recommendation_zh": "Polymarket有效市场支持该竞彩方向。",
+                "recommendation_en": "A liquid Polymarket spread supports this Sporttery selection.",
+            }
         if isinstance(probability, (int, float)) and probability >= 0.55:
-            return f"；但Polymarket热门方 -1.5 支持率约 {probability:.0%}，与小胜判断冲突"
+            return {
+                "status": "conflict",
+                "note_zh": f"；Polymarket热门方 -1.5 支持率约 {probability:.0%}，与竞彩防大胜方向冲突",
+                "recommendation_zh": "Polymarket有效市场与该竞彩方向冲突。",
+                "recommendation_en": "A liquid Polymarket spread conflicts with this Sporttery selection.",
+            }
     if status == "lottery_shallower_favorite_supported":
         side = market.get("favorite_side")
         probability = market.get(side) if side in {"home", "away"} else None
         if isinstance(probability, (int, float)) and probability >= 0.50:
-            return f"；Polymarket热门方胜率约 {probability:.0%}，支持热门方向"
-    return ""
+            return {
+                "status": "support",
+                "note_zh": f"；Polymarket热门方胜率约 {probability:.0%}，验证竞彩热门方向",
+                "recommendation_zh": "Polymarket有效市场支持该竞彩方向。",
+                "recommendation_en": "A liquid Polymarket moneyline supports this Sporttery selection.",
+            }
+        if isinstance(probability, (int, float)) and probability <= 0.40:
+            return {
+                "status": "conflict",
+                "note_zh": f"；Polymarket热门方胜率约 {probability:.0%}，与竞彩热门方向冲突",
+                "recommendation_zh": "Polymarket有效市场与该竞彩方向冲突。",
+                "recommendation_en": "A liquid Polymarket moneyline conflicts with this Sporttery selection.",
+            }
+    return {
+        "status": "neutral",
+        "note_zh": "；Polymarket有效市场未形成明确支持或反对",
+        "recommendation_zh": "Polymarket验证结果中性。",
+        "recommendation_en": "Polymarket validation is neutral.",
+    }
 
 
 def _polymarket_confidence_adjustment(match: dict[str, Any], status: str) -> int:

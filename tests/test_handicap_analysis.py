@@ -664,7 +664,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(match["asian_handicap"]["handicap"], -0.5)
         self.assertEqual(match["chinese_lottery"]["handicap"], -1)
 
-    def test_refresh_clears_stale_market_snapshots_when_sources_are_unavailable(self):
+    def test_refresh_preserves_completed_market_snapshots_when_sources_are_unavailable(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))
 
@@ -675,13 +675,10 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
             if match["id"] == "2026-08-22-everton-crystal-palace"
         )
 
-        self.assertIsNone(everton["european_odds"])
-        self.assertIsNone(everton["asian_handicap"])
-        self.assertIsNone(everton["chinese_lottery"])
-        self.assertNotIn("odds_api_snapshot", everton)
-        self.assertNotIn("sporttery_snapshot", everton)
-        self.assertEqual(everton["prediction"]["market"], "无推荐")
-        self.assertFalse(everton["mismatch"]["matched"])
+        self.assertIsNotNone(everton["european_odds"])
+        self.assertIsNotNone(everton["asian_handicap"])
+        self.assertIsNotNone(everton["chinese_lottery"])
+
     def test_placeholder_matches_do_not_enter_checker_or_mismatch(self):
         payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
         existing = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -695,7 +692,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
 
         self.assertIsNone(athletic["european_odds"])
         self.assertIsNone(athletic["asian_handicap"])
-        self.assertIsNone(athletic["chinese_lottery"])
+        self.assertIsNotNone(athletic["chinese_lottery"])
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
         self.assertFalse(athletic["mismatch"]["matched"])
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["checker_history"]})

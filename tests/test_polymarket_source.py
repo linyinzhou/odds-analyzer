@@ -140,5 +140,48 @@ class PolymarketSourceTest(unittest.TestCase):
         self.assertFalse(enriched["polymarket"]["signal_eligible"])
 
 
+    def test_liquid_polymarket_conflict_rejects_sporttery_mismatch(self):
+        match = {
+            "home_team": "Fulham FC",
+            "away_team": "Chelsea FC",
+            "european_odds": {"home": 4.3, "draw": 3.8, "away": 1.9},
+            "asian_handicap": {
+                "provider": "Pinnacle",
+                "handicap": 0.5,
+                "home_odds": 1.95,
+                "away_odds": 1.95,
+            },
+            "chinese_lottery": {
+                "handicap": 1,
+                "handicap_odds": {"home": 1.8, "draw": 3.5, "away": 3.5},
+            },
+            "football_data_snapshot": {"match_id": 1},
+            "fundamental_context": {
+                "home": {"played_games": 10, "points": 12, "goal_difference": -2},
+                "away": {"played_games": 10, "points": 20, "goal_difference": 7},
+            },
+            "polymarket": {
+                "home": 0.15,
+                "draw": 0.20,
+                "away": 0.65,
+                "favorite_side": "away",
+                "signal_eligible": True,
+                "spread_signal_eligible": True,
+                "favorite_spread": {
+                    "team": "Chelsea FC",
+                    "line": -1.5,
+                    "probability": 0.58,
+                },
+            },
+        }
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertFalse(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["mismatch"]["polymarket_validation"], "conflict")
+        self.assertEqual(analyzed["prediction"]["market"], "亚盘 Pinnacle")
+        self.assertIn("降级为观察", analyzed["recommendation"]["mismatch"])
+
+
 if __name__ == "__main__":
     unittest.main()

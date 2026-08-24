@@ -135,6 +135,47 @@ class AnalysisScopeTest(unittest.TestCase):
             "2026-08-22",
             competition_codes=("PL", "PD", "SA"),
         )
+    def test_curated_fixture_preserves_existing_manual_enrichment(self):
+        existing = {
+            "slate": {"date": "2026-08-24"},
+            "current_matches": [
+                {
+                    "id": "2026-08-25-fulham-fc-chelsea-fc",
+                    "home_team": "Fulham FC",
+                    "away_team": "Chelsea FC",
+                    "competition": "英超 2026/27 第 1 轮",
+                    "kickoff_time": "2026-08-25 03:00",
+                    "european_odds": {"home": 4.3, "draw": 3.8, "away": 1.9},
+                    "asian_handicap": {
+                        "provider": "Pinnacle",
+                        "handicap": 0.5,
+                        "home_odds": 1.95,
+                        "away_odds": 1.95,
+                    },
+                    "chinese_lottery": {
+                        "handicap": 1,
+                        "handicap_odds": {"home": 1.8, "draw": 3.5, "away": 3.5},
+                    },
+                    "fundamental_context": {
+                        "home": {"played_games": 10, "points": 12, "goal_difference": -2},
+                        "away": {"played_games": 10, "points": 20, "goal_difference": 7},
+                    },
+                }
+            ],
+        }
+
+        batch = build_evening_slate_batch(existing, "2026-08-24")
+        match = next(
+            item
+            for item in batch["current_matches"]
+            if item["id"] == "2026-08-25-fulham-fc-chelsea-fc"
+        )
+
+        self.assertIsNotNone(match["european_odds"])
+        self.assertIsNotNone(match["asian_handicap"])
+        self.assertIsNotNone(match["chinese_lottery"])
+        self.assertEqual(match["prediction"]["market"], "竞彩让球 +1")
+
     def test_workflow_and_frontend_expose_the_scope_switch(self):
         project_root = Path(__file__).resolve().parents[1]
         workflow = (project_root / ".github" / "workflows" / "manual-report.yml").read_text(encoding="utf-8")

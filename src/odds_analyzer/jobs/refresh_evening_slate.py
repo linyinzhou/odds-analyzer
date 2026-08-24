@@ -973,16 +973,36 @@ def build_evening_slate_batch(
         match.get("id"): match for match in existing_payload.get("current_matches", [])
     }
     current_matches = []
+    current_match_ids = set()
+    same_slate = str((existing_payload.get("slate") or {}).get("date")) == slate_date
     for match_id in EXISTING_DETAIL_IDS_BY_DATE.get(slate_date, []):
         if match_id in current_by_id:
-            match = _refresh_seed_match(current_by_id[match_id])
+            match = (
+                deepcopy(current_by_id[match_id])
+                if same_slate
+                else _refresh_seed_match(current_by_id[match_id])
+            )
             match["batch_date"] = slate_date
             current_matches.append(match)
+            current_match_ids.add(match_id)
+
+    if same_slate:
+        for existing_match in existing_payload.get("current_matches", []):
+            match_id = existing_match.get("id")
+            if not match_id or match_id in current_match_ids:
+                continue
+            match = deepcopy(existing_match)
+            match["batch_date"] = slate_date
+            current_matches.append(match)
+            current_match_ids.add(match_id)
 
     for fixture in _dedupe_fixtures(CURATED_FIXTURES_BY_DATE.get(slate_date, [])):
-        match = _placeholder_match(fixture)
-        match["batch_date"] = slate_date
-        current_matches.append(match)
+        placeholder = _placeholder_match(fixture)
+        if placeholder.get("id") in current_match_ids:
+            continue
+        placeholder["batch_date"] = slate_date
+        current_matches.append(placeholder)
+        current_match_ids.add(placeholder.get("id"))
 
     if football_data_snapshot is not None:
         current_matches = _add_football_data_fixtures(current_matches, football_data_snapshot)
