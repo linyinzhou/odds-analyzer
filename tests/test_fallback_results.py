@@ -74,8 +74,20 @@ def complete_result() -> dict:
         "fields": {
             "fundamentals": {
                 "fundamental_context": {
-                    "home": {"position": 8, "form": ["W", "D", "W"]},
-                    "away": {"position": 13, "form": ["L", "D", "W"]},
+                    "home": {
+                        "position": 8,
+                        "played_games": 3,
+                        "points": 7,
+                        "goal_difference": 3,
+                        "form": ["W", "D", "W"],
+                    },
+                    "away": {
+                        "position": 13,
+                        "played_games": 3,
+                        "points": 4,
+                        "goal_difference": -1,
+                        "form": ["L", "D", "W"],
+                    },
                 },
                 "fundamentals": [
                     {

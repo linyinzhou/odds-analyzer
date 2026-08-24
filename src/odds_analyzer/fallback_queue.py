@@ -83,7 +83,12 @@ def _has_fundamentals(match: dict[str, Any]) -> bool:
     context = match.get("fundamental_context") or {}
     for side in ("home", "away"):
         team = context.get(side) or {}
-        if "position" not in team and not team.get("form"):
+        form = team.get("form") or []
+        try:
+            played_games = int(team.get("played_games") or 0)
+        except (TypeError, ValueError):
+            played_games = 0
+        if played_games < 3 or len(form) < 3:
             return False
     return True
 
@@ -101,7 +106,10 @@ def _search_queries(match: dict[str, Any], missing_fields: list[str]) -> list[st
     teams = f"{match.get('home_team', '')} vs {match.get('away_team', '')}"
     kickoff = str(match.get("kickoff_time") or "")[:10]
     topics = {
-        "fundamentals": "standings recent form venue",
+        "fundamentals": (
+            "latest team news recent official matches previous season position "
+            "squad changes tactics injuries head-to-head venue"
+        ),
         "european_odds": "current European 1X2 odds",
         "asian_handicap": "current Asian handicap odds",
         "sporttery": "竞彩 让球胜平负 SP",

@@ -19,8 +19,8 @@ def complete_match() -> dict:
         "home_team": "Everton",
         "away_team": "Crystal Palace",
         "fundamental_context": {
-            "home": {"position": 10, "form": ["W", "D"]},
-            "away": {"position": 12, "form": ["L", "W"]},
+            "home": {"position": 10, "played_games": 3, "form": ["W", "D", "W"]},
+            "away": {"position": 12, "played_games": 3, "form": ["L", "W", "D"]},
         },
         "european_odds": {"home": 2.0, "draw": 3.3, "away": 3.8},
         "asian_handicap": {"handicap": -0.5, "home_odds": 1.95, "away_odds": 1.95},
@@ -56,6 +56,31 @@ class FallbackQueueTest(unittest.TestCase):
         request = build_fallback_requests([match], {}, scope="adhoc")[0]
 
         self.assertIn("fundamentals", request["missing_fields"])
+
+    def test_early_season_table_is_queued_for_web_fundamentals(self):
+        match = complete_match()
+        match["fundamental_context"] = {
+            "home": {"position": 10, "played_games": 0, "form": []},
+            "away": {"position": 20, "played_games": 1, "form": ["L"]},
+        }
+
+        request = build_fallback_requests(
+            [match],
+            {"football_data_source": "football-data.org"},
+            scope="daily",
+        )[0]
+
+        self.assertIn("fundamentals", request["missing_fields"])
+        self.assertIn("latest team news", request["search_queries"][0])
+
+    def test_three_match_form_is_sufficient_for_fundamentals(self):
+        match = complete_match()
+        match["fundamental_context"] = {
+            "home": {"position": 8, "played_games": 3, "form": ["W", "D", "W"]},
+            "away": {"position": 13, "played_games": 3, "form": ["L", "D", "W"]},
+        }
+
+        self.assertEqual(build_fallback_requests([match], {}, scope="daily"), [])
 
     def test_replacing_daily_queue_preserves_adhoc_requests(self):
         existing = [

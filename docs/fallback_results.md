@@ -75,6 +75,15 @@ Create a temporary UTF-8 JSON file with this shape:
 }
 ```
 
+When the current season has fewer than three useful matches, API standings are not
+treated as sufficient fundamentals. Research recent official matches across the
+previous/current season boundary, previous-season position or promotion status,
+current squad changes, tactical and injury news, and relevant head-to-head context.
+Record the verified recent sample in each side's played_games, points,
+goal_difference, and form fields so the mismatch analysis can be rerun. Every
+claim must retain its source URL and query timestamp; do not convert unsupported
+opinion into synthetic statistics.
+
 Every supplied field needs at least one source with an HTTP(S) URL, source tier, and timezone-aware query timestamp. Omit fields that could not be verified and explain them in `unresolved_reason`.
 
 ## Apply

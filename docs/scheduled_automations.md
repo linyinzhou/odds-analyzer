@@ -65,6 +65,12 @@ The evening job depends on football-data.org, The Odds API, the public Sporttery
 
 Every report refresh now rebuilds structured `fallback_requests` for missing fundamentals, European odds, Asian handicap, and Sporttery data. Daily refreshes replace only daily-scope tasks and preserve ad hoc tasks. Weather and unpublished lineup data do not create fallback tasks. The workflow writes the pending count and fields to the GitHub Actions step summary.
 
+Current-season standings with fewer than three played matches, or fewer than three
+recent results for either team, are treated as incomplete fundamentals. The Codex
+fallback then researches sourced web news and recent official matches, including
+the previous-season boundary, before the three-market mismatch check is allowed to
+produce a confirmed result.
+
 ## Codex Fallback Passes
 
 - 18:00 Beijing: GitHub Actions queries structured APIs and creates `fallback_requests`.
