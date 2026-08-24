@@ -8,7 +8,8 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 
-OFFICIAL_SPORTTERY_URL = "https://webapi.sporttery.cn/gateway/jc/football/getMatchCalculatorV1.qry"
+OFFICIAL_SPORTTERY_URL = "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry"
+OFFICIAL_SPORTTERY_PAGE = "https://m.sporttery.cn/mjc/jsq/zqspf/"
 SPORTTERY_POOLS = ("had", "hhad", "crs", "ttg", "hafu")
 POOL_LABELS = {
     "had": "胜平负",
@@ -61,9 +62,16 @@ def fetch_official_sporttery_matches(business_date: str, timeout: float = 15) ->
     request = Request(
         f"{OFFICIAL_SPORTTERY_URL}?{query}",
         headers={
-            "Referer": "https://m.sporttery.cn/",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Language": "zh-CN,zh;q=0.9",
-            "User-Agent": "odds-analyzer/0.1",
+            "Origin": "https://m.sporttery.cn",
+            "Referer": OFFICIAL_SPORTTERY_PAGE,
+            "User-Agent": (
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
+                "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 "
+                "Mobile/15E148 Safari/604.1"
+            ),
+            "X-Requested-With": "XMLHttpRequest",
         },
     )
     with urlopen(request, timeout=timeout) as response:
