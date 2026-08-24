@@ -177,6 +177,21 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertFalse(analyzed["mismatch"]["matched"])
         self.assertIn("样本不足", analyzed["mismatch"]["reason"])
 
+    def test_lottery_deeper_mismatch_is_strengthened_by_underdog_fundamentals(self):
+        match = dynamic_analysis_match(include_lottery=True)
+        match["asian_handicap"]["handicap"] = -0.5
+        match["fundamental_context"]["home"]["points"] = 0
+        match["fundamental_context"]["home"]["goal_difference"] = -5
+        match["fundamental_context"]["away"]["points"] = 9
+        match["fundamental_context"]["away"]["goal_difference"] = 0
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertTrue(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["mismatch"]["status"], "lottery_deeper_small_win")
+        self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让负")
+        self.assertIn("基本面偏受让方", analyzed["mismatch"]["reason"])
+
     def test_away_favorite_mismatch_reverses_sporttery_selections(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["european_odds"] = {"home": 3.80, "draw": 3.30, "away": 2.00}

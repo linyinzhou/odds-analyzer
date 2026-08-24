@@ -187,15 +187,9 @@ def _mismatch_read(
             reason,
             "A line gap exists, but the current table/form sample is insufficient to validate it.",
         )
-    if (favorite_home and comparison < -0.2) or (not favorite_home and comparison > 0.2):
-        reason = "不符合错盘规则：现有基本面与盘口热门方方向冲突。"
-        return _mismatch_payload(
-            False,
-            reason,
-            "不进入错盘栏",
-            reason,
-            "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid.",
-        )
+    fundamentals_conflict = (favorite_home and comparison < -0.2) or (
+        not favorite_home and comparison > 0.2
+    )
 
     favorite_asian_line = asian_line if favorite_home else -asian_line
     favorite_lottery_line = lottery_value if favorite_home else -lottery_value
@@ -205,6 +199,20 @@ def _mismatch_read(
         ChineseLotteryLine(home_handicap=favorite_lottery_line),
         max_supported_home_margin=max_margin,
     )
+    if fundamentals_conflict and check.status != "lottery_deeper_small_win":
+        reason = "不符合错盘规则：现有基本面与盘口热门方方向冲突。"
+        return _mismatch_payload(
+            False,
+            reason,
+            "不进入错盘栏",
+            reason,
+            "The fundamentals oppose the favorite required by this mismatch pattern.",
+        )
+
+    check_reason = check.reason
+    if fundamentals_conflict:
+        check_reason = check_reason.rstrip("。") + "；基本面偏受让方，进一步不支持热门方大胜。"
+
     selections = check.preferred_selections
     if not favorite_home:
         selections = tuple(_reverse_selection(selection) for selection in selections)
@@ -222,7 +230,7 @@ def _mismatch_read(
     )
     return _mismatch_payload(
         matched,
-        check.reason,
+        check_reason,
         pick,
         recommendation,
         recommendation_en,
