@@ -77,7 +77,38 @@ jobs:
         run: |
           git fetch origin +refs/heads/gh-pages:refs/remotes/origin/gh-pages || true
           if git show origin/gh-pages:data/daily_matches.json > /tmp/daily_matches.json; then
-            cp /tmp/daily_matches.json dashboard/data/daily_matches.json
+            python - <<'PY'
+          import json
+          from pathlib import Path
+
+          main_path = Path("dashboard/data/daily_matches.json")
+          live_path = Path("/tmp/daily_matches.json")
+          main = json.loads(main_path.read_text(encoding="utf-8"))
+          live = json.loads(live_path.read_text(encoding="utf-8"))
+
+          def quality(payload):
+              fields = ("european_odds", "asian_handicap", "chinese_lottery")
+              return sum(
+                  sum(bool(match.get(field)) for field in fields)
+                  + bool(match.get("fundamental_context") or match.get("fundamentals"))
+                  for match in payload.get("current_matches", [])
+              )
+
+          main_date = str((main.get("slate") or {}).get("date") or "")
+          live_date = str((live.get("slate") or {}).get("date") or "")
+          use_live = live_date > main_date or (
+              live_date == main_date and quality(live) >= quality(main)
+          )
+          if use_live:
+              main_path.write_text(
+                  json.dumps(live, ensure_ascii=False, indent=2) + chr(10),
+                  encoding="utf-8",
+              )
+          print(
+              f"restore_source={'gh-pages' if use_live else 'main'} "
+              f"main={main_date}/{quality(main)} live={live_date}/{quality(live)}"
+          )
+          PY
           fi
 
       - name: Show manual trigger context
