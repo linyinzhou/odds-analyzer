@@ -18,11 +18,14 @@ from odds_analyzer.sources import (
     COMPETITION_CODES,
     FootballDataSnapshot,
     LEAGUE_SPORT_KEYS,
+    MIN_SIGNAL_VOLUME,
     OddsApiEvent,
+    PolymarketEvent,
     SportteryMatch,
     fetch_evening_api_football_news,
     fetch_evening_football_data,
     fetch_evening_odds_api_events,
+    fetch_evening_polymarket_events,
     fetch_fixture_weather,
     fetch_official_sporttery_matches,
     fixture_dashboard_id,
@@ -629,6 +632,61 @@ def _enrich_with_odds_api(matches: list[dict], odds_events: list[OddsApiEvent]) 
     return enriched
 
 
+def _enrich_with_polymarket(
+    matches: list[dict], polymarket_events: list[PolymarketEvent]
+) -> list[dict]:
+    index: dict[tuple[str, str], PolymarketEvent | None] = {}
+    for event in polymarket_events:
+        key = (_normalize_team(event.home_team), _normalize_team(event.away_team))
+        index[key] = event if key not in index else None
+    enriched = []
+    for match in matches:
+        copied = deepcopy(match)
+        key = (
+            _normalize_team(str(copied.get("home_team", ""))),
+            _normalize_team(str(copied.get("away_team", ""))),
+        )
+        event = index.get(key)
+        if event is not None:
+            spread = event.favorite_spread
+            favorite_home = (event.home_probability or 0.0) >= (event.away_probability or 0.0)
+            copied["polymarket"] = {
+                "home": event.home_probability,
+                "draw": event.draw_probability,
+                "away": event.away_probability,
+                "favorite_side": "home" if favorite_home else "away",
+                "favorite_spread": (
+                    {
+                        "team": spread.team,
+                        "line": spread.line,
+                        "probability": spread.probability,
+                        "volume": spread.volume,
+                    }
+                    if spread
+                    else None
+                ),
+                "volume": event.volume,
+                "liquidity": event.liquidity,
+                "signal_eligible": event.signal_eligible,
+                "spread_signal_eligible": bool(
+                    spread
+                    and abs(abs(spread.line) - 1.5) < 0.01
+                    and spread.volume is not None
+                    and spread.volume >= MIN_SIGNAL_VOLUME
+                ),
+                "event_id": event.event_id,
+                "updated_at": event.updated_at,
+                "url": event.url,
+                "source": "Polymarket",
+            }
+            sources = list(copied.get("sources", []))
+            if "Polymarket" not in sources:
+                sources.append("Polymarket")
+            copied["sources"] = sources
+        enriched.append(copied)
+    return enriched
+
+
 def _odds_api_key(event: OddsApiEvent) -> tuple[str, str, str, str]:
     return (
         _league_from_sport_key(event.sport_key),
@@ -899,6 +957,8 @@ def build_evening_slate_batch(
     slate_date: str,
     sporttery_matches: list[SportteryMatch] | None = None,
     sporttery_source: str = "not requested",
+    polymarket_events: list[PolymarketEvent] | None = None,
+    polymarket_source: str = "not requested",
     odds_api_events: list[OddsApiEvent] | None = None,
     odds_api_source: str = "not requested",
     football_data_snapshot: FootballDataSnapshot | None = None,
@@ -935,6 +995,8 @@ def build_evening_slate_batch(
         current_matches = _enrich_with_sporttery(current_matches, sporttery_matches)
     if odds_api_events:
         current_matches = _enrich_with_odds_api(current_matches, odds_api_events)
+    if polymarket_events:
+        current_matches = _enrich_with_polymarket(current_matches, polymarket_events)
     current_matches = [
         match for match in current_matches if _match_competition_code(match) in analysis_competitions
     ]
@@ -944,6 +1006,7 @@ def build_evening_slate_batch(
         "football_data_source": football_data_source,
         "odds_api_source": odds_api_source,
         "sporttery_source": sporttery_source,
+        "polymarket_source": polymarket_source,
     }
 
     next_matchday = _filter_next_matchday(
@@ -962,6 +1025,7 @@ def build_evening_slate_batch(
             "generated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
             "source": "manual evening-report job",
             "sporttery_source": sporttery_source,
+            "polymarket_source": polymarket_source,
             "odds_api_source": odds_api_source,
             "football_data_source": football_data_source,
             "weather_source": weather_source,
@@ -1072,11 +1136,19 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     else:
         odds_api_events = []
         odds_api_source = "The Odds API skipped: missing THE_ODDS_API_KEY"
+    try:
+        polymarket_events = fetch_evening_polymarket_events(slate_date)
+        polymarket_source = f"Polymarket: {len(polymarket_events)} games"
+    except Exception as exc:
+        polymarket_events = []
+        polymarket_source = f"Polymarket unavailable: {type(exc).__name__}"
     batch_payload = build_evening_slate_batch(
         existing_payload,
         slate_date,
         sporttery_matches=sporttery_matches,
         sporttery_source=sporttery_source,
+        polymarket_events=polymarket_events,
+        polymarket_source=polymarket_source,
         odds_api_events=odds_api_events,
         odds_api_source=odds_api_source,
         football_data_snapshot=football_data_snapshot,

@@ -140,6 +140,10 @@ class AdhocReportTest(unittest.TestCase):
                     "odds_analyzer.jobs.refresh_adhoc_match.fetch_fixture_weather",
                     return_value=WeatherBatch(forecasts={}),
                 ),
+                patch(
+                    "odds_analyzer.jobs.refresh_adhoc_match.fetch_polymarket_events_for_date",
+                    return_value=[],
+                ),
             ):
                 first = refresh_adhoc_match(
                     payload_path,

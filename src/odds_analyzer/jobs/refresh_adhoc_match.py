@@ -16,6 +16,7 @@ from odds_analyzer.jobs.refresh_evening_slate import (
     DEFAULT_PAYLOAD_PATH,
     _attach_bilingual_reports,
     _enrich_with_football_data,
+    _enrich_with_polymarket,
     _enrich_with_weather,
     _match_from_football_data_fixture,
     _normalize_team,
@@ -30,6 +31,7 @@ from odds_analyzer.sources import (
     SportteryMatch,
     fetch_fixture_weather,
     fetch_odds_api_events,
+    fetch_polymarket_events_for_date,
     fetch_official_sporttery_matches,
 )
 from odds_analyzer.sources.football_data import (
@@ -87,6 +89,13 @@ def refresh_adhoc_match(
         sporttery_matches = []
         source_status["sporttery"] = f"Sporttery unavailable: {type(exc).__name__}"
 
+    try:
+        polymarket_events = fetch_polymarket_events_for_date(match_date)
+        source_status["polymarket"] = f"Polymarket: {len(polymarket_events)} games"
+    except Exception as exc:
+        polymarket_events = []
+        source_status["polymarket"] = f"Polymarket unavailable: {type(exc).__name__}"
+
     fixture = _find_match(fixtures, home_team, away_team, lambda item: (item.home_team, item.away_team))
     odds_event = _find_match(odds_events, home_team, away_team, lambda item: (item.home_team, item.away_team))
     sporttery_match = _find_match(
@@ -106,6 +115,7 @@ def refresh_adhoc_match(
         odds_event,
         sporttery_match,
     )
+    match = _enrich_with_polymarket([match], polymarket_events)[0]
     match["adhoc_source_status"] = source_status
     match["batch_date"] = match_date
     match["adhoc"] = True
@@ -127,6 +137,7 @@ def refresh_adhoc_match(
         "football_data_source": source_status["football_data"],
         "odds_api_source": source_status["odds_api"],
         "sporttery_source": source_status["sporttery"],
+        "polymarket_source": source_status["polymarket"],
     }
     fallback_id = f"adhoc:{match['id']}"
     existing_fallback = [
@@ -146,6 +157,7 @@ def refresh_adhoc_match(
         "matched_football_data": fixture is not None,
         "matched_odds_api": odds_event is not None,
         "matched_sporttery": sporttery_match is not None,
+        "matched_polymarket": match.get("polymarket") is not None,
     }
     path.write_text(json.dumps(existing, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return existing

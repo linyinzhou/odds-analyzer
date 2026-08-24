@@ -298,6 +298,7 @@ function renderMarkets(match) {
         <div><span>欧赔</span><strong>${formatThreeWay(match.european_odds)}</strong></div>
         <div><span>亚盘</span><strong>${formatAsian(match.asian_handicap)}</strong></div>
         <div><span>竞彩</span><strong>${formatLottery(match.chinese_lottery)}</strong></div>
+        <div><span>Polymarket</span><strong>${formatPolymarket(match.polymarket)}</strong></div>
       </div>
       <p class="market-read">${match.market_read}</p>
     </section>
@@ -640,6 +641,27 @@ function formatLottery(lottery) {
   if (!lottery) return "待补";
   if (lottery.handicap === null) return `胜平负 ${formatThreeWay(lottery.standard)}`;
   return `让 ${formatLine(lottery.handicap)}：${formatThreeWay(lottery.handicap_odds)}`;
+}
+
+function formatPolymarket(market) {
+  if (!market) return "无对应市场";
+  const probabilities = [market.home, market.draw, market.away];
+  const moneyline = probabilities.every((value) => Number.isFinite(value))
+    ? `主/平/客 ${probabilities.map(formatProbability).join(" / ")}`
+    : "胜平负待补";
+  const spread = market.favorite_spread;
+  const spreadText = spread && Number.isFinite(spread.probability)
+    ? `${spread.team} ${formatLine(spread.line)} ${formatProbability(spread.probability)}${market.spread_signal_eligible ? "" : "（仅展示）"}`
+    : "-1.5 暂无";
+  const quality = market.signal_eligible ? "有效市场" : "低流动性，仅展示";
+  const volume = Number.isFinite(market.volume)
+    ? `Vol $${Math.round(market.volume).toLocaleString("en-US")}`
+    : "Vol --";
+  return `${moneyline}；${spreadText}；${volume} · ${quality}`;
+}
+
+function formatProbability(value) {
+  return `${Math.round(value * 100)}%`;
 }
 
 function formatPrediction(match) {

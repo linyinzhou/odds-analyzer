@@ -109,9 +109,10 @@ def _market_read(
     asian = match.get("asian_handicap")
     lottery = match.get("chinese_lottery")
     if not probabilities or not asian:
+        polymarket_zh, polymarket_en = _polymarket_market_read(match)
         return (
-            "缺少本次查询的完整欧赔或亚盘，不生成盘口建议。",
-            "Current European or Asian prices are incomplete, so no market recommendation is generated.",
+            "缺少本次查询的完整欧赔或亚盘，不生成盘口建议。" + polymarket_zh,
+            "Current European or Asian prices are incomplete, so no market recommendation is generated." + polymarket_en,
         )
 
     home = match.get("home_team", "主队")
@@ -121,16 +122,43 @@ def _market_read(
     line = _format_line(float(asian["handicap"]))
     provider = asian.get("provider") or "亚盘来源"
     lottery_text = "本次竞彩已取得，可继续做三盘比较。" if lottery else "本次竞彩未取得，只做欧亚盘分析。"
+    polymarket_zh, polymarket_en = _polymarket_market_read(match)
     zh = (
         f"欧赔去水后主/平/客约为 {probabilities['home']:.0%}/{probabilities['draw']:.0%}/{probabilities['away']:.0%}，"
-        f"最高方向为{favorite}；{provider}主队视角 {line}。{lottery_text}"
+        f"最高方向为{favorite}；{provider}主队视角 {line}。{lottery_text}{polymarket_zh}"
     )
     en = (
         f"De-vigged 1X2 is about {probabilities['home']:.0%}/{probabilities['draw']:.0%}/{probabilities['away']:.0%}; "
         f"the highest outcome is {favorite}. {provider} lists the home line at {line}. "
         + ("Current Sporttery data is available for the three-market check." if lottery else "Current Sporttery data is unavailable, so this is a European/Asian read only.")
+        + polymarket_en
     )
     return zh, en
+
+
+def _polymarket_market_read(match: dict[str, Any]) -> tuple[str, str]:
+    market = match.get("polymarket") or {}
+    probabilities = (market.get("home"), market.get("draw"), market.get("away"))
+    if not all(isinstance(value, (int, float)) for value in probabilities):
+        return "", ""
+    spread = market.get("favorite_spread") or {}
+    quality_zh = "可参与市场交叉验证" if market.get("signal_eligible") else "流动性偏低，只展示不参与信心修正"
+    quality_en = "eligible for cross-market validation" if market.get("signal_eligible") else "low liquidity, display only"
+    spread_zh = ""
+    spread_en = ""
+    if isinstance(spread.get("probability"), (int, float)):
+        spread_zh = (
+            f"；{spread.get('team', '热门方')} {_format_line(float(spread.get('line', -1.5)))}"
+            f"支持率约 {spread['probability']:.0%}"
+        )
+        spread_en = (
+            f"; {spread.get('team', 'favorite')} {_format_line(float(spread.get('line', -1.5)))}"
+            f" is about {spread['probability']:.0%}"
+        )
+    return (
+        f" Polymarket实时主/平/客约为 {probabilities[0]:.0%}/{probabilities[1]:.0%}/{probabilities[2]:.0%}{spread_zh}，{quality_zh}。",
+        f" Polymarket live home/draw/away is about {probabilities[0]:.0%}/{probabilities[1]:.0%}/{probabilities[2]:.0%}{spread_en}; {quality_en}.",
+    )
 
 
 def _mismatch_read(
@@ -210,6 +238,7 @@ def _mismatch_read(
         )
 
     check_reason = check.reason
+    check_reason += _polymarket_mismatch_note(match, check.status)
     if fundamentals_conflict:
         check_reason = check_reason.rstrip("。") + "；基本面偏受让方，进一步不支持热门方大胜。"
 
@@ -248,7 +277,8 @@ def _prediction(
 ) -> dict[str, Any]:
     if mismatch["dashboard"]["matched"]:
         lottery_line = int(match["chinese_lottery"]["handicap"])
-        confidence = min(68, 62 + round(abs(mismatch["line_gap"]) * 6))
+        polymarket_adjustment = _polymarket_confidence_adjustment(match, mismatch["dashboard"]["status"])
+        confidence = min(72, 62 + round(abs(mismatch["line_gap"]) * 6) + polymarket_adjustment)
         pick = mismatch["dashboard"]["pick"].split("：", 1)[-1]
         return {
             "market": f"竞彩让球 {lottery_line:+d}",
@@ -258,7 +288,7 @@ def _prediction(
             "market_en": f"Sporttery handicap {lottery_line:+d}",
             "pick_en": _selection_labels_en(mismatch["selections"]),
             "detail_en": mismatch["recommendation_en"],
-            "basis": "fresh_three_market_snapshot",
+            "basis": "fresh_multi_market_snapshot" if polymarket_adjustment else "fresh_three_market_snapshot",
             "market_type": "sporttery_handicap",
             "home_handicap": lottery_line,
             "selection_keys": [selection.value for selection in mismatch["selections"]],
@@ -315,6 +345,51 @@ def _prediction(
         "home_handicap": home_line,
         "selection_keys": ["home" if pick_home else "away"],
     }
+
+
+def _polymarket_mismatch_note(match: dict[str, Any], status: str) -> str:
+    market = match.get("polymarket") or {}
+    if not market.get("signal_eligible"):
+        return ""
+    if status == "lottery_deeper_small_win" and not market.get("spread_signal_eligible"):
+        return ""
+    if status == "lottery_deeper_small_win":
+        spread = market.get("favorite_spread") or {}
+        probability = spread.get("probability")
+        if isinstance(probability, (int, float)) and probability <= 0.40:
+            return f"；Polymarket热门方 -1.5 支持率约 {probability:.0%}，进一步不支持热门方净胜两球"
+        if isinstance(probability, (int, float)) and probability >= 0.55:
+            return f"；但Polymarket热门方 -1.5 支持率约 {probability:.0%}，与小胜判断冲突"
+    if status == "lottery_shallower_favorite_supported":
+        side = market.get("favorite_side")
+        probability = market.get(side) if side in {"home", "away"} else None
+        if isinstance(probability, (int, float)) and probability >= 0.50:
+            return f"；Polymarket热门方胜率约 {probability:.0%}，支持热门方向"
+    return ""
+
+
+def _polymarket_confidence_adjustment(match: dict[str, Any], status: str) -> int:
+    market = match.get("polymarket") or {}
+    if not market.get("signal_eligible"):
+        return 0
+    if status == "lottery_deeper_small_win" and not market.get("spread_signal_eligible"):
+        return 0
+    if status == "lottery_deeper_small_win":
+        probability = (market.get("favorite_spread") or {}).get("probability")
+        if isinstance(probability, (int, float)):
+            if probability <= 0.40:
+                return 3
+            if probability >= 0.55:
+                return -3
+    if status == "lottery_shallower_favorite_supported":
+        side = market.get("favorite_side")
+        probability = market.get(side) if side in {"home", "away"} else None
+        if isinstance(probability, (int, float)):
+            if probability >= 0.50:
+                return 2
+            if probability <= 0.40:
+                return -2
+    return 0
 
 
 def _fundamental_comparison(context: dict[str, Any]) -> float | None:

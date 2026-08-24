@@ -30,6 +30,14 @@ from odds_analyzer.sources.odds_api import (
     fetch_odds_api_events,
     parse_odds_api_events,
 )
+from odds_analyzer.sources.polymarket import (
+    MIN_SIGNAL_VOLUME,
+    PolymarketEvent,
+    PolymarketSpread,
+    fetch_evening_polymarket_events,
+    fetch_polymarket_events_for_date,
+    parse_polymarket_events,
+)
 from odds_analyzer.sources.registry import (
     DataSourceCandidate,
     DataSourcePurpose,
@@ -64,7 +72,10 @@ __all__ = [
     "FootballDataSnapshot",
     "FootballDataStanding",
     "LEAGUE_SPORT_KEYS",
+    "MIN_SIGNAL_VOLUME",
     "OddsApiEvent",
+    "PolymarketEvent",
+    "PolymarketSpread",
     "PlayerAbsence",
     "ReliabilityTier",
     "SportteryMarket",
@@ -77,6 +88,8 @@ __all__ = [
     "fetch_evening_football_data",
     "fetch_evening_fixtures",
     "fetch_evening_odds_api_events",
+    "fetch_evening_polymarket_events",
+    "fetch_polymarket_events_for_date",
     "fetch_odds_api_events",
     "fetch_official_sporttery_matches",
     "fetch_fixture_weather",
@@ -88,6 +101,7 @@ __all__ = [
     "parse_football_data_standing_forms",
     "parse_football_data_standings",
     "parse_odds_api_events",
+    "parse_polymarket_events",
     "parse_official_sporttery",
     "team_city_query",
     "weather_description",

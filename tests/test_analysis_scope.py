@@ -113,6 +113,10 @@ class AnalysisScopeTest(unittest.TestCase):
                     "odds_analyzer.jobs.refresh_evening_slate.fetch_official_sporttery_matches",
                     return_value=[],
                 ),
+                patch(
+                    "odds_analyzer.jobs.refresh_evening_slate.fetch_evening_polymarket_events",
+                    return_value=[],
+                ),
             ):
                 refresh_evening_slate(payload_path, "2026-08-22")
 

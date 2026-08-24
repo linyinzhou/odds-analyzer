@@ -97,6 +97,15 @@ def get_data_source_candidates() -> tuple[DataSourceCandidate, ...]:
             automation_risk="Not a direct source for Chinese lottery or standard Asian handicap comparison.",
         ),
         DataSourceCandidate(
+            key="polymarket",
+            name="Polymarket",
+            homepage="https://polymarket.com/sports",
+            tier=ReliabilityTier.MARKET,
+            purposes=(DataSourcePurpose.MARKET_SENTIMENT, DataSourcePurpose.VALIDATION),
+            strengths="Public real-time prediction prices, volume, liquidity, and a -1.5 margin boundary useful for Sporttery checks.",
+            automation_risk="Fixture coverage varies and thin order books can be moved by a small number of traders.",
+        ),
+        DataSourceCandidate(
             key="five_hundred",
             name="500.com",
             homepage="https://trade.500.com/jczq/index.php",
