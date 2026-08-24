@@ -85,8 +85,7 @@ class WeatherSourceTest(unittest.TestCase):
         self.assertEqual(weather.precipitation_probability, 70.0)
 
     def test_dashboard_batch_includes_weather_snapshot_and_risk(self):
-        payload_path = Path(__file__).resolve().parents[1] / "dashboard" / "data" / "daily_matches.json"
-        existing = json.loads(payload_path.read_text(encoding="utf-8"))
+        existing = {}
         weather = WeatherSnapshot(
             match_id=1001,
             location="Liverpool",
@@ -108,7 +107,11 @@ class WeatherSourceTest(unittest.TestCase):
             weather_forecasts={1001: weather},
             weather_source="Open-Meteo: 1 forecasts",
         )
-        everton = next(match for match in batch["current_matches"] if match["id"] == "2026-08-22-everton-crystal-palace")
+        everton = next(
+            match
+            for match in batch["current_matches"]
+            if (match.get("football_data_snapshot") or {}).get("match_id") == 1001
+        )
 
         self.assertEqual(batch["slate"]["weather_source"], "Open-Meteo: 1 forecasts")
         self.assertIn("有雨", everton["weather"])
