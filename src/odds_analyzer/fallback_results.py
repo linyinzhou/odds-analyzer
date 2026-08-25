@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from odds_analyzer.calibration import apply_confidence_calibration
 from odds_analyzer.dashboard_payload import upsert_history, with_batch_date, without_batch
 from odds_analyzer.fallback_queue import missing_fields_for_match
 from odds_analyzer.jobs.refresh_evening_slate import (
@@ -47,7 +48,9 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
     for result in results:
         request = _find_request(payload, result)
         match, collection = _find_match(payload, request)
-        updated, filled = _apply_result(match, request, result)
+        updated, filled = _apply_result(
+            match, request, result, payload.get("strategy_performance")
+        )
         _replace_match(payload, collection, updated)
         remaining = missing_fields_for_match(updated)
         _settle_request(request, result, remaining)
@@ -94,6 +97,7 @@ def _apply_result(
     match: dict[str, Any],
     request: dict[str, Any],
     result: dict[str, Any],
+    strategy_performance: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     _validate_identity(match, result)
     queried_at = _timestamp(result.get("queried_at"), "queried_at")
@@ -118,6 +122,7 @@ def _apply_result(
         filled.append(field)
 
     updated = analyze_slate_match(updated)
+    updated = apply_confidence_calibration(updated, strategy_performance)
     updated = _attach_bilingual_reports([updated])[0]
     return updated, filled
 

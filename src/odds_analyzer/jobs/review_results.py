@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from odds_analyzer.calibration import build_strategy_performance
 from odds_analyzer.jobs.refresh_evening_slate import (
     BEIJING,
     DEFAULT_PAYLOAD_PATH,
@@ -87,6 +88,7 @@ def review_checker_results(
         history.append(copied)
 
     updated["checker_history"] = history
+    updated["strategy_performance"] = build_strategy_performance(history, reviewed_at)
     updated["last_result_review"] = {
         "batch_date": slate_date,
         "reviewed_at": reviewed_at,

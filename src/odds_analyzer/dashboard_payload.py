@@ -26,6 +26,8 @@ def merge_dashboard_payload(existing: Payload, batch: Payload) -> Payload:
     merged["current_matches"] = current_matches
     if "next_matchday" in batch:
         merged["next_matchday"] = deepcopy(batch["next_matchday"])
+    if "strategy_performance" in batch:
+        merged["strategy_performance"] = deepcopy(batch["strategy_performance"])
     if "fallback_requests" in batch:
         merged["fallback_requests"] = merge_fallback_requests(
             existing.get("fallback_requests", []),

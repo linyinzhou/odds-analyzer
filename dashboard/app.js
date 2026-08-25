@@ -1,4 +1,4 @@
-const APP_VERSION = "20260822-10";
+const APP_VERSION = "20260825-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -7,6 +7,7 @@ const state = {
   checkerHistory: [],
   adhocHistory: [],
   fallbackRequests: [],
+  strategyPerformance: { minimum_sample: 20, strategies: {} },
   nextMatchday: { generated_at: null, competitions: [] },
   analysisCompetitionCodes: ["PL", "PD", "SA"],
   activeView: "detail",
@@ -46,6 +47,7 @@ async function loadDashboard() {
   state.checkerHistory = normalized.checkerHistory;
   state.adhocHistory = normalized.adhocHistory;
   state.fallbackRequests = normalized.fallbackRequests;
+  state.strategyPerformance = normalized.strategyPerformance;
   state.nextMatchday = normalized.nextMatchday;
   state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
@@ -91,12 +93,14 @@ function normalizePayload(payload) {
   const adhocHistory = payload.adhoc_history ?? [];
   const fallbackRequests = payload.fallback_requests ?? [];
   const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
+  const strategyPerformance = payload.strategy_performance ?? { minimum_sample: 20, strategies: {} };
   return {
     currentMatches,
     mismatchHistory,
     checkerHistory,
     adhocHistory,
     fallbackRequests,
+    strategyPerformance,
     nextMatchday,
     analysisCompetitionCodes,
   };
@@ -512,11 +516,19 @@ function buildLearningSummary() {
 }
 
 function renderLearningSummary(groups) {
+  const strategies = Object.values(state.strategyPerformance.strategies ?? {});
+  const active = strategies.filter((strategy) => strategy.active);
+  const largestSample = Math.max(0, ...strategies.map((strategy) => strategy.sample_size ?? 0));
+  const minimumSample = state.strategyPerformance.minimum_sample ?? 20;
+  const calibrationStatus = active.length
+    ? `已启用 ${active.length} 类策略校准，单场信心最多修正 ±5%`
+    : `策略校准样本积累中：最多 ${largestSample}/${minimumSample}，当前不调权`;
+
   return `
     <section class="learning-panel">
       <div>
         <span>学习样本</span>
-        <strong>按复盘结果更新规则表现</strong>
+        <strong>${calibrationStatus}</strong>
       </div>
       <div class="learning-grid">
         ${groups

@@ -96,7 +96,16 @@
         "selection_keys": [
           "draw",
           "home"
-        ]
+        ],
+        "base_confidence": 68,
+        "calibration": {
+          "strategy": "mismatch:lottery_deeper_small_win",
+          "status": "collecting",
+          "sample_size": 4,
+          "minimum_sample": 20,
+          "adjustment": 0,
+          "trained_through_batch": "2026-08-24"
+        }
       },
       "checker": "检验建议：竞彩让球 +1 让平 + 让胜（信心 68%）。赛后按这一条具体盘口结算，不改换市场。",
       "risks": [
@@ -307,7 +316,16 @@
         "selection_keys": [
           "draw",
           "home"
-        ]
+        ],
+        "base_confidence": 68,
+        "calibration": {
+          "strategy": "mismatch:lottery_deeper_small_win",
+          "status": "collecting",
+          "sample_size": 4,
+          "minimum_sample": 20,
+          "adjustment": 0,
+          "trained_through_batch": "2026-08-24"
+        }
       },
       "checker": "检验建议：竞彩让球 +1 让平 + 让胜（信心 68%）。赛后按这一条具体盘口结算，不改换市场。",
       "risks": [
@@ -1785,7 +1803,16 @@
         "selection_keys": [
           "draw",
           "home"
-        ]
+        ],
+        "base_confidence": 68,
+        "calibration": {
+          "strategy": "mismatch:lottery_deeper_small_win",
+          "status": "collecting",
+          "sample_size": 4,
+          "minimum_sample": 20,
+          "adjustment": 0,
+          "trained_through_batch": "2026-08-24"
+        }
       },
       "checker": "检验建议：竞彩让球 +1 让平 + 让胜（信心 68%）。赛后按这一条具体盘口结算，不改换市场。",
       "risks": [
@@ -5127,5 +5154,29 @@
     "unsupported": 0,
     "not_found": 0,
     "status": "success"
+  },
+  "strategy_performance": {
+    "generated_at": "2026-08-25T22:41:02+08:00",
+    "trained_through_batch": "2026-08-24",
+    "minimum_sample": 20,
+    "max_adjustment": 5,
+    "strategies": {
+      "market:asian_handicap": {
+        "sample_size": 7,
+        "hits": 6,
+        "hit_rate": 0.8571,
+        "average_confidence": 53.6,
+        "adjustment": 0,
+        "active": false
+      },
+      "mismatch:lottery_deeper_small_win": {
+        "sample_size": 4,
+        "hits": 4,
+        "hit_rate": 1.0,
+        "average_confidence": 66.2,
+        "adjustment": 0,
+        "active": false
+      }
+    }
   }
 }

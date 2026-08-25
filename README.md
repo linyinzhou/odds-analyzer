@@ -211,6 +211,17 @@ Codex fallback research is applied through a strict importer instead of editing 
 ## Run Status
 
 The dashboard reads `dashboard/data/run_status.json` and shows the latest workflow run in the top status row. GitHub Actions updates this file before publishing `dashboard/` to `gh-pages`, so the page can show the last run status, run type, run id, commit, actor, and timestamp.
+## Checker Strategy Calibration
+
+Result review now builds a persisted `strategy_performance` summary grouped by the exact prediction strategy. The next evening refresh and Codex fallback import use only previously reviewed, non-void checker entries.
+
+- Fewer than 20 settled picks per strategy: record performance but do not change confidence.
+- At least 20 settled picks: apply a shrinkage-weighted adjustment capped at `-5` to `+5` percentage points.
+- Store `base_confidence`, the applied adjustment, sample size, and the latest training batch on each calibrated prediction.
+- Never use unreviewed or same-batch future results, which keeps the update walk-forward and avoids look-ahead leakage.
+
+The checker panel shows whether calibration is still collecting samples or active. Early hit rates are descriptive only; they are not evidence of a durable betting edge.
+
 ## Run Tests
 
 ```bash

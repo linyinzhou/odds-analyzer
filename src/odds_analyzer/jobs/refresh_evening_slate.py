@@ -9,6 +9,7 @@ from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+from odds_analyzer.calibration import apply_confidence_calibration, build_strategy_performance
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.fallback_queue import build_fallback_requests
 from odds_analyzer.slate_analysis import analyze_slate_matches
@@ -1020,7 +1021,16 @@ def build_evening_slate_batch(
     current_matches = [
         match for match in current_matches if _match_competition_code(match) in analysis_competitions
     ]
+    strategy_performance = build_strategy_performance(
+        existing_payload.get("checker_history", []),
+        datetime.now(BEIJING).isoformat(timespec="seconds"),
+        slate_date,
+    )
     current_matches = analyze_slate_matches(current_matches)
+    current_matches = [
+        apply_confidence_calibration(match, strategy_performance)
+        for match in current_matches
+    ]
     current_matches = _attach_bilingual_reports(current_matches)
     source_status = {
         "football_data_source": football_data_source,
@@ -1066,6 +1076,7 @@ def build_evening_slate_batch(
             scope="daily",
         ),
         "next_matchday": next_matchday,
+        "strategy_performance": strategy_performance,
         "replace_history_batch": True,
     }
 
