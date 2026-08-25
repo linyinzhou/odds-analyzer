@@ -1,15 +1,15 @@
 {
   "slate": {
-    "date": "2026-08-24",
-    "window": "2026-08-24 18:00 -> 2026-08-25 06:00 GMT+8",
-    "generated_at": "2026-08-25T00:41:40+08:00",
+    "date": "2026-08-25",
+    "window": "2026-08-25 18:00 -> 2026-08-26 06:00 GMT+8",
+    "generated_at": "2026-08-25T22:17:39+08:00",
     "source": "manual evening-report job",
-    "sporttery_source": "Sporttery official",
-    "polymarket_source": "Polymarket: 17 games",
-    "odds_api_source": "The Odds API skipped: missing THE_ODDS_API_KEY",
-    "football_data_source": "football-data.org skipped: missing FOOTBALL_DATA_API_KEY",
-    "weather_source": "Open-Meteo skipped: no football-data fixtures",
-    "team_news_source": "API-Football skipped: missing API_FOOTBALL_API_KEY",
+    "sporttery_source": "Sporttery unavailable: HTTPError",
+    "polymarket_source": "Polymarket: 22 games",
+    "odds_api_source": "The Odds API: 1 events",
+    "football_data_source": "football-data.org",
+    "weather_source": "Open-Meteo: 1 forecasts",
+    "team_news_source": "API-Football unavailable: PL fixtures 2026-08-25: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PL fixtures 2026-08-26: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PD fixtures 2026-08-25: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}",
     "analysis_competitions": [
       "PL",
       "PD",
@@ -19,803 +19,78 @@
   },
   "current_matches": [
     {
-      "id": "2026-08-25-bologna-fc-1909-ss-lazio",
-      "kickoff_time": "2026-08-25 00:30",
-      "competition": "意甲 第 1 轮",
-      "home_team": "Bologna FC 1909",
-      "away_team": "SS Lazio",
+      "id": "2026-08-26-valencia-cf-real-betis-balompi",
+      "kickoff_time": "2026-08-26 03:00",
+      "competition": "西甲 第 1 轮",
+      "home_team": "Valencia CF",
+      "away_team": "Real Betis Balompié",
       "round": "第 1 轮",
-      "venue": "Stadio Renato Dall'Ara",
-      "weather": "晴，32°C，降水 0%，风速 9 km/h",
+      "venue": "Camp de Mestalla",
+      "weather": "多云，28°C，降水 0%，风速 7 km/h",
       "status": "mismatch",
       "signal_label": "错盘命中",
       "european_odds": {
-        "home": 2.24,
-        "draw": 3.36,
-        "away": 3.72
+        "home": 2.8,
+        "draw": 3.25,
+        "away": 2.5
       },
       "asian_handicap": {
         "provider": "OddStorm",
-        "handicap": -0.25,
-        "home_odds": 2.02,
-        "away_odds": 1.94
+        "handicap": 0.0,
+        "home_odds": 1.96,
+        "away_odds": 1.95
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.08,
-          "draw": 2.85,
-          "away": 3.36
-        },
-        "handicap": -1,
-        "handicap_odds": {
-          "home": 4.75,
-          "draw": 3.55,
-          "away": 1.57
-        },
-        "source": "Codex fallback"
-      },
-      "fundamentals": [
-        {
-          "label": "Recent official form",
-          "home": "上季收官5场2胜2平1负，7进7失、8分。",
-          "away": "上季收官5场2胜1平2负，7进10失、7分。"
-        },
-        {
-          "label": "Previous-season / early-season",
-          "home": "上季意甲第9；新季有效样本不足3场。",
-          "away": "上季意甲第9；新季有效样本不足3场。"
-        },
-        {
-          "label": "Squad, coach and availability",
-          "home": "本次未发现可由官方确认的伤停事实，未作推定。",
-          "away": "意甲官方页列示加图索为新帅；未把未证实伤停写入。"
-        },
-        {
-          "label": "Tactical matchup",
-          "home": "无双方可核验的赛前阵型/人员公告，旧季成绩不替代首战战术判断。",
-          "away": "换帅使体系连续性存在不确定性，需以首发为准。"
-        },
-        {
-          "label": "Relevant H2H",
-          "home": "上季联赛主场1-1拉齐奥。",
-          "away": "同季杯赛在博洛尼亚经点球晋级；不作为联赛实力替代。"
-        },
-        {
-          "label": "Fundamental conclusion",
-          "home": "均衡、略偏主队的收官稳定性。",
-          "away": "限制：两队同为第9且拉齐奥换帅，结论须与三市场独立核对。"
-        }
-      ],
-      "market_read": "欧赔去水后主/平/客约为 44%/29%/27%，最高方向为Bologna FC 1909；OddStorm主队视角 -0.25。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 33%/33%/33%；Bologna FC 1909 -1.5支持率约 12%，可参与市场交叉验证。",
-      "mismatch": {
-        "matched": true,
-        "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket对应让球市场流动性不足，本次不参与竞彩验证",
-        "pick": "让平 + 让负",
-        "status": "lottery_deeper_small_win",
-        "polymarket_validation": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向Bologna FC 1909；仍需结合临场阵容确认优势能否转化为赢盘。",
-        "fundamental_en": "Table position, points per game and goal difference favor Bologna FC 1909; lineups still need confirmation.",
-        "mismatch": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket让球市场本次不可用于验证。",
-        "mismatch_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. The corresponding Polymarket spread is unavailable for validation."
-      },
-      "prediction": {
-        "market": "竞彩让球 -1",
-        "pick": "让平 + 让负",
-        "confidence": 66,
-        "detail": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket让球市场本次不可用于验证。",
-        "market_en": "Sporttery handicap -1",
-        "pick_en": "handicap draw + handicap away",
-        "detail_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. The corresponding Polymarket spread is unavailable for validation.",
-        "basis": "fresh_three_market_snapshot",
-        "market_type": "sporttery_handicap",
-        "home_handicap": -1,
-        "selection_keys": [
-          "draw",
-          "away"
-        ]
-      },
-      "checker": "检验建议：竞彩让球 -1 让平 + 让负（信心 66%）。赛后按这一条具体盘口结算，不改换市场。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
-      ],
-      "sources": [
-        "football-data.org",
-        "Open-Meteo",
-        "Codex fallback: SportyTrader",
-        "Codex fallback: OddStorm",
-        "Codex fallback: China Sports Lottery official calculator",
-        "Codex fallback: Bologna FC official season archive",
-        "Codex fallback: Lega Serie A Lazio results",
-        "Codex fallback: Lazio 2025/26 season review",
-        "Polymarket"
-      ],
-      "football_data_snapshot": {
-        "match_id": 558630,
-        "competition_code": "SA",
-        "utc_date": "2026-08-24T16:30:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "position": 9,
-          "played_games": 5,
-          "points": 8,
-          "goal_difference": 0,
-          "form": "D-W-W-D-L"
-        },
-        "away": {
-          "position": 9,
-          "played_games": 5,
-          "points": 7,
-          "goal_difference": -3,
-          "form": "W-L-L-W-D"
-        }
-      },
-      "weather_en": "Clear, 32°C, precipitation 0%, wind 9 km/h",
-      "weather_snapshot": {
-        "location": "Bologna",
-        "latitude": 44.49381,
-        "longitude": 11.33875,
-        "forecast_time": "2026-08-24T16:00",
-        "temperature_c": 31.7,
-        "precipitation_probability": 0.0,
-        "weather_code": 0,
-        "wind_speed_kmh": 9.1,
-        "wind_gusts_kmh": 20.5,
-        "source": "Open-Meteo"
-      },
-      "market_read_en": "De-vigged 1X2 is about 44%/29%/27%; the highest outcome is Bologna FC 1909. OddStorm lists the home line at -0.25. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 33%/33%/33%; Bologna FC 1909 -1.5 is about 12%; eligible for cross-market validation.",
-      "report_zh": "Bologna FC 1909 vs SS Lazio，开球：2026-08-25 00:30。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 44%/29%/27%，最高方向为Bologna FC 1909；OddStorm主队视角 -0.25。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 33%/33%/33%；Bologna FC 1909 -1.5支持率约 12%，可参与市场交叉验证。 预测：竞彩让球 -1 让平 + 让负（信心 66%）。",
-      "report_en": "Bologna FC 1909 vs SS Lazio, kickoff 2026-08-25 00:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 44%/29%/27%; the highest outcome is Bologna FC 1909. OddStorm lists the home line at -0.25. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 33%/33%/33%; Bologna FC 1909 -1.5 is about 12%; eligible for cross-market validation. Prediction: Sporttery handicap -1 handicap draw + handicap away (confidence 66%).",
-      "fallback_research": {
-        "european_odds": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "SportyTrader",
-              "url": "https://www.sportytrader.com/en/odds/football/italy/serie-a-79/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "asian_handicap": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "OddStorm",
-              "url": "https://www.oddstorm.com/asianodds/league/586-italy-serie-a",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "sporttery": {
-          "queried_at": "2026-08-24T21:35:56+08:00",
-          "sources": [
-            {
-              "name": "China Sports Lottery official calculator",
-              "url": "https://www.sporttery.cn/jc/jsq/zqspf/",
-              "tier": "primary",
-              "queried_at": "2026-08-24T21:35:56+08:00"
-            }
-          ]
-        },
-        "fundamentals": {
-          "queried_at": "2026-08-24T23:18:56+08:00",
-          "sources": [
-            {
-              "name": "Bologna FC official season archive",
-              "url": "https://www.bolognafc.it/storico-stagione/2025-26/",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Lega Serie A Lazio results",
-              "url": "https://www.legaseriea.it/team/lazio/index",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Lazio 2025/26 season review",
-              "url": "https://www.sslazio.it/en/news/statistiche/i-numeri-della-stagione-49",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            }
-          ]
-        }
-      },
-      "batch_date": "2026-08-24",
-      "polymarket": {
-        "home": 0.3333333333333333,
-        "draw": 0.3333333333333333,
-        "away": 0.3333333333333333,
-        "favorite_side": "home",
-        "favorite_spread": {
-          "team": "Bologna FC 1909",
-          "line": -1.5,
-          "probability": 0.125,
-          "volume": 4185.567988
-        },
-        "volume": 512475.30188600003,
-        "liquidity": 1519634.07989,
-        "signal_eligible": true,
-        "spread_signal_eligible": false,
-        "event_id": "830312",
-        "updated_at": "2026-08-24T16:41:21.087896Z",
-        "url": "https://polymarket.com/event/sea-bol-laz-2026-08-24",
-        "source": "Polymarket"
-      }
-    },
-    {
-      "id": "2026-08-25-ca-osasuna-levante-ud",
-      "kickoff_time": "2026-08-25 01:30",
-      "competition": "西甲 第 2 轮",
-      "home_team": "CA Osasuna",
-      "away_team": "Levante UD",
-      "round": "第 2 轮",
-      "venue": "Estadio El Sadar",
-      "weather": "待补",
-      "status": "mismatch",
-      "signal_label": "错盘命中",
-      "european_odds": {
-        "home": 1.83,
-        "draw": 3.65,
-        "away": 4.5
-      },
-      "asian_handicap": {
-        "provider": "Stake",
-        "handicap": -0.5,
-        "home_odds": 1.83,
-        "away_odds": 1.99
-      },
-      "chinese_lottery": {
-        "standard": {
-          "home": 1.62,
-          "draw": 3.36,
-          "away": 4.66
-        },
-        "handicap": -1,
-        "handicap_odds": {
-          "home": 3.2,
-          "draw": 3.22,
-          "away": 1.98
-        },
-        "source": "Codex fallback"
-      },
-      "fundamentals": [
-        {
-          "label": "Recent official form",
-          "home": "上季收官5连败，5进10失、0分。",
-          "away": "跨赛季近5场3胜2负，9进9失、9分；含新季0-3负西班牙人。"
-        },
-        {
-          "label": "Previous-season / early-season",
-          "home": "上季第17；本场是首轮延期后的联赛首秀。",
-          "away": "上季第16、42分完成保级。"
-        },
-        {
-          "label": "Squad, coach and availability",
-          "home": "Ramis是近四年第四位主帅；未写入无官方确认的伤停。",
-          "away": "未发现可核验的赛前伤停/换帅事实，未作推定。"
-        },
-        {
-          "label": "Tactical matchup",
-          "home": "新帅首场使旧季五连败的解释力受限。",
-          "away": "近期两场逆转的比赛报道仅支持其反击韧性背景，非强度推断。"
-        },
-        {
-          "label": "Relevant H2H",
-          "home": "上季客场2-3负莱万特。",
-          "away": "同场3-2取胜，仅作近期交锋背景。"
-        },
-        {
-          "label": "Fundamental conclusion",
-          "home": "均衡，近期结果偏向客队。",
-          "away": "限制：奥萨苏纳的新帅首秀与极小新季样本，须同三市场独立核对。"
-        }
-      ],
-      "market_read": "欧赔去水后主/平/客约为 52%/26%/21%，最高方向为CA Osasuna；Stake主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 41%/38%/21%；CA Osasuna -1支持率约 8%，可参与市场交叉验证。",
-      "mismatch": {
-        "matched": true,
-        "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket对应让球市场流动性不足，本次不参与竞彩验证；基本面偏受让方，进一步不支持热门方大胜。",
-        "pick": "让平 + 让负",
-        "status": "lottery_deeper_small_win",
-        "polymarket_validation": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向Levante UD；主队方向需要盘口提供额外支持。",
-        "fundamental_en": "Table position, points per game and goal difference favor Levante UD; the home side needs market support.",
-        "mismatch": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket让球市场本次不可用于验证。",
-        "mismatch_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. The corresponding Polymarket spread is unavailable for validation."
-      },
-      "prediction": {
-        "market": "竞彩让球 -1",
-        "pick": "让平 + 让负",
-        "confidence": 65,
-        "detail": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket让球市场本次不可用于验证。",
-        "market_en": "Sporttery handicap -1",
-        "pick_en": "handicap draw + handicap away",
-        "detail_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. The corresponding Polymarket spread is unavailable for validation.",
-        "basis": "fresh_three_market_snapshot",
-        "market_type": "sporttery_handicap",
-        "home_handicap": -1,
-        "selection_keys": [
-          "draw",
-          "away"
-        ]
-      },
-      "checker": "检验建议：竞彩让球 -1 让平 + 让负（信心 65%）。赛后按这一条具体盘口结算，不改换市场。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
-      ],
-      "sources": [
-        "football-data.org",
-        "Codex fallback: Stake",
-        "Codex fallback: China Sports Lottery official calculator",
-        "Codex fallback: LaLiga official match records",
-        "Codex fallback: LaLiga official results",
-        "Codex fallback: StatMuse verified result summary",
-        "Codex fallback: AS pre-match report",
-        "Codex fallback: LaLiga official Levante results",
-        "Polymarket"
-      ],
-      "football_data_snapshot": {
-        "match_id": 564639,
-        "competition_code": "PD",
-        "utc_date": "2026-08-24T17:30:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "position": 17,
-          "played_games": 5,
-          "points": 0,
-          "goal_difference": -5,
-          "form": "L-L-L-L-L"
-        },
-        "away": {
-          "position": 16,
-          "played_games": 5,
-          "points": 9,
-          "goal_difference": 0,
-          "form": "W-W-W-L-L"
-        }
-      },
-      "market_read_en": "De-vigged 1X2 is about 52%/26%/21%; the highest outcome is CA Osasuna. Stake lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 41%/38%/21%; CA Osasuna -1 is about 8%; eligible for cross-market validation.",
-      "report_zh": "CA Osasuna vs Levante UD，开球：2026-08-25 01:30。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 52%/26%/21%，最高方向为CA Osasuna；Stake主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 41%/38%/21%；CA Osasuna -1支持率约 8%，可参与市场交叉验证。 预测：竞彩让球 -1 让平 + 让负（信心 65%）。",
-      "report_en": "CA Osasuna vs Levante UD, kickoff 2026-08-25 01:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 52%/26%/21%; the highest outcome is CA Osasuna. Stake lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 41%/38%/21%; CA Osasuna -1 is about 8%; eligible for cross-market validation. Prediction: Sporttery handicap -1 handicap draw + handicap away (confidence 65%).",
-      "fallback_research": {
-        "european_odds": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "Stake",
-              "url": "https://stake.bet/es/sports/soccer/spain/la-liga/46688476-osasuna-levante",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "asian_handicap": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "Stake",
-              "url": "https://stake.bet/es/sports/soccer/spain/la-liga/46688476-osasuna-levante",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "sporttery": {
-          "queried_at": "2026-08-24T21:35:56+08:00",
-          "sources": [
-            {
-              "name": "China Sports Lottery official calculator",
-              "url": "https://www.sporttery.cn/jc/jsq/zqspf/",
-              "tier": "primary",
-              "queried_at": "2026-08-24T21:35:56+08:00"
-            }
-          ]
-        },
-        "fundamentals": {
-          "queried_at": "2026-08-24T23:18:56+08:00",
-          "sources": [
-            {
-              "name": "LaLiga official match records",
-              "url": "https://www.laliga.com/partido/temporada-2025-2026-laliga-ea-sports-ca-osasuna-fc-barcelona-34",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "LaLiga official results",
-              "url": "https://www.laliga.com/en-GB/laliga-easports/results/2025-26/gameweek-35",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "StatMuse verified result summary",
-              "url": "https://www.statmuse.com/fc/ask/osasuna-lastf",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "AS pre-match report",
-              "url": "https://as.com/futbol/ramis-abre-una-nueva-era-en-el-sadar-f202608-n/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "LaLiga official Levante results",
-              "url": "https://www.laliga.com/es-GB/laliga-easports/resultados/2025-26/jornada-37",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            }
-          ]
-        }
-      },
-      "batch_date": "2026-08-24",
-      "polymarket": {
-        "home": 0.41414141414141414,
-        "draw": 0.3787878787878788,
-        "away": 0.20707070707070707,
-        "favorite_side": "home",
-        "favorite_spread": {
-          "team": "CA Osasuna",
-          "line": -1.0,
-          "probability": 0.075,
-          "volume": 18.928706
-        },
-        "volume": 279568.408159,
-        "liquidity": 2911831.7467,
-        "signal_eligible": true,
-        "spread_signal_eligible": false,
-        "event_id": "831809",
-        "updated_at": "2026-08-24T16:41:21.087896Z",
-        "url": "https://polymarket.com/event/lal-osa-lev-2026-08-24",
-        "source": "Polymarket"
-      }
-    },
-    {
-      "id": "2026-08-25-as-roma-acf-fiorentina",
-      "kickoff_time": "2026-08-25 02:45",
-      "competition": "意甲 第 1 轮",
-      "home_team": "AS Roma",
-      "away_team": "ACF Fiorentina",
-      "round": "第 1 轮",
-      "venue": "Stadio Olimpico",
-      "weather": "多云，27°C，降水 0%，风速 12 km/h",
-      "status": "watch",
-      "signal_label": "盘口观察",
-      "european_odds": {
-        "home": 1.7,
-        "draw": 4.1,
-        "away": 6.25
-      },
-      "asian_handicap": {
-        "provider": "TotalCorner",
-        "handicap": -0.75,
-        "home_odds": 1.8,
-        "away_odds": 2.05
-      },
-      "chinese_lottery": {
-        "standard": {
-          "home": 1.56,
-          "draw": 3.55,
-          "away": 4.85
-        },
-        "handicap": -1,
-        "handicap_odds": {
-          "home": 2.9,
-          "draw": 3.3,
-          "away": 2.08
-        },
-        "source": "Codex fallback"
-      },
-      "fundamentals": [
-        {
-          "label": "Recent official form",
-          "home": "上季收官5连胜，13进2失、15分。",
-          "away": "收官5场2胜2平1负，6进5失、8分。"
-        },
-        {
-          "label": "Previous-season / early-season",
-          "home": "上季意甲第3；新季有效样本不足3场。",
-          "away": "上季意甲第6；新季有效样本不足3场。"
-        },
-        {
-          "label": "Squad, coach and availability",
-          "home": "加斯佩里尼执教事实已由独立报道确认；未写入未证实伤停。",
-          "away": "本次未发现可由官方确认的伤停/帅位事实，未作推定。"
-        },
-        {
-          "label": "Tactical matchup",
-          "home": "加斯佩里尼主动压迫取向有报道佐证，但首战执行需看首发。",
-          "away": "无可核验的赛前战术公告，不以旧季名次替代战术判断。"
-        },
-        {
-          "label": "Relevant H2H",
-          "home": "上季主场4-0胜佛罗伦萨。",
-          "away": "历史赛果不替代本场阵容与市场信息。"
-        },
-        {
-          "label": "Fundamental conclusion",
-          "home": "主队基本面优势：收官样本、上季名次及H2H均偏罗马。",
-          "away": "限制：跨季样本与首战阵容变动，须同三市场独立核对。"
-        }
-      ],
-      "market_read": "欧赔去水后主/平/客约为 59%/25%/16%，最高方向为AS Roma；TotalCorner主队视角 -0.75。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 42%/35%/23%；AS Roma -1.5支持率约 32%，可参与市场交叉验证。",
-      "mismatch": {
-        "matched": false,
-        "reason": "竞彩让球与亚盘基本一致，重点判断热门方正好赢到让球数，还是进一步打穿。；Polymarket有效市场未形成明确支持或反对",
-        "pick": "不进入错盘栏",
-        "status": "aligned",
-        "polymarket_validation": "neutral"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向AS Roma；仍需结合临场阵容确认优势能否转化为赢盘。",
-        "fundamental_en": "Table position, points per game and goal difference favor AS Roma; lineups still need confirmation.",
-        "mismatch": "不符合明确错盘条件：竞彩让球与亚盘基本一致，重点判断热门方正好赢到让球数，还是进一步打穿。",
-        "mismatch_en": "No confirmed mismatch opportunity after the line, market and fundamental checks."
-      },
-      "prediction": {
-        "market": "亚盘 TotalCorner",
-        "pick": "AS Roma -0.75",
-        "confidence": 57,
-        "detail": "查询时TotalCorner去水后该方向覆盖概率约 53%，欧赔胜向约 59%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
-        "market_en": "Asian handicap TotalCorner",
-        "pick_en": "AS Roma -0.75",
-        "detail_en": "The de-vigged Asian market gives this side about 53% cover probability and the 1X2 win probability is about 59%. This is a current-market direction, not proof of positive expected value.",
-        "basis": "fresh_european_asian_snapshot",
-        "market_type": "asian_handicap",
-        "home_handicap": -0.75,
-        "selection_keys": [
-          "home"
-        ]
-      },
-      "checker": "检验建议：亚盘 TotalCorner AS Roma -0.75（信心 57%）。赛后按这一条具体盘口结算，不改换市场。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
-      ],
-      "sources": [
-        "football-data.org",
-        "Open-Meteo",
-        "Codex fallback: SportyTrader",
-        "Codex fallback: TotalCorner",
-        "Codex fallback: China Sports Lottery official calculator",
-        "Codex fallback: Roma 2025/26 result record",
-        "Codex fallback: Lega Serie A Roma results",
-        "Codex fallback: Lega Serie A Fiorentina results",
-        "Codex fallback: AS Roma coaching report",
-        "Polymarket"
-      ],
-      "football_data_snapshot": {
-        "match_id": 558638,
-        "competition_code": "SA",
-        "utc_date": "2026-08-24T18:45:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "position": 3,
-          "played_games": 5,
-          "points": 15,
-          "goal_difference": 11,
-          "form": "W-W-W-W-W"
-        },
-        "away": {
-          "position": 6,
-          "played_games": 5,
-          "points": 8,
-          "goal_difference": 1,
-          "form": "W-D-W-D-L"
-        }
-      },
-      "weather_en": "Cloudy, 27°C, precipitation 0%, wind 12 km/h",
-      "weather_snapshot": {
-        "location": "Roma",
-        "latitude": 44.99364,
-        "longitude": 11.10642,
-        "forecast_time": "2026-08-24T19:00",
-        "temperature_c": 26.7,
-        "precipitation_probability": 0.0,
-        "weather_code": 3,
-        "wind_speed_kmh": 12.1,
-        "wind_gusts_kmh": 21.2,
-        "source": "Open-Meteo"
-      },
-      "market_read_en": "De-vigged 1X2 is about 59%/25%/16%; the highest outcome is AS Roma. TotalCorner lists the home line at -0.75. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 42%/35%/23%; AS Roma -1.5 is about 32%; eligible for cross-market validation.",
-      "report_zh": "AS Roma vs ACF Fiorentina，开球：2026-08-25 02:45。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 59%/25%/16%，最高方向为AS Roma；TotalCorner主队视角 -0.75。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 42%/35%/23%；AS Roma -1.5支持率约 32%，可参与市场交叉验证。 预测：亚盘 TotalCorner AS Roma -0.75（信心 57%）。",
-      "report_en": "AS Roma vs ACF Fiorentina, kickoff 2026-08-25 02:45. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 59%/25%/16%; the highest outcome is AS Roma. TotalCorner lists the home line at -0.75. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 42%/35%/23%; AS Roma -1.5 is about 32%; eligible for cross-market validation. Prediction: Asian handicap TotalCorner AS Roma -0.75 (confidence 57%).",
-      "fallback_research": {
-        "european_odds": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "SportyTrader",
-              "url": "https://www.sportytrader.com/en/odds/football/italy/serie-a-79/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "asian_handicap": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
-          "sources": [
-            {
-              "name": "TotalCorner",
-              "url": "https://www.totalcorner.com/odds/roma-vs-fiorentina/196357789",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
-            }
-          ]
-        },
-        "sporttery": {
-          "queried_at": "2026-08-24T21:35:56+08:00",
-          "sources": [
-            {
-              "name": "China Sports Lottery official calculator",
-              "url": "https://www.sporttery.cn/jc/jsq/zqspf/",
-              "tier": "primary",
-              "queried_at": "2026-08-24T21:35:56+08:00"
-            }
-          ]
-        },
-        "fundamentals": {
-          "queried_at": "2026-08-24T23:18:56+08:00",
-          "sources": [
-            {
-              "name": "Roma 2025/26 result record",
-              "url": "https://www.asroma.pl/terminarz/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Lega Serie A Roma results",
-              "url": "https://www.legaseriea.it/team/ROMA",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Lega Serie A Fiorentina results",
-              "url": "https://en.legaseriea.it/team/fiorentina/index",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "AS Roma coaching report",
-              "url": "https://as.com/futbol/internacional/alucinados-con-hermoso-f202605-n/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            }
-          ]
-        }
-      },
-      "batch_date": "2026-08-24",
-      "polymarket": {
-        "home": 0.4225352112676056,
-        "draw": 0.34507042253521125,
-        "away": 0.23239436619718312,
-        "favorite_side": "home",
-        "favorite_spread": {
-          "team": "AS Roma",
-          "line": -1.5,
-          "probability": 0.315,
-          "volume": 14010.567373999998
-        },
-        "volume": 111170.554119,
-        "liquidity": 1694545.18926,
-        "signal_eligible": true,
-        "spread_signal_eligible": true,
-        "event_id": "830315",
-        "updated_at": "2026-08-24T16:41:21.087896Z",
-        "url": "https://polymarket.com/event/sea-rom-fio-2026-08-24",
-        "source": "Polymarket"
-      }
-    },
-    {
-      "id": "2026-08-25-fulham-fc-chelsea-fc",
-      "kickoff_time": "2026-08-25 03:00",
-      "competition": "英超 第 1 轮",
-      "home_team": "Fulham FC",
-      "away_team": "Chelsea FC",
-      "round": "第 1 轮",
-      "venue": "Craven Cottage",
-      "weather": "多云，19°C，降水 0%，风速 19 km/h",
-      "status": "mismatch",
-      "signal_label": "错盘命中",
-      "european_odds": {
-        "home": 4.35,
-        "draw": 3.83,
-        "away": 1.85
-      },
-      "asian_handicap": {
-        "provider": "Pinnacle",
-        "handicap": 0.5,
-        "home_odds": 2.07,
-        "away_odds": 1.86
-      },
-      "chinese_lottery": {
-        "standard": {
-          "home": 3.9,
-          "draw": 3.55,
-          "away": 1.69
+          "home": 2.67,
+          "draw": 3.05,
+          "away": 2.34
         },
         "handicap": 1,
         "handicap_odds": {
-          "home": 1.9,
-          "draw": 3.35,
-          "away": 3.3
+          "home": 1.46,
+          "draw": 3.85,
+          "away": 5.4
         },
         "source": "Codex fallback"
       },
       "fundamentals": [
         {
-          "label": "Recent official form",
-          "home": "上季末4场1胜1平2负，3进5失、4分。",
-          "away": "上季末4场1胜1平2负，5进7失、4分。"
+          "home": "瓦伦西亚本赛季首战0-0战平塞尔塔；连同上赛季末3-1巴塞罗那、4-3皇家社会，近3场正式联赛2胜1平，进7球失4球。",
+          "away": "皇家贝蒂斯本赛季首战1-0皇家社会；连同上赛季末2-1莱万特、1-3巴塞罗那，近3场正式联赛2胜1负，进4球失4球。"
         },
         {
-          "label": "Previous-season / early-season",
-          "home": "上季英超第11、52分；有效新季样本不足3场。",
-          "away": "上季英超第10、52分；有效新季样本不足3场。"
+          "home": "瓦伦西亚当前联赛第11；Sergi Canos、Copete和Diego Lopez缺阵，Foulquier与Alberto Mari仍有恢复风险，Luis Rioja已恢复但首发存疑。",
+          "away": "贝蒂斯当前联赛第7；Diego Conde、Ruibal缺阵，Abde和Lo Celso仍无法出战，Parrott已进入可用范围。"
         },
         {
-          "label": "Squad, coach and availability",
-          "home": "Arbeloa首次执教英超；未写入未证实伤停。",
-          "away": "切尔西官方确认阿隆索英超首秀；未写入未证实伤停。"
-        },
-        {
-          "label": "Tactical matchup",
-          "home": "两队均处于新帅首场，旧季样本仅作背景。",
-          "away": "无可核验的赛前阵型公告，不以转会宣传或赔率推断强弱。"
-        },
-        {
-          "label": "Relevant H2H",
-          "home": "本次未纳入未经逐场官方核验的H2H数值。",
-          "away": "西伦敦德比属性仅作赛程背景。"
-        },
-        {
-          "label": "Fundamental conclusion",
-          "home": "均衡：收官4场积分相同，主场是唯一已知场地变量。",
-          "away": "限制：两名新帅首秀，须同三市场独立核对。"
+          "home": "比赛在梅斯塔利亚进行；瓦伦西亚近两场正式联赛保持不败，主场因素提供支撑。",
+          "away": "历史143次交锋贝蒂斯45胜、瓦伦西亚68胜、平30场；贝蒂斯首战取胜，但当前客场欧赔仅为轻微热门。"
         }
       ],
-      "market_read": "欧赔去水后主/平/客约为 22%/25%/52%，最高方向为Chelsea FC；Pinnacle主队视角 +0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 23%/35%/42%；Chelsea FC -1.5支持率约 26%，可参与市场交叉验证。",
+      "market_read": "欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。",
       "mismatch": {
         "matched": true,
-        "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket热门方 -1.5 支持率约 26%，验证热门方难以净胜两球",
+        "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket无有效流动性信号，本次不参与竞彩验证；基本面偏受让方，进一步不支持热门方大胜。",
         "pick": "让平 + 让胜",
         "status": "lottery_deeper_small_win",
-        "polymarket_validation": "support"
+        "polymarket_validation": "unavailable"
       },
       "recommendation": {
-        "fundamental": "双方现有排名与近期样本接近，基本面不足以单独支持大胜判断。",
-        "fundamental_en": "The available table and form sample is close and does not independently support a wide-margin call.",
-        "mismatch": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket有效市场支持该竞彩方向。",
-        "mismatch_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. A liquid Polymarket spread supports this Sporttery selection."
+        "fundamental": "排名、场均积分和净胜球样本偏向Valencia CF；仍需结合临场阵容确认优势能否转化为赢盘。",
+        "fundamental_en": "Table position, points per game and goal difference favor Valencia CF; lineups still need confirmation.",
+        "mismatch": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
+        "mismatch_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation."
       },
       "prediction": {
         "market": "竞彩让球 +1",
         "pick": "让平 + 让胜",
         "confidence": 68,
-        "detail": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket有效市场支持该竞彩方向。",
+        "detail": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
         "market_en": "Sporttery handicap +1",
         "pick_en": "handicap draw + handicap home",
-        "detail_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. A liquid Polymarket spread supports this Sporttery selection.",
-        "basis": "fresh_multi_market_snapshot",
+        "detail_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation.",
+        "basis": "fresh_three_market_snapshot",
         "market_type": "sporttery_handicap",
         "home_handicap": 1,
         "selection_keys": [
@@ -832,231 +107,209 @@
       "sources": [
         "football-data.org",
         "Open-Meteo",
-        "The Odds API",
-        "Codex fallback: China Sports Lottery official calculator",
-        "Codex fallback: Fulham official match reports",
-        "Codex fallback: Fulham official Wolves report",
-        "Codex fallback: Chelsea official match reports",
-        "Codex fallback: Chelsea official pre-match information",
-        "Codex fallback: AS pre-match report",
-        "Polymarket"
+        "Codex fallback: LaLiga official match centre",
+        "Codex fallback: AS match preview and team news",
+        "Codex fallback: Sky Sports Real Betis results",
+        "Codex fallback: Cadena SER Betis Real Sociedad report",
+        "Codex fallback: Betfred match odds",
+        "Codex fallback: OddStorm LaLiga Asian odds",
+        "Codex fallback: China Sport Lottery official football calculator API"
       ],
       "football_data_snapshot": {
-        "match_id": 560551,
-        "competition_code": "PL",
-        "utc_date": "2026-08-24T19:00:00Z",
+        "match_id": 564637,
+        "competition_code": "PD",
+        "utc_date": "2026-08-25T19:00:00Z",
         "status": "TIMED",
         "source": "football-data.org"
       },
       "fundamental_context": {
         "home": {
           "position": 11,
-          "played_games": 4,
-          "points": 4,
-          "goal_difference": -2,
-          "form": "L-L-D-W"
+          "played_games": 3,
+          "points": 7,
+          "goal_difference": 3,
+          "form": [
+            "D",
+            "W",
+            "W"
+          ]
         },
         "away": {
-          "position": 10,
-          "played_games": 4,
-          "points": 4,
-          "goal_difference": -2,
-          "form": "L-D-W-L"
+          "position": 7,
+          "played_games": 3,
+          "points": 6,
+          "goal_difference": 0,
+          "form": [
+            "W",
+            "W",
+            "L"
+          ]
         }
       },
-      "weather_en": "Cloudy, 19°C, precipitation 0%, wind 19 km/h",
+      "weather_en": "Cloudy, 28°C, precipitation 0%, wind 7 km/h",
       "weather_snapshot": {
-        "location": "London",
-        "latitude": 51.50853,
-        "longitude": -0.12574,
-        "forecast_time": "2026-08-24T19:00",
-        "temperature_c": 19.0,
+        "location": "Valencia",
+        "latitude": 39.47391,
+        "longitude": -0.37966,
+        "forecast_time": "2026-08-25T19:00",
+        "temperature_c": 28.1,
         "precipitation_probability": 0.0,
-        "weather_code": 1,
-        "wind_speed_kmh": 19.4,
-        "wind_gusts_kmh": 43.6,
+        "weather_code": 3,
+        "wind_speed_kmh": 6.8,
+        "wind_gusts_kmh": 32.4,
         "source": "Open-Meteo"
       },
-      "odds_api_snapshot": {
-        "event_id": "4e4a813bf4218cc527e6f8ef2351170d",
-        "sport_key": "soccer_epl",
-        "bookmaker": "Pinnacle",
-        "bookmaker_key": "pinnacle",
-        "updated_at": "2026-08-24T10:37:48Z",
-        "source": "The Odds API"
-      },
-      "market_read_en": "De-vigged 1X2 is about 22%/25%/52%; the highest outcome is Chelsea FC. Pinnacle lists the home line at +0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 23%/35%/42%; Chelsea FC -1.5 is about 26%; eligible for cross-market validation.",
-      "report_zh": "Fulham FC vs Chelsea FC，开球：2026-08-25 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 22%/25%/52%，最高方向为Chelsea FC；Pinnacle主队视角 +0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 23%/35%/42%；Chelsea FC -1.5支持率约 26%，可参与市场交叉验证。 预测：竞彩让球 +1 让平 + 让胜（信心 68%）。",
-      "report_en": "Fulham FC vs Chelsea FC, kickoff 2026-08-25 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 22%/25%/52%; the highest outcome is Chelsea FC. Pinnacle lists the home line at +0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 23%/35%/42%; Chelsea FC -1.5 is about 26%; eligible for cross-market validation. Prediction: Sporttery handicap +1 handicap draw + handicap home (confidence 68%).",
+      "market_read_en": "De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check.",
+      "report_zh": "Valencia CF vs Real Betis Balompié，开球：2026-08-26 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。 预测：竞彩让球 +1 让平 + 让胜（信心 68%）。",
+      "report_en": "Valencia CF vs Real Betis Balompié, kickoff 2026-08-26 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check. Prediction: Sporttery handicap +1 handicap draw + handicap home (confidence 68%).",
       "fallback_research": {
-        "sporttery": {
-          "queried_at": "2026-08-24T21:35:56+08:00",
+        "fundamentals": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
           "sources": [
             {
-              "name": "China Sports Lottery official calculator",
-              "url": "https://www.sporttery.cn/jc/jsq/zqspf/",
+              "name": "LaLiga official match centre",
+              "url": "https://www.laliga.com/es-GB/partido/temporada-2025-2026-laliga-ea-sports-real-sociedad-valencia-cf-37",
               "tier": "primary",
-              "queried_at": "2026-08-24T21:35:56+08:00"
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "AS match preview and team news",
+              "url": "https://as.com/futbol/primera/valencia-betis-tv-horario-y-como-ver-laliga-ea-sports-online-f202608-n/",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Sky Sports Real Betis results",
+              "url": "https://www.skysports.com/real-betis-scores-fixtures/2026-05-01",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Cadena SER Betis Real Sociedad report",
+              "url": "https://cadenaser.com/nacional/2026/08/21/real-betis-1-0-real-sociedad-resumen-resultado-y-goles-del-partido-de-la-jornada-1-en-laliga-ea-sports-cadena-ser/",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
             }
           ]
         },
-        "fundamentals": {
-          "queried_at": "2026-08-24T23:18:56+08:00",
+        "european_odds": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
           "sources": [
             {
-              "name": "Fulham official match reports",
-              "url": "https://www.fulhamfc.com/match/men/2025-26/g2562268",
+              "name": "Betfred match odds",
+              "url": "https://www.betfred.com/sports/football/event/35846952",
               "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "asian_handicap": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
             {
-              "name": "Fulham official Wolves report",
-              "url": "https://www.fulhamfc.com/news/2026/may/17/wolves-1-1-fulham/",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Chelsea official match reports",
-              "url": "https://www.chelseafc.com/en/news/article/match-report-sunderland-2-1-chelsea",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Chelsea official pre-match information",
-              "url": "https://www.chelseafc.com/en/news/article/fulham-vs-chelsea-all-you-need-to-know-august-2026",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "AS pre-match report",
-              "url": "https://as.com/futbol/primera/fulham-chelsea-tv-a-que-hora-es-donde-y-como-ver-la-premier-league-online-hoy-f202608-n/",
+              "name": "OddStorm LaLiga Asian odds",
+              "url": "https://www.oddstorm.com/asianodds/league/906-spain-la-liga-primera-division",
               "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "sporttery": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "China Sport Lottery official football calculator API",
+              "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
             }
           ]
         }
-      },
-      "batch_date": "2026-08-24",
-      "polymarket": {
-        "home": 0.22564102564102564,
-        "draw": 0.3538461538461538,
-        "away": 0.4205128205128205,
-        "favorite_side": "away",
-        "favorite_spread": {
-          "team": "Chelsea FC",
-          "line": -1.5,
-          "probability": 0.265,
-          "volume": 38688.118813
-        },
-        "volume": 1142316.0229359989,
-        "liquidity": 4690424.9085,
-        "signal_eligible": true,
-        "spread_signal_eligible": true,
-        "event_id": "831378",
-        "updated_at": "2026-08-24T16:41:21.087896Z",
-        "url": "https://polymarket.com/event/epl-ful-che-2026-08-24",
-        "source": "Polymarket"
       }
-    },
+    }
+  ],
+  "mismatch_history": [
     {
-      "id": "2026-08-25-m-laga-cf-rc-deportivo-la-coru-a",
-      "kickoff_time": "2026-08-25 03:30",
-      "competition": "西甲 第 2 轮",
-      "home_team": "Málaga CF",
-      "away_team": "RC Deportivo La Coruña",
-      "round": "第 2 轮",
-      "venue": "Estadio La Rosaleda",
-      "weather": "多云，29°C，降水 0%，风速 16 km/h",
+      "id": "2026-08-26-valencia-cf-real-betis-balompi",
+      "kickoff_time": "2026-08-26 03:00",
+      "competition": "西甲 第 1 轮",
+      "home_team": "Valencia CF",
+      "away_team": "Real Betis Balompié",
+      "round": "第 1 轮",
+      "venue": "Camp de Mestalla",
+      "weather": "多云，28°C，降水 0%，风速 7 km/h",
       "status": "mismatch",
       "signal_label": "错盘命中",
       "european_odds": {
-        "home": 2.46,
-        "draw": 3.1,
-        "away": 3.0
+        "home": 2.8,
+        "draw": 3.25,
+        "away": 2.5
       },
       "asian_handicap": {
-        "provider": "Caliente.mx",
-        "handicap": -0.25,
-        "home_odds": 2.15,
-        "away_odds": 1.666
+        "provider": "OddStorm",
+        "handicap": 0.0,
+        "home_odds": 1.96,
+        "away_odds": 1.95
       },
       "chinese_lottery": {
         "standard": {
-          "home": 2.28,
-          "draw": 2.7,
-          "away": 3.12
+          "home": 2.67,
+          "draw": 3.05,
+          "away": 2.34
         },
-        "handicap": -1,
+        "handicap": 1,
         "handicap_odds": {
-          "home": 5.3,
-          "draw": 3.77,
-          "away": 1.48
+          "home": 1.46,
+          "draw": 3.85,
+          "away": 5.4
         },
         "source": "Codex fallback"
       },
       "fundamentals": [
         {
-          "label": "Recent official form",
-          "home": "跨赛季4场：2胜1平1负，5进4失、7分（含附加赛与新季0-2负马竞）。",
-          "away": "跨赛季近5场3胜1平1负，7进4失、10分；含新季1-1。"
+          "home": "瓦伦西亚本赛季首战0-0战平塞尔塔；连同上赛季末3-1巴塞罗那、4-3皇家社会，近3场正式联赛2胜1平，进7球失4球。",
+          "away": "皇家贝蒂斯本赛季首战1-0皇家社会；连同上赛季末2-1莱万特、1-3巴塞罗那，近3场正式联赛2胜1负，进4球失4球。"
         },
         {
-          "label": "Previous-season / early-season",
-          "home": "上季西乙第4、73分，经附加赛升级。",
-          "away": "上季西乙直接升级；新季有效样本不足3场。"
+          "home": "瓦伦西亚当前联赛第11；Sergi Canos、Copete和Diego Lopez缺阵，Foulquier与Alberto Mari仍有恢复风险，Luis Rioja已恢复但首发存疑。",
+          "away": "贝蒂斯当前联赛第7；Diego Conde、Ruibal缺阵，Abde和Lo Celso仍无法出战，Parrott已进入可用范围。"
         },
         {
-          "label": "Squad, coach and availability",
-          "home": "Funes带队升级为可确认事实；未写入未证实伤停。",
-          "away": "未发现可核验的赛前伤停/帅位事实，未作推定。"
-        },
-        {
-          "label": "Tactical matchup",
-          "home": "官方赛报显示附加赛末段取胜；不能据此推断本场战术强度。",
-          "away": "无可核验的赛前阵型公告，首发和升级后调整是主要限制。"
-        },
-        {
-          "label": "Relevant H2H",
-          "home": "上季西乙主场3-0胜拉科。",
-          "away": "旧级别交锋仅作背景，不替代西甲样本。"
-        },
-        {
-          "label": "Fundamental conclusion",
-          "home": "均衡、略偏客队的跨季积分样本。",
-          "away": "限制：两队均升级且跨级别，主队已知H2H与主场因素须同三市场独立核对。"
+          "home": "比赛在梅斯塔利亚进行；瓦伦西亚近两场正式联赛保持不败，主场因素提供支撑。",
+          "away": "历史143次交锋贝蒂斯45胜、瓦伦西亚68胜、平30场；贝蒂斯首战取胜，但当前客场欧赔仅为轻微热门。"
         }
       ],
-      "market_read": "欧赔去水后主/平/客约为 38%/30%/31%，最高方向为Málaga CF；Caliente.mx主队视角 -0.25。本次竞彩已取得，可继续做三盘比较。",
+      "market_read": "欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。",
       "mismatch": {
         "matched": true,
         "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket无有效流动性信号，本次不参与竞彩验证；基本面偏受让方，进一步不支持热门方大胜。",
-        "pick": "让平 + 让负",
+        "pick": "让平 + 让胜",
         "status": "lottery_deeper_small_win",
         "polymarket_validation": "unavailable"
       },
       "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向RC Deportivo La Coruña；主队方向需要盘口提供额外支持。",
-        "fundamental_en": "Table position, points per game and goal difference favor RC Deportivo La Coruña; the home side needs market support.",
-        "mismatch": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket本次不可用于验证。",
-        "mismatch_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. Polymarket is unavailable for validation."
+        "fundamental": "排名、场均积分和净胜球样本偏向Valencia CF；仍需结合临场阵容确认优势能否转化为赢盘。",
+        "fundamental_en": "Table position, points per game and goal difference favor Valencia CF; lineups still need confirmation.",
+        "mismatch": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
+        "mismatch_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation."
       },
       "prediction": {
-        "market": "竞彩让球 -1",
-        "pick": "让平 + 让负",
-        "confidence": 66,
-        "detail": "符合错盘规则；竞彩让球 -1：让平 + 让负。Polymarket本次不可用于验证。",
-        "market_en": "Sporttery handicap -1",
-        "pick_en": "handicap draw + handicap away",
-        "detail_en": "Mismatch confirmed; Sporttery handicap -1: handicap draw + handicap away. Polymarket is unavailable for validation.",
+        "market": "竞彩让球 +1",
+        "pick": "让平 + 让胜",
+        "confidence": 68,
+        "detail": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
+        "market_en": "Sporttery handicap +1",
+        "pick_en": "handicap draw + handicap home",
+        "detail_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation.",
         "basis": "fresh_three_market_snapshot",
         "market_type": "sporttery_handicap",
-        "home_handicap": -1,
+        "home_handicap": 1,
         "selection_keys": [
           "draw",
-          "away"
+          "home"
         ]
       },
-      "checker": "检验建议：竞彩让球 -1 让平 + 让负（信心 66%）。赛后按这一条具体盘口结算，不改换市场。",
+      "checker": "检验建议：竞彩让球 +1 让平 + 让胜（信心 68%）。赛后按这一条具体盘口结算，不改换市场。",
       "risks": [
         "赔率会临场变化，本报告只使用本次查询快照。",
         "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
@@ -1065,127 +318,127 @@
       "sources": [
         "football-data.org",
         "Open-Meteo",
-        "Codex fallback: Caliente.mx",
-        "Codex fallback: China Sports Lottery official calculator",
-        "Codex fallback: Málaga official season review",
-        "Codex fallback: Málaga official promotion final record",
-        "Codex fallback: RC Deportivo official results",
-        "Codex fallback: AS Málaga-Deportivo preview",
-        "Codex fallback: Málaga official result records"
+        "Codex fallback: LaLiga official match centre",
+        "Codex fallback: AS match preview and team news",
+        "Codex fallback: Sky Sports Real Betis results",
+        "Codex fallback: Cadena SER Betis Real Sociedad report",
+        "Codex fallback: Betfred match odds",
+        "Codex fallback: OddStorm LaLiga Asian odds",
+        "Codex fallback: China Sport Lottery official football calculator API"
       ],
       "football_data_snapshot": {
-        "match_id": 564640,
+        "match_id": 564637,
         "competition_code": "PD",
-        "utc_date": "2026-08-24T19:30:00Z",
+        "utc_date": "2026-08-25T19:00:00Z",
         "status": "TIMED",
         "source": "football-data.org"
       },
       "fundamental_context": {
         "home": {
-          "position": 4,
-          "played_games": 4,
+          "position": 11,
+          "played_games": 3,
           "points": 7,
-          "goal_difference": 1,
-          "form": "D-W-W-L"
+          "goal_difference": 3,
+          "form": [
+            "D",
+            "W",
+            "W"
+          ]
         },
         "away": {
-          "position": 2,
-          "played_games": 5,
-          "points": 10,
-          "goal_difference": 3,
-          "form": "W-W-W-L-D"
+          "position": 7,
+          "played_games": 3,
+          "points": 6,
+          "goal_difference": 0,
+          "form": [
+            "W",
+            "W",
+            "L"
+          ]
         }
       },
-      "weather_en": "Cloudy, 29°C, precipitation 0%, wind 16 km/h",
+      "weather_en": "Cloudy, 28°C, precipitation 0%, wind 7 km/h",
       "weather_snapshot": {
-        "location": "Málaga",
-        "latitude": 36.72016,
-        "longitude": -4.42034,
-        "forecast_time": "2026-08-24T19:00",
-        "temperature_c": 28.6,
+        "location": "Valencia",
+        "latitude": 39.47391,
+        "longitude": -0.37966,
+        "forecast_time": "2026-08-25T19:00",
+        "temperature_c": 28.1,
         "precipitation_probability": 0.0,
         "weather_code": 3,
-        "wind_speed_kmh": 16.3,
-        "wind_gusts_kmh": 38.2,
+        "wind_speed_kmh": 6.8,
+        "wind_gusts_kmh": 32.4,
         "source": "Open-Meteo"
       },
-      "market_read_en": "De-vigged 1X2 is about 38%/30%/31%; the highest outcome is Málaga CF. Caliente.mx lists the home line at -0.25. Current Sporttery data is available for the three-market check.",
-      "report_zh": "Málaga CF vs RC Deportivo La Coruña，开球：2026-08-25 03:30。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 38%/30%/31%，最高方向为Málaga CF；Caliente.mx主队视角 -0.25。本次竞彩已取得，可继续做三盘比较。 预测：竞彩让球 -1 让平 + 让负（信心 66%）。",
-      "report_en": "Málaga CF vs RC Deportivo La Coruña, kickoff 2026-08-25 03:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 38%/30%/31%; the highest outcome is Málaga CF. Caliente.mx lists the home line at -0.25. Current Sporttery data is available for the three-market check. Prediction: Sporttery handicap -1 handicap draw + handicap away (confidence 66%).",
+      "market_read_en": "De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check.",
+      "report_zh": "Valencia CF vs Real Betis Balompié，开球：2026-08-26 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。 预测：竞彩让球 +1 让平 + 让胜（信心 68%）。",
+      "report_en": "Valencia CF vs Real Betis Balompié, kickoff 2026-08-26 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check. Prediction: Sporttery handicap +1 handicap draw + handicap home (confidence 68%).",
       "fallback_research": {
-        "european_odds": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
+        "fundamentals": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
           "sources": [
             {
-              "name": "Caliente.mx",
-              "url": "https://sports.caliente.mx/es_MX/e/32598606/Malaga-vs-Deportivo-La-Coruna?mkt_grp_code=TMWIN",
+              "name": "LaLiga official match centre",
+              "url": "https://www.laliga.com/es-GB/partido/temporada-2025-2026-laliga-ea-sports-real-sociedad-valencia-cf-37",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "AS match preview and team news",
+              "url": "https://as.com/futbol/primera/valencia-betis-tv-horario-y-como-ver-laliga-ea-sports-online-f202608-n/",
               "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Sky Sports Real Betis results",
+              "url": "https://www.skysports.com/real-betis-scores-fixtures/2026-05-01",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Cadena SER Betis Real Sociedad report",
+              "url": "https://cadenaser.com/nacional/2026/08/21/real-betis-1-0-real-sociedad-resumen-resultado-y-goles-del-partido-de-la-jornada-1-en-laliga-ea-sports-cadena-ser/",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "european_odds": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "Betfred match odds",
+              "url": "https://www.betfred.com/sports/football/event/35846952",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
             }
           ]
         },
         "asian_handicap": {
-          "queried_at": "2026-08-24T21:15:33+08:00",
+          "queried_at": "2026-08-25T22:28:00+08:00",
           "sources": [
             {
-              "name": "Caliente.mx",
-              "url": "https://sports.caliente.mx/es_MX/e/32598606/Malaga-vs-Deportivo-La-Coruna?mkt_grp_code=AHAGL",
+              "name": "OddStorm LaLiga Asian odds",
+              "url": "https://www.oddstorm.com/asianodds/league/906-spain-la-liga-primera-division",
               "tier": "secondary",
-              "queried_at": "2026-08-24T21:15:33+08:00"
+              "queried_at": "2026-08-25T22:28:00+08:00"
             }
           ]
         },
         "sporttery": {
-          "queried_at": "2026-08-24T21:35:56+08:00",
+          "queried_at": "2026-08-25T22:28:00+08:00",
           "sources": [
             {
-              "name": "China Sports Lottery official calculator",
-              "url": "https://www.sporttery.cn/jc/jsq/zqspf/",
+              "name": "China Sport Lottery official football calculator API",
+              "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry",
               "tier": "primary",
-              "queried_at": "2026-08-24T21:35:56+08:00"
-            }
-          ]
-        },
-        "fundamentals": {
-          "queried_at": "2026-08-24T23:18:56+08:00",
-          "sources": [
-            {
-              "name": "Málaga official season review",
-              "url": "https://www.malagacf.com/en/season-2025-2026",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Málaga official promotion final record",
-              "url": "https://www.malagacf.com/en/matches/season-2025-2026-laliga-hypermotion-46-ud-almeria-vs-malaga-cf-2718",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "RC Deportivo official results",
-              "url": "https://www.rcdeportivo.es/es/resultados-depor",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "AS Málaga-Deportivo preview",
-              "url": "https://as.com/futbol/primera/malaga-deportivo-tv-horario-y-como-ver-laliga-ea-sports-online-f202608-n/",
-              "tier": "secondary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
-            },
-            {
-              "name": "Málaga official result records",
-              "url": "https://www.malagacf.com/en/matches/season-2025-2026-laliga-hypermotion-35-malaga-cf-vs-ud-las-palmas-763",
-              "tier": "primary",
-              "queried_at": "2026-08-24T23:18:56+08:00"
+              "queried_at": "2026-08-25T22:28:00+08:00"
             }
           ]
         }
       },
-      "batch_date": "2026-08-24"
-    }
-  ],
-  "mismatch_history": [
+      "batch_date": "2026-08-25"
+    },
     {
       "id": "2026-08-25-bologna-fc-1909-ss-lazio",
       "kickoff_time": "2026-08-25 00:30",
@@ -2455,6 +1708,216 @@
   ],
   "checker_history": [
     {
+      "id": "2026-08-26-valencia-cf-real-betis-balompi",
+      "kickoff_time": "2026-08-26 03:00",
+      "competition": "西甲 第 1 轮",
+      "home_team": "Valencia CF",
+      "away_team": "Real Betis Balompié",
+      "round": "第 1 轮",
+      "venue": "Camp de Mestalla",
+      "weather": "多云，28°C，降水 0%，风速 7 km/h",
+      "status": "mismatch",
+      "signal_label": "错盘命中",
+      "european_odds": {
+        "home": 2.8,
+        "draw": 3.25,
+        "away": 2.5
+      },
+      "asian_handicap": {
+        "provider": "OddStorm",
+        "handicap": 0.0,
+        "home_odds": 1.96,
+        "away_odds": 1.95
+      },
+      "chinese_lottery": {
+        "standard": {
+          "home": 2.67,
+          "draw": 3.05,
+          "away": 2.34
+        },
+        "handicap": 1,
+        "handicap_odds": {
+          "home": 1.46,
+          "draw": 3.85,
+          "away": 5.4
+        },
+        "source": "Codex fallback"
+      },
+      "fundamentals": [
+        {
+          "home": "瓦伦西亚本赛季首战0-0战平塞尔塔；连同上赛季末3-1巴塞罗那、4-3皇家社会，近3场正式联赛2胜1平，进7球失4球。",
+          "away": "皇家贝蒂斯本赛季首战1-0皇家社会；连同上赛季末2-1莱万特、1-3巴塞罗那，近3场正式联赛2胜1负，进4球失4球。"
+        },
+        {
+          "home": "瓦伦西亚当前联赛第11；Sergi Canos、Copete和Diego Lopez缺阵，Foulquier与Alberto Mari仍有恢复风险，Luis Rioja已恢复但首发存疑。",
+          "away": "贝蒂斯当前联赛第7；Diego Conde、Ruibal缺阵，Abde和Lo Celso仍无法出战，Parrott已进入可用范围。"
+        },
+        {
+          "home": "比赛在梅斯塔利亚进行；瓦伦西亚近两场正式联赛保持不败，主场因素提供支撑。",
+          "away": "历史143次交锋贝蒂斯45胜、瓦伦西亚68胜、平30场；贝蒂斯首战取胜，但当前客场欧赔仅为轻微热门。"
+        }
+      ],
+      "market_read": "欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。",
+      "mismatch": {
+        "matched": true,
+        "reason": "竞彩让球深于亚盘，且基本面/欧赔/亚盘只支持热门方小胜到让球临界点；让平覆盖正好赢盘点，让负覆盖不穿盘路径。；Polymarket无有效流动性信号，本次不参与竞彩验证；基本面偏受让方，进一步不支持热门方大胜。",
+        "pick": "让平 + 让胜",
+        "status": "lottery_deeper_small_win",
+        "polymarket_validation": "unavailable"
+      },
+      "recommendation": {
+        "fundamental": "排名、场均积分和净胜球样本偏向Valencia CF；仍需结合临场阵容确认优势能否转化为赢盘。",
+        "fundamental_en": "Table position, points per game and goal difference favor Valencia CF; lineups still need confirmation.",
+        "mismatch": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
+        "mismatch_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation."
+      },
+      "prediction": {
+        "market": "竞彩让球 +1",
+        "pick": "让平 + 让胜",
+        "confidence": 68,
+        "detail": "符合错盘规则；竞彩让球 +1：让平 + 让胜。Polymarket本次不可用于验证。",
+        "market_en": "Sporttery handicap +1",
+        "pick_en": "handicap draw + handicap home",
+        "detail_en": "Mismatch confirmed; Sporttery handicap +1: handicap draw + handicap home. Polymarket is unavailable for validation.",
+        "basis": "fresh_three_market_snapshot",
+        "market_type": "sporttery_handicap",
+        "home_handicap": 1,
+        "selection_keys": [
+          "draw",
+          "home"
+        ]
+      },
+      "checker": "检验建议：竞彩让球 +1 让平 + 让胜（信心 68%）。赛后按这一条具体盘口结算，不改换市场。",
+      "risks": [
+        "赔率会临场变化，本报告只使用本次查询快照。",
+        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
+        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
+      ],
+      "sources": [
+        "football-data.org",
+        "Open-Meteo",
+        "Codex fallback: LaLiga official match centre",
+        "Codex fallback: AS match preview and team news",
+        "Codex fallback: Sky Sports Real Betis results",
+        "Codex fallback: Cadena SER Betis Real Sociedad report",
+        "Codex fallback: Betfred match odds",
+        "Codex fallback: OddStorm LaLiga Asian odds",
+        "Codex fallback: China Sport Lottery official football calculator API"
+      ],
+      "football_data_snapshot": {
+        "match_id": 564637,
+        "competition_code": "PD",
+        "utc_date": "2026-08-25T19:00:00Z",
+        "status": "TIMED",
+        "source": "football-data.org"
+      },
+      "fundamental_context": {
+        "home": {
+          "position": 11,
+          "played_games": 3,
+          "points": 7,
+          "goal_difference": 3,
+          "form": [
+            "D",
+            "W",
+            "W"
+          ]
+        },
+        "away": {
+          "position": 7,
+          "played_games": 3,
+          "points": 6,
+          "goal_difference": 0,
+          "form": [
+            "W",
+            "W",
+            "L"
+          ]
+        }
+      },
+      "weather_en": "Cloudy, 28°C, precipitation 0%, wind 7 km/h",
+      "weather_snapshot": {
+        "location": "Valencia",
+        "latitude": 39.47391,
+        "longitude": -0.37966,
+        "forecast_time": "2026-08-25T19:00",
+        "temperature_c": 28.1,
+        "precipitation_probability": 0.0,
+        "weather_code": 3,
+        "wind_speed_kmh": 6.8,
+        "wind_gusts_kmh": 32.4,
+        "source": "Open-Meteo"
+      },
+      "market_read_en": "De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check.",
+      "report_zh": "Valencia CF vs Real Betis Balompié，开球：2026-08-26 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 34%/29%/38%，最高方向为Real Betis Balompié；OddStorm主队视角 0。本次竞彩已取得，可继续做三盘比较。 预测：竞彩让球 +1 让平 + 让胜（信心 68%）。",
+      "report_en": "Valencia CF vs Real Betis Balompié, kickoff 2026-08-26 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 34%/29%/38%; the highest outcome is Real Betis Balompié. OddStorm lists the home line at 0. Current Sporttery data is available for the three-market check. Prediction: Sporttery handicap +1 handicap draw + handicap home (confidence 68%).",
+      "fallback_research": {
+        "fundamentals": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "LaLiga official match centre",
+              "url": "https://www.laliga.com/es-GB/partido/temporada-2025-2026-laliga-ea-sports-real-sociedad-valencia-cf-37",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "AS match preview and team news",
+              "url": "https://as.com/futbol/primera/valencia-betis-tv-horario-y-como-ver-laliga-ea-sports-online-f202608-n/",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Sky Sports Real Betis results",
+              "url": "https://www.skysports.com/real-betis-scores-fixtures/2026-05-01",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            },
+            {
+              "name": "Cadena SER Betis Real Sociedad report",
+              "url": "https://cadenaser.com/nacional/2026/08/21/real-betis-1-0-real-sociedad-resumen-resultado-y-goles-del-partido-de-la-jornada-1-en-laliga-ea-sports-cadena-ser/",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "european_odds": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "Betfred match odds",
+              "url": "https://www.betfred.com/sports/football/event/35846952",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "asian_handicap": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "OddStorm LaLiga Asian odds",
+              "url": "https://www.oddstorm.com/asianodds/league/906-spain-la-liga-primera-division",
+              "tier": "secondary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        },
+        "sporttery": {
+          "queried_at": "2026-08-25T22:28:00+08:00",
+          "sources": [
+            {
+              "name": "China Sport Lottery official football calculator API",
+              "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry",
+              "tier": "primary",
+              "queried_at": "2026-08-25T22:28:00+08:00"
+            }
+          ]
+        }
+      },
+      "batch_date": "2026-08-25"
+    },
+    {
       "id": "2026-08-25-fulham-fc-chelsea-fc",
       "kickoff_time": "2026-08-25 03:00",
       "competition": "英超 第 1 轮",
@@ -2685,6 +2148,22 @@
         "updated_at": "2026-08-24T16:41:21.087896Z",
         "url": "https://polymarket.com/event/epl-ful-che-2026-08-24",
         "source": "Polymarket"
+      },
+      "review": {
+        "final_score": "2-3",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": "draw",
+        "review_note": "竞彩让球结果为让平；保存建议为让平 + 让胜，判定命中。",
+        "reviewed_at": "2026-08-25T22:16:52+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 560551,
+        "status": "FINISHED",
+        "source": "football-data.org"
       }
     },
     {
@@ -2919,6 +2398,22 @@
         "updated_at": "2026-08-24T16:41:21.087896Z",
         "url": "https://polymarket.com/event/sea-bol-laz-2026-08-24",
         "source": "Polymarket"
+      },
+      "review": {
+        "final_score": "0-1",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": "away",
+        "review_note": "竞彩让球结果为让负；保存建议为让平 + 让负，判定命中。",
+        "reviewed_at": "2026-08-25T22:16:52+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 558630,
+        "status": "FINISHED",
+        "source": "football-data.org"
       }
     },
     {
@@ -3145,7 +2640,23 @@
           ]
         }
       },
-      "batch_date": "2026-08-24"
+      "batch_date": "2026-08-24",
+      "review": {
+        "final_score": "1-1",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": "away",
+        "review_note": "竞彩让球结果为让负；保存建议为让平 + 让负，判定命中。",
+        "reviewed_at": "2026-08-25T22:16:52+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 564640,
+        "status": "FINISHED",
+        "source": "football-data.org"
+      }
     },
     {
       "id": "2026-08-25-ca-osasuna-levante-ud",
@@ -3378,6 +2889,22 @@
         "updated_at": "2026-08-24T16:41:21.087896Z",
         "url": "https://polymarket.com/event/lal-osa-lev-2026-08-24",
         "source": "Polymarket"
+      },
+      "review": {
+        "final_score": "0-0",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": "away",
+        "review_note": "竞彩让球结果为让负；保存建议为让平 + 让负，判定命中。",
+        "reviewed_at": "2026-08-25T22:16:52+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 564639,
+        "status": "FINISHED",
+        "source": "football-data.org"
       }
     },
     {
@@ -3618,6 +3145,22 @@
         "updated_at": "2026-08-24T16:41:21.087896Z",
         "url": "https://polymarket.com/event/sea-rom-fio-2026-08-24",
         "source": "Polymarket"
+      },
+      "review": {
+        "final_score": "4-0",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": 1.0,
+        "review_note": "AS Roma -0.75结算为亚盘全赢。",
+        "reviewed_at": "2026-08-25T22:16:52+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 558638,
+        "status": "FINISHED",
+        "source": "football-data.org"
       }
     },
     {
@@ -5480,35 +5023,6 @@
         ]
       },
       {
-        "name": "西甲",
-        "country": "西班牙",
-        "matchday": "2026/27 第 2 轮剩余（本批赛事已转入详细栏）",
-        "fixtures": [
-          {
-            "kickoff_time": "08-25 01:30",
-            "home_team": "Osasuna",
-            "away_team": "Levante UD"
-          },
-          {
-            "kickoff_time": "08-25 03:30",
-            "home_team": "Malaga CF",
-            "away_team": "RC Deportivo"
-          }
-        ]
-      },
-      {
-        "name": "意甲",
-        "country": "意大利",
-        "matchday": "2026/27 第 1 轮剩余（本批赛事已转入详细栏）",
-        "fixtures": [
-          {
-            "kickoff_time": "08-25 02:45",
-            "home_team": "Roma",
-            "away_team": "Fiorentina"
-          }
-        ]
-      },
-      {
         "name": "德甲",
         "country": "德国",
         "matchday": "2026/27 第 1 轮",
@@ -5567,19 +5081,48 @@
       }
     ]
   },
-  "fallback_requests": [],
+  "fallback_requests": [
+    {
+      "id": "daily:2026-08-26-valencia-cf-real-betis-balompi",
+      "scope": "daily",
+      "status": "resolved",
+      "match_id": "2026-08-26-valencia-cf-real-betis-balompi",
+      "batch_date": null,
+      "kickoff_time": "2026-08-26 03:00",
+      "competition": "西甲 第 1 轮",
+      "home_team": "Valencia CF",
+      "away_team": "Real Betis Balompié",
+      "missing_fields": [],
+      "source_status": {
+        "fundamentals": "football-data.org",
+        "european_odds": "The Odds API: 1 events",
+        "asian_handicap": "The Odds API: 1 events",
+        "sporttery": "Sporttery unavailable: HTTPError"
+      },
+      "failure_type": "source_failure",
+      "search_queries": [
+        "Valencia CF vs Real Betis Balompié 2026-08-26 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
+        "Valencia CF vs Real Betis Balompié 2026-08-26 current European 1X2 odds",
+        "Valencia CF vs Real Betis Balompié 2026-08-26 current Asian handicap odds",
+        "Valencia CF vs Real Betis Balompié 2026-08-26 竞彩 让球胜平负 SP"
+      ],
+      "attempts": 1,
+      "last_attempt_at": "2026-08-25T22:28:00+08:00",
+      "resolved_at": "2026-08-25T22:28:00+08:00"
+    }
+  ],
   "last_fallback_import": {
-    "imported_at": "2026-08-24T23:26:44+08:00",
-    "result_count": 5,
-    "field_count": 5,
-    "resolved_count": 5
+    "imported_at": "2026-08-25T22:29:17+08:00",
+    "result_count": 1,
+    "field_count": 4,
+    "resolved_count": 1
   },
   "last_result_review": {
-    "batch_date": "2026-08-23",
-    "reviewed_at": "2026-08-24T08:53:43+08:00",
+    "batch_date": "2026-08-24",
+    "reviewed_at": "2026-08-25T22:16:52+08:00",
     "source": "football-data.org",
-    "fixture_count": 13,
-    "reviewed": 8,
+    "fixture_count": 5,
+    "reviewed": 5,
     "pending": 0,
     "unsupported": 0,
     "not_found": 0,
