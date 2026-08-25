@@ -79,6 +79,7 @@ jobs:
           if git show origin/gh-pages:data/daily_matches.json > /tmp/daily_matches.json; then
             python - <<'PY'
           import json
+          from datetime import datetime
           from pathlib import Path
 
           main_path = Path("dashboard/data/daily_matches.json")
@@ -94,10 +95,30 @@ jobs:
                   for match in payload.get("current_matches", [])
               )
 
+          def freshness(payload):
+              candidates = [
+                  (payload.get("slate") or {}).get("generated_at"),
+                  (payload.get("last_fallback_import") or {}).get("imported_at"),
+                  (payload.get("last_result_review") or {}).get("reviewed_at"),
+                  (payload.get("strategy_performance") or {}).get("generated_at"),
+              ]
+              parsed = []
+              for value in candidates:
+                  try:
+                      parsed.append(datetime.fromisoformat(str(value).replace("Z", "+00:00")).timestamp())
+                  except (TypeError, ValueError):
+                      continue
+              return max(parsed, default=0.0)
+
+
           main_date = str((main.get("slate") or {}).get("date") or "")
           live_date = str((live.get("slate") or {}).get("date") or "")
           use_live = live_date > main_date or (
-              live_date == main_date and quality(live) >= quality(main)
+              live_date == main_date
+              and (
+                  quality(live) > quality(main)
+                  or (quality(live) == quality(main) and freshness(live) > freshness(main))
+              )
           )
           if use_live:
               main_path.write_text(
@@ -106,7 +127,8 @@ jobs:
               )
           print(
               f"restore_source={'gh-pages' if use_live else 'main'} "
-              f"main={main_date}/{quality(main)} live={live_date}/{quality(live)}"
+              f"main={main_date}/{quality(main)}/{freshness(main):.0f} "
+              f"live={live_date}/{quality(live)}/{freshness(live):.0f}"
           )
           PY
           fi
