@@ -72,7 +72,7 @@ class AnalysisScopeTest(unittest.TestCase):
         self.assertTrue(all(match["competition"].startswith("英超") for match in batch["mismatch_history"]))
         self.assertTrue(all(match["competition"].startswith("英超") for match in batch["checker_history"]))
         schedule_names = {item["name"] for item in batch["next_matchday"]["competitions"]}
-        self.assertIn("西甲", schedule_names)
+        self.assertIn("德甲", schedule_names)
         self.assertIn("欧冠", schedule_names)
 
     def test_refresh_limits_source_calls_to_enabled_default_leagues(self):
