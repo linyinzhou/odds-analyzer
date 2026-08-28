@@ -33,6 +33,7 @@ from odds_analyzer import (
 )
 from odds_analyzer.jobs.refresh_evening_slate import (
     _checker_candidates,
+    _build_next_matchday,
     _enrich_with_odds_api,
     _normalize_team,
     build_evening_slate_batch,
@@ -44,8 +45,10 @@ from odds_analyzer.sources import (
     DataSourcePurpose,
     fetch_evening_football_data,
     fetch_evening_fixtures,
+    fetch_upcoming_fixtures,
     parse_football_data_standings,
     parse_football_data_forms,
+    FootballDataFixture,
     parse_football_data_fixtures,
     FootballDataSnapshot,
     OddsApiEvent,
@@ -714,6 +717,44 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
 
 class FootballDataSourceTest(unittest.TestCase):
+    def test_dynamic_next_matchday_uses_earliest_actual_round_and_excludes_qualifiers(self):
+        def fixture(match_id, code, utc_date, home, away, matchday, stage="REGULAR_SEASON"):
+            return FootballDataFixture(
+                match_id=match_id,
+                competition_code=code,
+                competition_name=code,
+                utc_date=utc_date,
+                kickoff_time=utc_date,
+                home_team_id=None,
+                home_team=home,
+                away_team_id=None,
+                away_team=away,
+                matchday=matchday,
+                stage=stage,
+                status="TIMED",
+            )
+
+        upcoming = (
+            fixture(1, "PD", "2026-08-29T14:00:00Z", "Round Two Home", "Round Two Away", 2),
+            fixture(2, "PD", "2026-09-01T14:00:00Z", "Late Round One", "Visitor", 1),
+            fixture(3, "SA", "2026-08-30T18:00:00Z", "Serie A Home", "Serie A Away", 2),
+            fixture(4, "CL", "2026-08-28T19:00:00Z", "Qualifier", "Opponent", 0, "QUALIFICATION"),
+            fixture(5, "CL", "2026-09-02T19:00:00Z", "League Stage", "Opponent", 1, "LEAGUE_STAGE"),
+        )
+        result = _build_next_matchday(
+            upcoming,
+            current_matches=[],
+            query_time=datetime(2026, 8, 26, 18, tzinfo=fixed_timezone(timedelta(hours=8))),
+            fallback={},
+        )
+        by_name = {item["name"]: item for item in result["competitions"]}
+
+        self.assertEqual(set(by_name), {"英超", "西甲", "意甲", "德甲", "法甲", "欧冠"})
+        self.assertEqual(by_name["西甲"]["matchday"], "2026/27 第 2 轮")
+        self.assertEqual(by_name["西甲"]["fixtures"][0]["home_team"], "Round Two Home")
+        self.assertEqual(by_name["欧冠"]["fixtures"][0]["home_team"], "League Stage")
+        self.assertEqual(by_name["英超"]["fixtures"], [])
+
     def test_parse_football_data_fixtures_standings_and_forms(self):
         fixture_payload = {
             "competition": {"code": "PL", "name": "Premier League"},

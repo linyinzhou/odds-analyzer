@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 from urllib.parse import urlencode
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-OFFICIAL_SPORTTERY_URL = "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry"
+OFFICIAL_SPORTTERY_URL = "https://webapi.sporttery.cn/gateway/jc/football/getMatchCalculatorV1.qry"
+OFFICIAL_SPORTTERY_FALLBACK_URL = (
+    "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry"
+)
+OFFICIAL_SPORTTERY_URLS = (OFFICIAL_SPORTTERY_URL, OFFICIAL_SPORTTERY_FALLBACK_URL)
+RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}
+BLOCKED_HTTP_STATUSES = {403, 567}
 OFFICIAL_SPORTTERY_PAGE = "https://m.sporttery.cn/mjc/jsq/zqspf/"
 SPORTTERY_POOLS = ("had", "hhad", "crs", "ttg", "hafu")
 POOL_LABELS = {
@@ -57,26 +65,61 @@ class SportteryMatch:
         return next((market for market in self.markets if market.code == code), None)
 
 
+class SportteryFetchError(RuntimeError):
+    pass
+
+
 def fetch_official_sporttery_matches(business_date: str, timeout: float = 15) -> list[SportteryMatch]:
     query = urlencode({"poolCode": ",".join(SPORTTERY_POOLS), "channel": "c"})
-    request = Request(
-        f"{OFFICIAL_SPORTTERY_URL}?{query}",
-        headers={
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Origin": "https://m.sporttery.cn",
-            "Referer": OFFICIAL_SPORTTERY_PAGE,
-            "User-Agent": (
-                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
-                "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 "
-                "Mobile/15E148 Safari/604.1"
-            ),
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    )
-    with urlopen(request, timeout=timeout) as response:
-        payload = json.loads(response.read().decode("utf-8"))
-    return parse_official_sporttery(payload, business_date)
+    errors = []
+    for endpoint_index, endpoint in enumerate(OFFICIAL_SPORTTERY_URLS):
+        endpoint_label = "primary" if endpoint_index == 0 else "fallback"
+        for attempt in range(2):
+            request = Request(f"{endpoint}?{query}", headers=_official_headers())
+            try:
+                with urlopen(request, timeout=timeout) as response:
+                    payload = json.loads(response.read().decode("utf-8"))
+                return parse_official_sporttery(payload, business_date)
+            except HTTPError as exc:
+                status = int(exc.code)
+                if status in BLOCKED_HTTP_STATUSES:
+                    raise SportteryFetchError(
+                        f"official endpoint blocked by WAF (HTTP {status}); no aggressive retry"
+                    ) from exc
+                errors.append(f"{endpoint_label} HTTP {status}")
+                if status in RETRYABLE_HTTP_STATUSES and attempt == 0:
+                    time.sleep(_retry_delay(exc, attempt))
+                    continue
+                break
+            except (URLError, TimeoutError, OSError) as exc:
+                errors.append(f"{endpoint_label} {type(exc).__name__}")
+                if attempt == 0:
+                    time.sleep(1.0)
+                    continue
+                break
+    raise SportteryFetchError("official endpoints unavailable: " + "; ".join(errors))
+
+
+def _official_headers() -> dict[str, str]:
+    return {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Origin": "https://m.sporttery.cn",
+        "Referer": OFFICIAL_SPORTTERY_PAGE,
+        "User-Agent": (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) "
+            "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 "
+            "Mobile/15E148 Safari/604.1"
+        ),
+        "X-Requested-With": "XMLHttpRequest",
+    }
+
+
+def _retry_delay(error: HTTPError, attempt: int) -> float:
+    retry_after = error.headers.get("Retry-After") if error.headers else None
+    if retry_after and str(retry_after).strip().isdigit():
+        return min(5.0, float(retry_after))
+    return min(5.0, float(2**attempt))
 
 
 def parse_official_sporttery(payload: dict[str, Any], business_date: str) -> list[SportteryMatch]:

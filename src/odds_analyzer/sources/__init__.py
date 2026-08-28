@@ -17,6 +17,7 @@ from odds_analyzer.sources.football_data import (
     FootballDataStanding,
     fetch_evening_football_data,
     fetch_evening_fixtures,
+    fetch_upcoming_fixtures,
     fixture_dashboard_id,
     parse_football_data_fixtures,
     parse_football_data_forms,
@@ -46,6 +47,7 @@ from odds_analyzer.sources.registry import (
     get_sources_by_purpose,
 )
 from odds_analyzer.sources.sporttery import (
+    SportteryFetchError,
     SportteryMarket,
     SportteryMatch,
     SportteryOutcome,
@@ -78,6 +80,7 @@ __all__ = [
     "PolymarketSpread",
     "PlayerAbsence",
     "ReliabilityTier",
+    "SportteryFetchError",
     "SportteryMarket",
     "SportteryMatch",
     "SportteryOutcome",
@@ -87,6 +90,7 @@ __all__ = [
     "fetch_evening_api_football_news",
     "fetch_evening_football_data",
     "fetch_evening_fixtures",
+    "fetch_upcoming_fixtures",
     "fetch_evening_odds_api_events",
     "fetch_evening_polymarket_events",
     "fetch_polymarket_events_for_date",

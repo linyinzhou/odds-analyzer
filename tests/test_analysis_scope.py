@@ -98,6 +98,10 @@ class AnalysisScopeTest(unittest.TestCase):
                     return_value=empty_snapshot,
                 ) as football_data,
                 patch(
+                    "odds_analyzer.jobs.refresh_evening_slate.fetch_upcoming_fixtures",
+                    return_value=(),
+                ) as upcoming,
+                patch(
                     "odds_analyzer.jobs.refresh_evening_slate.fetch_evening_odds_api_events",
                     return_value=[],
                 ) as odds_api,
@@ -124,6 +128,11 @@ class AnalysisScopeTest(unittest.TestCase):
             "football-key",
             "2026-08-22",
             competition_codes=("PL", "PD", "SA"),
+        )
+        upcoming.assert_called_once_with(
+            "football-key",
+            "2026-08-22",
+            competition_codes=ALLOWED_ANALYSIS_COMPETITIONS,
         )
         odds_api.assert_called_once_with(
             "odds-key",

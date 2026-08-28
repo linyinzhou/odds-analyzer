@@ -17,6 +17,7 @@ from odds_analyzer.sources import (
     ApiFootballMatchNews,
     ApiFootballNewsBatch,
     COMPETITION_CODES,
+    FootballDataFixture,
     FootballDataSnapshot,
     LEAGUE_SPORT_KEYS,
     MIN_SIGNAL_VOLUME,
@@ -25,6 +26,7 @@ from odds_analyzer.sources import (
     SportteryMatch,
     fetch_evening_api_football_news,
     fetch_evening_football_data,
+    fetch_upcoming_fixtures,
     fetch_evening_odds_api_events,
     fetch_evening_polymarket_events,
     fetch_fixture_weather,
@@ -80,6 +82,8 @@ TEAM_ALIASES = {
     "Athletic Bilbao": "毕尔巴鄂",
     "Sevilla FC": "塞维利亚",
     "Valencia CF": "巴伦西亚",
+    "Real Betis": "贝蒂斯",
+    "Real Betis Balompié": "贝蒂斯",
     "Celta Vigo": "塞尔塔",
     "RC Celta de Vigo": "塞尔塔",
     "Espanyol": "西班牙人",
@@ -936,6 +940,107 @@ def _filter_next_matchday(
     return next_matchday
 
 
+def _build_next_matchday(
+    upcoming_fixtures: tuple[FootballDataFixture, ...],
+    current_matches: list[dict],
+    query_time: datetime,
+    fallback: dict,
+) -> dict:
+    if not upcoming_fixtures:
+        return _filter_next_matchday(fallback, current_matches, query_time)
+
+    current_keys = {
+        _schedule_fixture_key(
+            match.get("kickoff_time", ""),
+            match.get("home_team", ""),
+            match.get("away_team", ""),
+        )
+        for match in current_matches
+    }
+    season_start = query_time.year if query_time.month >= 7 else query_time.year - 1
+    season = f"{season_start}/{str(season_start + 1)[-2:]}"
+    competitions = []
+    for code in ALLOWED_ANALYSIS_COMPETITIONS:
+        label = COMPETITION_LABEL_BY_CODE[code]
+        fixtures = [
+            fixture
+            for fixture in upcoming_fixtures
+            if fixture.competition_code == code
+            and _upcoming_fixture_is_eligible(fixture, query_time, current_keys)
+        ]
+        fixtures.sort(key=lambda fixture: fixture.utc_date)
+        if not fixtures:
+            competitions.append(
+                {
+                    "name": label,
+                    "status": "football-data.org 暂未返回未来 14 天可靠赛程。",
+                    "fixtures": [],
+                }
+            )
+            continue
+
+        first = fixtures[0]
+        selected = [
+            fixture
+            for fixture in fixtures
+            if fixture.matchday == first.matchday and fixture.stage == first.stage
+        ]
+        matchday = (
+            f"{season} 第 {first.matchday} 轮"
+            if first.matchday is not None
+            else f"{season} {first.stage or '下一阶段'}"
+        )
+        competitions.append(
+            {
+                "name": label,
+                "matchday": matchday,
+                "fixtures": [
+                    {
+                        "kickoff_time": datetime.fromisoformat(
+                            fixture.utc_date.replace("Z", "+00:00")
+                        )
+                        .astimezone(BEIJING)
+                        .strftime("%m-%d %H:%M"),
+                        "home_team": fixture.home_team,
+                        "away_team": fixture.away_team,
+                    }
+                    for fixture in selected
+                ],
+            }
+        )
+
+    return {
+        "generated_at": query_time.isoformat(timespec="seconds"),
+        "scope_note": "按实际开球时间显示每项赛事最近的未赛轮次；欧冠只包括主阶段。",
+        "sources": ["football-data.org upcoming fixtures"],
+        "competitions": competitions,
+    }
+
+
+def _upcoming_fixture_is_eligible(
+    fixture: FootballDataFixture,
+    query_time: datetime,
+    current_keys: set[tuple[str, str, str]],
+) -> bool:
+    kickoff = datetime.fromisoformat(
+        fixture.utc_date.replace("Z", "+00:00")
+    ).astimezone(BEIJING)
+    if kickoff <= query_time:
+        return False
+    if fixture.competition_code == "CL" and fixture.stage in {
+        "PRELIMINARY_ROUND",
+        "QUALIFICATION",
+        "QUALIFYING_ROUND",
+        "PLAYOFFS",
+    }:
+        return False
+    return _schedule_fixture_key(
+        fixture.kickoff_time,
+        fixture.home_team,
+        fixture.away_team,
+    ) not in current_keys
+
+
 def _schedule_fixture_key(kickoff_time: object, home_team: object, away_team: object) -> tuple[str, str, str]:
     return (
         _kickoff_key(str(kickoff_time)),
@@ -964,6 +1069,7 @@ def build_evening_slate_batch(
     odds_api_source: str = "not requested",
     football_data_snapshot: FootballDataSnapshot | None = None,
     football_data_source: str = "not requested",
+    upcoming_fixtures: tuple[FootballDataFixture, ...] = (),
     weather_forecasts: dict[int, object] | None = None,
     weather_source: str = "not requested",
     api_football_news: list[ApiFootballMatchNews] | None = None,
@@ -1039,10 +1145,12 @@ def build_evening_slate_batch(
         "polymarket_source": polymarket_source,
     }
 
-    next_matchday = _filter_next_matchday(
-        existing_payload.get("next_matchday", {}),
+    query_time = datetime.now(BEIJING)
+    next_matchday = _build_next_matchday(
+        upcoming_fixtures,
         current_matches,
-        datetime.now(BEIJING),
+        query_time,
+        existing_payload.get("next_matchday", {}),
     )
 
     next_date = (date.fromisoformat(slate_date) + timedelta(days=1)).isoformat()
@@ -1111,9 +1219,18 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         except Exception as exc:
             football_data_snapshot = None
             football_data_source = f"football-data.org unavailable: {type(exc).__name__}"
+        try:
+            upcoming_fixtures = fetch_upcoming_fixtures(
+                football_data_key,
+                slate_date,
+                competition_codes=ALLOWED_ANALYSIS_COMPETITIONS,
+            )
+        except Exception:
+            upcoming_fixtures = ()
     else:
         football_data_snapshot = None
         football_data_source = "football-data.org skipped: missing FOOTBALL_DATA_API_KEY"
+        upcoming_fixtures = ()
     if football_data_snapshot and football_data_snapshot.fixtures:
         try:
             weather_batch = fetch_fixture_weather(football_data_snapshot.fixtures)
@@ -1143,10 +1260,10 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         team_news_source = "API-Football skipped: missing API_FOOTBALL_API_KEY"
     try:
         sporttery_matches = fetch_official_sporttery_matches(slate_date)
-        sporttery_source = "Sporttery official"
+        sporttery_source = f"Sporttery official: {len(sporttery_matches)} date fixtures"
     except Exception as exc:
         sporttery_matches = []
-        sporttery_source = f"Sporttery unavailable: {type(exc).__name__}"
+        sporttery_source = f"Sporttery unavailable: {exc}"
     odds_api_key = os.environ.get("THE_ODDS_API_KEY", "").strip()
     if odds_api_key:
         try:
@@ -1184,6 +1301,7 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         odds_api_source=odds_api_source,
         football_data_snapshot=football_data_snapshot,
         football_data_source=football_data_source,
+        upcoming_fixtures=upcoming_fixtures,
         weather_forecasts=weather_forecasts,
         weather_source=weather_source,
         api_football_news=api_football_news,

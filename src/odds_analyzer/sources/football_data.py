@@ -202,6 +202,35 @@ def fetch_evening_fixtures(
     )
 
 
+def fetch_upcoming_fixtures(
+    api_key: str,
+    start_date: str,
+    days: int = 14,
+    competition_codes: tuple[str, ...] = tuple(COMPETITION_CODES.values()),
+    timeout: float = 20,
+) -> tuple[FootballDataFixture, ...]:
+    start = datetime.fromisoformat(start_date).date()
+    end = start + timedelta(days=max(1, days) - 1)
+    payload = _get_json(
+        "/matches",
+        api_key,
+        {
+            "dateFrom": start.isoformat(),
+            "dateTo": end.isoformat(),
+            "competitions": ",".join(competition_codes),
+        },
+        timeout,
+    )
+    requested_codes = set(competition_codes)
+    return tuple(
+        fixture
+        for fixture in parse_football_data_fixtures(payload, "")
+        if fixture.competition_code in requested_codes
+        and fixture.status
+        not in {"CANCELLED", "FINISHED", "POSTPONED", "SUSPENDED"}
+    )
+
+
 def parse_football_data_fixtures(
     payload: dict[str, Any], fallback_competition_code: str
 ) -> tuple[FootballDataFixture, ...]:
