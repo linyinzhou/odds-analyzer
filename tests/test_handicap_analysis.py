@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta, timezone as fixed_timezone
 from io import BytesIO
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 import sys
 from unittest.mock import patch
 from urllib.error import HTTPError
@@ -38,7 +39,12 @@ from odds_analyzer.jobs.refresh_evening_slate import (
     _normalize_team,
     build_evening_slate_batch,
 )
-from odds_analyzer.jobs.review_results import review_checker_results, settle_saved_prediction
+from odds_analyzer.jobs.review_results import (
+    refresh_next_matchday,
+    review_checker_results,
+    review_results,
+    settle_saved_prediction,
+)
 from odds_analyzer.slate_analysis import analyze_slate_match
 from odds_analyzer.sources.football_data import _source_error
 from odds_analyzer.sources import (
@@ -276,6 +282,133 @@ class ResultReviewTest(unittest.TestCase):
         self.assertTrue(reviewed["checker_history"][0]["review"]["hit"])
         self.assertEqual(reviewed["checker_history"][0]["review"]["final_score"], "1-0")
         self.assertNotIn("review", reviewed["checker_history"][1])
+
+    def test_morning_review_refreshes_all_schedule_competitions_independently(self):
+        query_time = datetime(
+            2026,
+            8,
+            29,
+            8,
+            tzinfo=fixed_timezone(timedelta(hours=8)),
+        )
+
+        def fetch_by_competition(api_key, start_date, days=14, competition_codes=(), timeout=20):
+            code = competition_codes[0]
+            if code != "PD":
+                return ()
+            return (
+                FootballDataFixture(
+                    match_id=2001,
+                    competition_code="PD",
+                    competition_name="PD",
+                    utc_date="2026-09-05T14:00:00Z",
+                    kickoff_time="2026-09-05 22:00",
+                    home_team_id=None,
+                    home_team="Home",
+                    away_team_id=None,
+                    away_team="Away",
+                    matchday=4,
+                    stage="REGULAR_SEASON",
+                    status="TIMED",
+                ),
+            )
+
+        with patch(
+            "odds_analyzer.jobs.review_results.fetch_upcoming_fixtures",
+            side_effect=fetch_by_competition,
+        ) as fetch:
+            updated, counts = refresh_next_matchday(
+                {"current_matches": [], "next_matchday": {"generated_at": "old"}},
+                "api-key",
+                query_time,
+            )
+
+        self.assertEqual(fetch.call_count, 6)
+        self.assertEqual(counts["status"], "success")
+        self.assertEqual(updated["next_matchday"]["generated_at"], "2026-08-29T08:00:00+08:00")
+        by_name = {
+            competition["name"]: competition
+            for competition in updated["next_matchday"]["competitions"]
+        }
+        self.assertEqual(set(by_name), {"英超", "西甲", "意甲", "德甲", "法甲", "欧冠"})
+        self.assertEqual(by_name["西甲"]["fixtures"][0]["home_team"], "Home")
+        self.assertEqual(by_name["意甲"]["fixtures"], [])
+
+    def test_morning_schedule_partial_failure_keeps_other_competitions(self):
+        query_time = datetime(
+            2026,
+            8,
+            29,
+            8,
+            tzinfo=fixed_timezone(timedelta(hours=8)),
+        )
+
+        def partial_fetch(api_key, start_date, days=14, competition_codes=(), timeout=20):
+            if competition_codes == ("SA",):
+                raise RuntimeError("unavailable")
+            return ()
+
+        with patch(
+            "odds_analyzer.jobs.review_results.fetch_upcoming_fixtures",
+            side_effect=partial_fetch,
+        ):
+            updated, counts = refresh_next_matchday({}, "api-key", query_time)
+
+        self.assertEqual(counts["status"], "partial")
+        self.assertEqual(counts["successful"], 5)
+        self.assertEqual(updated["next_matchday"]["refresh_errors"], {"意甲": "RuntimeError"})
+        serie_a = next(
+            item
+            for item in updated["next_matchday"]["competitions"]
+            if item["name"] == "意甲"
+        )
+        self.assertIn("查询失败", serie_a["status"])
+
+    def test_morning_schedule_total_failure_preserves_last_generated_data(self):
+        query_time = datetime(
+            2026,
+            8,
+            29,
+            8,
+            tzinfo=fixed_timezone(timedelta(hours=8)),
+        )
+        existing = {
+            "next_matchday": {
+                "generated_at": "2026-08-28T18:00:00+08:00",
+                "competitions": [{"name": "英超", "fixtures": []}],
+            }
+        }
+
+        with patch(
+            "odds_analyzer.jobs.review_results.fetch_upcoming_fixtures",
+            side_effect=RuntimeError("unavailable"),
+        ):
+            updated, counts = refresh_next_matchday(existing, "api-key", query_time)
+
+        self.assertEqual(counts["status"], "unavailable")
+        self.assertEqual(updated["next_matchday"]["generated_at"], "2026-08-28T18:00:00+08:00")
+        self.assertEqual(updated["next_matchday"]["last_attempt_at"], "2026-08-29T08:00:00+08:00")
+
+    def test_schedule_refresh_still_runs_when_result_fixture_fetch_fails(self):
+        schedule_counts = {"status": "success", "successful": 6, "failed": 0}
+        with TemporaryDirectory() as directory:
+            payload_path = Path(directory) / "payload.json"
+            payload_path.write_text('{"checker_history": []}', encoding="utf-8")
+            with (
+                patch(
+                    "odds_analyzer.jobs.review_results.fetch_evening_fixtures",
+                    side_effect=RuntimeError("results unavailable"),
+                ),
+                patch(
+                    "odds_analyzer.jobs.review_results.refresh_next_matchday",
+                    return_value=({"checker_history": [], "next_matchday": {}}, schedule_counts),
+                ) as refresh,
+            ):
+                updated = review_results(payload_path, "2026-08-28", "api-key")
+
+        refresh.assert_called_once()
+        self.assertEqual(updated["next_matchday"], {})
+
 
 class SearchPlanTest(unittest.TestCase):
     def test_build_match_search_plan_includes_core_market_queries(self):

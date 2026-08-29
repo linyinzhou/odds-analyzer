@@ -11,17 +11,104 @@ from typing import Any
 
 from odds_analyzer.calibration import build_strategy_performance
 from odds_analyzer.jobs.refresh_evening_slate import (
+    ALLOWED_ANALYSIS_COMPETITIONS,
     BEIJING,
+    COMPETITION_LABEL_BY_CODE,
     DEFAULT_PAYLOAD_PATH,
+    _build_next_matchday,
     _dashboard_match_key,
     _football_data_fixture_key,
 )
 from odds_analyzer.models import AsianHandicapLine, ChineseLotteryLine, MatchScore, Selection
 from odds_analyzer.settlement import settle_asian_handicap, settle_chinese_lottery
-from odds_analyzer.sources import FootballDataFixture, fetch_evening_fixtures
+from odds_analyzer.sources import (
+    FootballDataFixture,
+    fetch_evening_fixtures,
+    fetch_upcoming_fixtures,
+)
 
 
 FINISHED_STATUSES = {"FINISHED", "AWARDED"}
+
+
+def refresh_next_matchday(
+    payload: dict[str, Any],
+    api_key: str,
+    query_time: datetime | None = None,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Refresh the 14-day schedule independently for each supported competition."""
+
+    updated = deepcopy(payload)
+    query_time = query_time or datetime.now(BEIJING)
+    queried_at = query_time.isoformat(timespec="seconds")
+    schedule = deepcopy(updated.get("next_matchday") or {})
+
+    if not api_key:
+        schedule["last_attempt_at"] = queried_at
+        schedule["refresh_status"] = "skipped"
+        schedule["refresh_error"] = "missing FOOTBALL_DATA_API_KEY"
+        updated["next_matchday"] = schedule
+        return updated, {"status": "skipped", "successful": 0, "failed": 0}
+
+    fixtures: list[FootballDataFixture] = []
+    successful_codes: list[str] = []
+    errors: dict[str, str] = {}
+    start_date = query_time.date().isoformat()
+    for code in ALLOWED_ANALYSIS_COMPETITIONS:
+        try:
+            fixtures.extend(
+                fetch_upcoming_fixtures(
+                    api_key,
+                    start_date,
+                    competition_codes=(code,),
+                )
+            )
+            successful_codes.append(code)
+        except Exception as exc:
+            errors[code] = type(exc).__name__
+
+    if not successful_codes:
+        schedule["last_attempt_at"] = queried_at
+        schedule["refresh_status"] = "unavailable"
+        schedule["refresh_errors"] = {
+            COMPETITION_LABEL_BY_CODE[code]: error for code, error in errors.items()
+        }
+        updated["next_matchday"] = schedule
+        return updated, {
+            "status": "unavailable",
+            "successful": 0,
+            "failed": len(errors),
+        }
+
+    schedule = _build_next_matchday(
+        tuple(fixtures),
+        updated.get("current_matches", []),
+        query_time,
+        {},
+        use_fallback_when_empty=False,
+    )
+    schedule["last_attempt_at"] = queried_at
+    schedule["refresh_status"] = "partial" if errors else "success"
+    if errors:
+        schedule["refresh_errors"] = {
+            COMPETITION_LABEL_BY_CODE[code]: error for code, error in errors.items()
+        }
+        by_name = {
+            competition.get("name"): competition
+            for competition in schedule.get("competitions", [])
+        }
+        for code, error in errors.items():
+            competition = by_name.get(COMPETITION_LABEL_BY_CODE[code])
+            if competition is not None and not competition.get("fixtures"):
+                competition["status"] = f"football-data.org 查询失败：{error}。"
+
+    updated["next_matchday"] = schedule
+    return updated, {
+        "status": schedule["refresh_status"],
+        "successful": len(successful_codes),
+        "failed": len(errors),
+        "fixture_count": len(fixtures),
+    }
 
 
 def review_checker_results(
@@ -180,28 +267,30 @@ def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
             "source": "football-data.org",
             "error": "missing FOOTBALL_DATA_API_KEY",
         }
-        _write_payload(path, payload)
-        return payload
+        counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
+    else:
+        try:
+            fixtures = fetch_evening_fixtures(api_key, review_date)
+        except Exception as exc:
+            payload["last_result_review"] = {
+                "batch_date": review_date,
+                "reviewed_at": reviewed_at,
+                "status": "unavailable",
+                "source": "football-data.org",
+                "error": type(exc).__name__,
+            }
+            counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
+        else:
+            payload, counts = review_checker_results(payload, review_date, fixtures, reviewed_at)
+            payload["last_result_review"]["status"] = "success"
 
-    try:
-        fixtures = fetch_evening_fixtures(api_key, review_date)
-    except Exception as exc:
-        payload["last_result_review"] = {
-            "batch_date": review_date,
-            "reviewed_at": reviewed_at,
-            "status": "unavailable",
-            "source": "football-data.org",
-            "error": type(exc).__name__,
-        }
-        _write_payload(path, payload)
-        return payload
-
-    payload, counts = review_checker_results(payload, review_date, fixtures, reviewed_at)
-    payload["last_result_review"]["status"] = "success"
+    payload, schedule_counts = refresh_next_matchday(payload, api_key)
     _write_payload(path, payload)
     print(
         f"Reviewed {counts['reviewed']} checker entries for {review_date}; "
-        f"pending={counts['pending']} unsupported={counts['unsupported']} not_found={counts['not_found']}"
+        f"pending={counts['pending']} unsupported={counts['unsupported']} not_found={counts['not_found']}; "
+        f"next_matchday={schedule_counts['status']} "
+        f"successful={schedule_counts['successful']} failed={schedule_counts['failed']}"
     )
     return payload
 

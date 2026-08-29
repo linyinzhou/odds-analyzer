@@ -24,7 +24,9 @@ PL,PD,SA,BL1,FL1,CL
 - Status: active
 - Time: daily 08:00 Beijing time (`0 0 * * *` UTC)
 - Runtime: GitHub Actions
-- Purpose: check final scores from the previous evening slate, settle the exact stored `prediction.market` and `prediction.pick`, update checker review fields, test, commit, push, and refresh GitHub Pages.
+- Purpose: check final scores from the previous evening slate, settle the exact stored `prediction.market` and `prediction.pick`, refresh the 14-day `next_matchday` schedule, update checker review fields, test, commit, push, and refresh GitHub Pages.
+
+The morning schedule refresh queries each of the five major leagues and Champions League independently so one competition failure does not discard the others. A successful or partial refresh updates `next_matchday.generated_at`; a total failure preserves the previous generated data and records `last_attempt_at`, `refresh_status`, and per-competition errors instead of presenting stale data as fresh.
 
 
 ## Manual Trigger

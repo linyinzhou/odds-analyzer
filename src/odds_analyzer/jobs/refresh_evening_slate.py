@@ -945,8 +945,9 @@ def _build_next_matchday(
     current_matches: list[dict],
     query_time: datetime,
     fallback: dict,
+    use_fallback_when_empty: bool = True,
 ) -> dict:
-    if not upcoming_fixtures:
+    if not upcoming_fixtures and use_fallback_when_empty:
         return _filter_next_matchday(fallback, current_matches, query_time)
 
     current_keys = {
