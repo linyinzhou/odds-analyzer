@@ -80,7 +80,10 @@ def _missing_fields(match: dict[str, Any]) -> list[str]:
 
 
 def _has_fundamentals(match: dict[str, Any]) -> bool:
-    context = match.get("fundamental_context") or {}
+    return has_sufficient_fundamental_context(match.get("fundamental_context") or {})
+
+
+def has_sufficient_fundamental_context(context: dict[str, Any]) -> bool:
     for side in ("home", "away"):
         team = context.get(side) or {}
         form = team.get("form") or []

@@ -176,17 +176,22 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertEqual(analyzed["prediction"]["basis"], "fresh_european_asian_snapshot")
         self.assertIn("本次竞彩未取得", analyzed["market_read"])
 
-    def test_line_gap_without_played_sample_is_not_flagged_as_mismatch(self):
+    def test_line_gap_without_sufficient_played_sample_is_not_flagged_as_mismatch(self):
         match = dynamic_analysis_match(include_lottery=True)
-        match["fundamental_context"]["home"]["played_games"] = 0
-        match["fundamental_context"]["away"]["played_games"] = 0
+        match["fundamental_context"]["home"]["played_games"] = 2
+        match["fundamental_context"]["away"]["played_games"] = 2
+        match["fundamental_context"]["home"]["form"] = ["L", "D"]
+        match["fundamental_context"]["away"]["form"] = ["W", "W"]
+        match["european_odds"] = {"home": 3.30, "draw": 3.35, "away": 2.22}
+        match["asian_handicap"]["handicap"] = 0.25
+        match["chinese_lottery"]["handicap"] = 1
 
         analyzed = analyze_slate_match(match)
 
         self.assertFalse(analyzed["mismatch"]["matched"])
         self.assertIn("样本不足", analyzed["mismatch"]["reason"])
 
-    def test_lottery_deeper_mismatch_is_strengthened_by_underdog_fundamentals(self):
+    def test_lottery_deeper_mismatch_is_rejected_by_underdog_fundamentals(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["asian_handicap"]["handicap"] = -0.5
         match["fundamental_context"]["home"]["points"] = 0
@@ -196,10 +201,9 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
 
         analyzed = analyze_slate_match(match)
 
-        self.assertTrue(analyzed["mismatch"]["matched"])
-        self.assertEqual(analyzed["mismatch"]["status"], "lottery_deeper_small_win")
-        self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让负")
-        self.assertIn("基本面偏受让方", analyzed["mismatch"]["reason"])
+        self.assertFalse(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["mismatch"]["pick"], "不进入错盘栏")
+        self.assertIn("基本面与盘口热门方方向冲突", analyzed["mismatch"]["reason"])
 
     def test_away_favorite_mismatch_reverses_sporttery_selections(self):
         match = dynamic_analysis_match(include_lottery=True)
@@ -1286,11 +1290,13 @@ def dynamic_analysis_match(include_lottery):
                 "played_games": 10,
                 "points": 20,
                 "goal_difference": 6,
+                "form": ["W", "D", "W"],
             },
             "away": {
                 "played_games": 10,
                 "points": 13,
                 "goal_difference": -2,
+                "form": ["L", "D", "L"],
             },
         },
         "european_odds": {"home": 2.10, "draw": 3.30, "away": 3.50},

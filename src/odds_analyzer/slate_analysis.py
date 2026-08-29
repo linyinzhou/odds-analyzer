@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Any
 
 from odds_analyzer.analysis import check_lottery_asian_mismatch
+from odds_analyzer.fallback_queue import has_sufficient_fundamental_context
 from odds_analyzer.models import AsianHandicapLine, ChineseLotteryLine, Selection
 
 
@@ -215,9 +216,23 @@ def _mismatch_read(
             reason,
             "A line gap exists, but the current table/form sample is insufficient to validate it.",
         )
-    fundamentals_conflict = (favorite_home and comparison < -0.2) or (
-        not favorite_home and comparison > 0.2
+    fundamentals_support_favorite = (favorite_home and comparison > 0.2) or (
+        not favorite_home and comparison < -0.2
     )
+    if not fundamentals_support_favorite:
+        reason = (
+            "不符合错盘规则：现有基本面与盘口热门方方向冲突。"
+            if (favorite_home and comparison < -0.2)
+            or (not favorite_home and comparison > 0.2)
+            else "发现竞彩与亚盘线差，但基本面优势不足以确认盘口热门方。"
+        )
+        return _mismatch_payload(
+            False,
+            reason,
+            "不进入错盘栏",
+            reason,
+            "The line gap is only an observation because fundamentals do not confirm the market favorite.",
+        )
 
     favorite_asian_line = asian_line if favorite_home else -asian_line
     favorite_lottery_line = lottery_value if favorite_home else -lottery_value
@@ -227,21 +242,10 @@ def _mismatch_read(
         ChineseLotteryLine(home_handicap=favorite_lottery_line),
         max_supported_home_margin=max_margin,
     )
-    if fundamentals_conflict and check.status != "lottery_deeper_small_win":
-        reason = "不符合错盘规则：现有基本面与盘口热门方方向冲突。"
-        return _mismatch_payload(
-            False,
-            reason,
-            "不进入错盘栏",
-            reason,
-            "The fundamentals oppose the favorite required by this mismatch pattern.",
-        )
 
     polymarket_validation = _polymarket_lottery_validation(match, check.status)
     check_reason = check.reason
     check_reason += polymarket_validation["note_zh"]
-    if fundamentals_conflict:
-        check_reason = check_reason.rstrip("。") + "；基本面偏受让方，进一步不支持热门方大胜。"
 
     selections = check.preferred_selections
     if not favorite_home:
@@ -449,13 +453,13 @@ def _polymarket_confidence_adjustment(match: dict[str, Any], status: str) -> int
 
 
 def _fundamental_comparison(context: dict[str, Any]) -> float | None:
+    if not has_sufficient_fundamental_context(context):
+        return None
     home = context.get("home") or {}
     away = context.get("away") or {}
     try:
         home_played = int(home["played_games"])
         away_played = int(away["played_games"])
-        if home_played <= 0 or away_played <= 0:
-            return None
         home_ppg = float(home["points"]) / home_played
         away_ppg = float(away["points"]) / away_played
         home_gd = float(home["goal_difference"]) / home_played
