@@ -701,6 +701,20 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
             ("Sassuolo", "US Sassuolo Calcio"),
             ("Frosinone", "Frosinone Calcio"),
             ("Barcelona", "FC Barcelona"),
+            ("Levante UD", "莱万特"),
+            ("Tottenham Hotspur FC", "热刺"),
+            ("Newcastle United FC", "纽卡斯尔"),
+            ("AC Monza", "蒙扎"),
+            ("Udinese Calcio", "乌迪内斯"),
+            ("ACF Fiorentina", "佛罗伦萨"),
+            ("Frosinone Calcio", "弗洛西诺"),
+            ("US Sassuolo Calcio", "萨索洛"),
+            ("Torino FC", "都灵"),
+            ("Real Sociedad de Fútbol", "皇家社会"),
+            ("RCD Espanyol de Barcelona", "西班牙人"),
+            ("Juventus FC", "尤文图斯"),
+            ("Sevilla FC", "塞维利亚"),
+            ("Club Atlético de Madrid", "马竞"),
         )
 
         for curated_name, official_name in pairs:
