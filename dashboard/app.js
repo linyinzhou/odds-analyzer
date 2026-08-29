@@ -326,7 +326,7 @@ function renderLotteryView() {
         const lottery = match.chinese_lottery;
         const handicap = lottery.handicap === null ? "无让球" : formatLine(lottery.handicap);
         const mismatch = match.mismatch?.matched
-          ? `错盘命中：${match.mismatch.pick}`
+          ? `${match.mismatch.limited_sample ? "错盘候选" : "错盘命中"}：${match.mismatch.pick}`
           : `错盘观察：${match.mismatch?.reason ?? "未形成错盘结论"}`;
         return `
           <article class="mismatch-row">

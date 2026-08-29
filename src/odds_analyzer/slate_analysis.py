@@ -41,7 +41,9 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
 
     if mismatch["dashboard"]["matched"]:
         analyzed["status"] = "mismatch"
-        analyzed["signal_label"] = "错盘命中"
+        analyzed["signal_label"] = (
+            "错盘候选" if mismatch["dashboard"].get("limited_sample") else "错盘命中"
+        )
     elif prediction["market"] != "无推荐":
         analyzed["status"] = "watch"
         analyzed["signal_label"] = "盘口观察"
@@ -73,19 +75,22 @@ def _fundamental_read(
     if comparison is not None:
         home = match.get("home_team", "主队")
         away = match.get("away_team", "客队")
+        limited_sample = not has_sufficient_fundamental_context(context)
+        zh_caveat = "；但当前赛季样本不足3场，方向信心有限。" if limited_sample else "。"
+        en_caveat = "; however, fewer than three current-season results makes this a low-confidence direction." if limited_sample else "."
         if comparison > 0.2:
             return (
-                f"排名、场均积分和净胜球样本偏向{home}；仍需结合临场阵容确认优势能否转化为赢盘。",
-                f"Table position, points per game and goal difference favor {home}; lineups still need confirmation.",
+                f"排名、场均积分和净胜球样本偏向{home}{zh_caveat}",
+                f"Table position, points per game and goal difference favor {home}{en_caveat}",
             )
         if comparison < -0.2:
             return (
-                f"排名、场均积分和净胜球样本偏向{away}；主队方向需要盘口提供额外支持。",
-                f"Table position, points per game and goal difference favor {away}; the home side needs market support.",
+                f"排名、场均积分和净胜球样本偏向{away}{zh_caveat}",
+                f"Table position, points per game and goal difference favor {away}{en_caveat}",
             )
         return (
-            "双方现有排名与近期样本接近，基本面不足以单独支持大胜判断。",
-            "The available table and form sample is close and does not independently support a wide-margin call.",
+            f"双方现有排名、场均积分和净胜球样本接近，基本面方向中性{zh_caveat}",
+            f"The available table, points-per-game and goal-difference sample is neutral{en_caveat}",
         )
 
     if match.get("football_data_snapshot"):
@@ -208,31 +213,21 @@ def _mismatch_read(
 
     comparison = _fundamental_comparison(context)
     if comparison is None:
-        reason = "发现竞彩与亚盘线差，但有效排名/近期样本不足，按规则只记录观察，不判定为错盘。"
+        reason = "发现竞彩与亚盘线差，但缺少可比较的基本面方向，只记录观察。"
         return _mismatch_payload(
             False,
             reason,
             "基本面待验证",
             reason,
-            "A line gap exists, but the current table/form sample is insufficient to validate it.",
+            "A line gap exists, but comparable fundamentals are unavailable.",
         )
+    sample_sufficient = has_sufficient_fundamental_context(context)
+    fundamentals_conflict = (favorite_home and comparison < -0.2) or (
+        not favorite_home and comparison > 0.2
+    )
     fundamentals_support_favorite = (favorite_home and comparison > 0.2) or (
         not favorite_home and comparison < -0.2
     )
-    if not fundamentals_support_favorite:
-        reason = (
-            "不符合错盘规则：现有基本面与盘口热门方方向冲突。"
-            if (favorite_home and comparison < -0.2)
-            or (not favorite_home and comparison > 0.2)
-            else "发现竞彩与亚盘线差，但基本面优势不足以确认盘口热门方。"
-        )
-        return _mismatch_payload(
-            False,
-            reason,
-            "不进入错盘栏",
-            reason,
-            "The line gap is only an observation because fundamentals do not confirm the market favorite.",
-        )
 
     favorite_asian_line = asian_line if favorite_home else -asian_line
     favorite_lottery_line = lottery_value if favorite_home else -lottery_value
@@ -243,9 +238,48 @@ def _mismatch_read(
         max_supported_home_margin=max_margin,
     )
 
+    limited_sample = False
+    if check.status == "lottery_deeper_small_win":
+        if not fundamentals_conflict:
+            reason = (
+                "不符合反热门错盘条件：现有基本面与盘口热门方方向一致。"
+                if fundamentals_support_favorite
+                else "发现竞彩深于亚盘，但现有基本面方向中性，只记录观察。"
+            )
+            return _mismatch_payload(
+                False,
+                reason,
+                "不进入错盘栏",
+                reason,
+                "The deeper Sporttery line is only an observation because fundamentals do not favor the underdog.",
+            )
+        limited_sample = not sample_sufficient
+    elif not sample_sufficient:
+        reason = "发现竞彩与亚盘线差，但基本面样本不足，只记录观察。"
+        return _mismatch_payload(
+            False,
+            reason,
+            "基本面待验证",
+            reason,
+            "A line gap exists, but the fundamental sample is insufficient.",
+        )
+    elif not fundamentals_support_favorite:
+        reason = "不符合错盘规则：基本面不支持浅盘所需的热门方向。"
+        return _mismatch_payload(
+            False,
+            reason,
+            "不进入错盘栏",
+            reason,
+            "Fundamentals do not support the favorite required by the shallower-line pattern.",
+        )
+
     polymarket_validation = _polymarket_lottery_validation(match, check.status)
     check_reason = check.reason
-    check_reason += polymarket_validation["note_zh"]
+    if check.status == "lottery_deeper_small_win":
+        check_reason = check_reason.rstrip("。") + "；基本面偏受让方，不支持盘口热门方打穿竞彩深盘。"
+        if limited_sample:
+            check_reason += "当前赛季样本不足3场，按错盘候选处理。"
+    check_reason = check_reason.rstrip("。") + polymarket_validation["note_zh"]
 
     selections = check.preferred_selections
     if not favorite_home:
@@ -257,8 +291,9 @@ def _mismatch_read(
     } and polymarket_validation["status"] != "conflict"
     pick = _lottery_pick(selections) if matched else "不进入错盘栏"
     if matched:
+        label = "符合错盘候选形态" if limited_sample else "符合错盘规则"
         recommendation = (
-            f"符合错盘规则；竞彩让球 {lottery_value:+d}：{pick}。"
+            f"{label}；竞彩让球 {lottery_value:+d}：{pick}。"
             f"{polymarket_validation['recommendation_zh']}"
         )
     elif polymarket_validation["status"] == "conflict":
@@ -289,6 +324,7 @@ def _mismatch_read(
         selections,
     )
     payload["dashboard"]["polymarket_validation"] = polymarket_validation["status"]
+    payload["dashboard"]["limited_sample"] = limited_sample
     return payload
 
 
@@ -302,6 +338,8 @@ def _prediction(
         lottery_line = int(match["chinese_lottery"]["handicap"])
         polymarket_adjustment = _polymarket_confidence_adjustment(match, mismatch["dashboard"]["status"])
         confidence = min(72, 62 + round(abs(mismatch["line_gap"]) * 6) + polymarket_adjustment)
+        if mismatch["dashboard"].get("limited_sample"):
+            confidence = min(confidence, 58)
         pick = mismatch["dashboard"]["pick"].split("：", 1)[-1]
         return {
             "market": f"竞彩让球 {lottery_line:+d}",
@@ -453,8 +491,6 @@ def _polymarket_confidence_adjustment(match: dict[str, Any], status: str) -> int
 
 
 def _fundamental_comparison(context: dict[str, Any]) -> float | None:
-    if not has_sufficient_fundamental_context(context):
-        return None
     home = context.get("home") or {}
     away = context.get("away") or {}
     try:

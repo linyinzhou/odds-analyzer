@@ -116,8 +116,8 @@ class PolymarketSourceTest(unittest.TestCase):
             },
             "football_data_snapshot": {"match_id": 1},
             "fundamental_context": {
-                "home": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
-                "away": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                "home": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                "away": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
             },
             "sources": [],
         }
@@ -157,8 +157,8 @@ class PolymarketSourceTest(unittest.TestCase):
             },
             "football_data_snapshot": {"match_id": 1},
             "fundamental_context": {
-                "home": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
-                "away": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                "home": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                "away": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
             },
             "polymarket": {
                 "home": 0.15,

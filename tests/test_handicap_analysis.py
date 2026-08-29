@@ -176,7 +176,7 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertEqual(analyzed["prediction"]["basis"], "fresh_european_asian_snapshot")
         self.assertIn("本次竞彩未取得", analyzed["market_read"])
 
-    def test_line_gap_without_sufficient_played_sample_is_not_flagged_as_mismatch(self):
+    def test_deeper_line_with_favorite_aligned_fundamentals_is_not_mismatch(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["fundamental_context"]["home"]["played_games"] = 2
         match["fundamental_context"]["away"]["played_games"] = 2
@@ -189,9 +189,27 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         analyzed = analyze_slate_match(match)
 
         self.assertFalse(analyzed["mismatch"]["matched"])
-        self.assertIn("样本不足", analyzed["mismatch"]["reason"])
+        self.assertIn("基本面与盘口热门方方向一致", analyzed["mismatch"]["reason"])
 
-    def test_lottery_deeper_mismatch_is_rejected_by_underdog_fundamentals(self):
+    def test_limited_sample_keeps_fundamental_direction_and_marks_candidate(self):
+        match = dynamic_analysis_match(include_lottery=True)
+        match["fundamental_context"]["home"].update(
+            {"played_games": 1, "points": 0, "goal_difference": -3, "form": []}
+        )
+        match["fundamental_context"]["away"].update(
+            {"played_games": 1, "points": 1, "goal_difference": 0, "form": []}
+        )
+
+        analyzed = analyze_slate_match(match)
+
+        self.assertTrue(analyzed["mismatch"]["matched"])
+        self.assertTrue(analyzed["mismatch"]["limited_sample"])
+        self.assertEqual(analyzed["signal_label"], "错盘候选")
+        self.assertEqual(analyzed["prediction"]["confidence"], 58)
+        self.assertIn("偏向客队", analyzed["recommendation"]["fundamental"])
+        self.assertIn("样本不足3场", analyzed["recommendation"]["fundamental"])
+
+    def test_lottery_deeper_mismatch_is_supported_by_underdog_fundamentals(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["asian_handicap"]["handicap"] = -0.5
         match["fundamental_context"]["home"]["points"] = 0
@@ -201,9 +219,10 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
 
         analyzed = analyze_slate_match(match)
 
-        self.assertFalse(analyzed["mismatch"]["matched"])
-        self.assertEqual(analyzed["mismatch"]["pick"], "不进入错盘栏")
-        self.assertIn("基本面与盘口热门方方向冲突", analyzed["mismatch"]["reason"])
+        self.assertTrue(analyzed["mismatch"]["matched"])
+        self.assertEqual(analyzed["prediction"]["pick"], "让平 + 让负")
+        self.assertFalse(analyzed["mismatch"]["limited_sample"])
+        self.assertIn("基本面偏受让方", analyzed["mismatch"]["reason"])
 
     def test_away_favorite_mismatch_reverses_sporttery_selections(self):
         match = dynamic_analysis_match(include_lottery=True)
@@ -215,10 +234,10 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
             "away_odds": 1.95,
         }
         match["chinese_lottery"]["handicap"] = 1
-        match["fundamental_context"]["home"]["points"] = 11
-        match["fundamental_context"]["home"]["goal_difference"] = -5
-        match["fundamental_context"]["away"]["points"] = 21
-        match["fundamental_context"]["away"]["goal_difference"] = 7
+        match["fundamental_context"]["home"]["points"] = 21
+        match["fundamental_context"]["home"]["goal_difference"] = 7
+        match["fundamental_context"]["away"]["points"] = 11
+        match["fundamental_context"]["away"]["goal_difference"] = -5
 
         analyzed = analyze_slate_match(match)
 
@@ -1288,15 +1307,15 @@ def dynamic_analysis_match(include_lottery):
         "fundamental_context": {
             "home": {
                 "played_games": 10,
-                "points": 20,
-                "goal_difference": 6,
-                "form": ["W", "D", "W"],
-            },
-            "away": {
-                "played_games": 10,
                 "points": 13,
                 "goal_difference": -2,
                 "form": ["L", "D", "L"],
+            },
+            "away": {
+                "played_games": 10,
+                "points": 20,
+                "goal_difference": 6,
+                "form": ["W", "D", "W"],
             },
         },
         "european_odds": {"home": 2.10, "draw": 3.30, "away": 3.50},

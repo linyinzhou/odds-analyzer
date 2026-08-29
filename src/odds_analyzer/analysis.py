@@ -59,7 +59,7 @@ def check_lottery_asian_mismatch(
                 line_gap=line_gap,
                 preferred_selections=(Selection.DRAW, Selection.AWAY),
                 reason=(
-                    "竞彩让球深于亚盘；基本面与热门方向一致，欧赔/亚盘只支持热门方小胜到让球临界点；"
+                    "竞彩让球深于亚盘，欧赔/亚盘只支持热门方小胜到让球临界点；"
                     "让平覆盖正好赢盘点，让负覆盖不穿盘路径。"
                 ),
                 risk="若热门方早早进球并打开比赛，深盘仍可能被打穿。",

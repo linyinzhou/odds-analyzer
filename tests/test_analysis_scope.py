@@ -166,8 +166,8 @@ class AnalysisScopeTest(unittest.TestCase):
                         "handicap_odds": {"home": 1.8, "draw": 3.5, "away": 3.5},
                     },
                     "fundamental_context": {
-                        "home": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
-                        "away": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                        "home": {"played_games": 10, "points": 20, "goal_difference": 7, "form": ["W", "W", "D"]},
+                        "away": {"played_games": 10, "points": 12, "goal_difference": -2, "form": ["L", "D", "W"]},
                     },
                 }
             ],
