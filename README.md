@@ -175,7 +175,7 @@ Supported codes are `PL`, `PD`, `SA`, `BL1`, `FL1`, and `CL`. Missing or invalid
 
 ## Manual Report Trigger
 
-Besides the scheduled 17:00 evening refresh and 08:00 result review (Beijing time), the dashboard exposes a manual trigger entry in the top bar.
+Besides the scheduled 16:00 evening refresh and 08:00 result review (Beijing time), the dashboard exposes a manual trigger entry in the top bar.
 
 Current manual trigger target:
 

@@ -573,12 +573,12 @@ class CheckerCandidateTest(unittest.TestCase):
 
 
 class WorkflowConfigurationTest(unittest.TestCase):
-    def test_evening_workflow_runs_daily_at_beijing_17(self):
+    def test_evening_workflow_runs_daily_at_beijing_16(self):
         workflow_path = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "manual-report.yml"
         workflow = workflow_path.read_text(encoding="utf-8")
 
-        self.assertIn('cron: "0 9 * * *"', workflow)
-        self.assertIn("github.event.schedule == '0 9 * * *'", workflow)
+        self.assertIn('cron: "0 8 * * *"', workflow)
+        self.assertIn("github.event.schedule == '0 8 * * *'", workflow)
         self.assertIn('cron: "0 0 * * *"', workflow)
         self.assertIn("odds_analyzer.jobs.review_results", workflow)
 

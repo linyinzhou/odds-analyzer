@@ -5,7 +5,7 @@ GitHub Actions runs both the evening refresh and the morning result settlement.
 ## Evening Slate Refresh
 
 - Name: `Manual report refresh`
-- Time: daily 17:00 Beijing time (`0 9 * * *` UTC)
+- Time: daily 16:00 Beijing time (`0 8 * * *` UTC)
 - Runtime: GitHub Actions
 - Purpose: query fixtures from tonight through the next early morning, refresh `current_matches`, refresh `next_matchday`, upsert new `mismatch_history`, upsert the daily top 5-8 concrete predictions to `checker_history`, test, commit, push, and refresh GitHub Pages.
 
@@ -75,8 +75,8 @@ produce a confirmed result.
 
 ## Codex Fallback Passes
 
-- 17:00 Beijing: GitHub Actions queries structured APIs and creates `fallback_requests`.
-- 17:00 Beijing: Codex waits for the new live batch, then researches only pending fields; an empty queue is a no-op.
+- 16:00 Beijing: GitHub Actions queries structured APIs and creates `fallback_requests`.
+- 17:00 Beijing: Codex checks every 5 minutes for up to 40 minutes until the new live batch appears, then researches only pending fields; an empty queue is a no-op.
 - 08:00 Beijing: GitHub Actions settles checker results through football-data.org.
 - 08:20 Beijing: Codex researches only checker matches that remain unreviewed.
 
