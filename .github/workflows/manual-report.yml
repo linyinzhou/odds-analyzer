@@ -3,7 +3,7 @@ name: Manual report refresh
 on:
   schedule:
     - cron: "0 0 * * *"
-    - cron: "0 10 * * *"
+    - cron: "0 9 * * *"
   workflow_dispatch:
     inputs:
       run_type:
@@ -148,7 +148,7 @@ jobs:
           echo "Dispatch accepted."
 
       - name: Refresh evening slate
-        if: ${{ github.event.schedule == '0 10 * * *' || inputs.run_type == 'evening-report' }}
+        if: ${{ github.event.schedule == '0 9 * * *' || inputs.run_type == 'evening-report' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.refresh_evening_slate --date "${SLATE_DATE}"
         env:
           SLATE_DATE: ${{ inputs.slate_date }}
@@ -236,7 +236,7 @@ jobs:
               fh.write("\n")
           PY
         env:
-          RUN_TYPE: ${{ github.event.schedule == '0 0 * * *' && 'result-review' || github.event.schedule == '0 10 * * *' && 'evening-report' || inputs.run_type }}
+          RUN_TYPE: ${{ github.event.schedule == '0 0 * * *' && 'result-review' || github.event.schedule == '0 9 * * *' && 'evening-report' || inputs.run_type }}
           RUN_TRIGGER: ${{ github.event_name }}
           RUN_NOTE: ${{ inputs.note }}
           RUN_ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || 'PL,PD,SA' }}
