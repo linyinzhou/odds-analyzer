@@ -5,6 +5,7 @@ import os
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -28,10 +29,23 @@ class AnalysisScopeTest(unittest.TestCase):
         self.assertEqual(parse_analysis_competitions("all"), ALLOWED_ANALYSIS_COMPETITIONS)
 
     def test_report_lists_are_filtered_but_next_matchday_remains_full(self):
-        project_root = Path(__file__).resolve().parents[1]
-        existing = json.loads(
-            (project_root / "dashboard" / "data" / "daily_matches.json").read_text(encoding="utf-8")
-        )
+        future_kickoff = (datetime.now(timezone.utc) + timedelta(days=2)).strftime("%Y-%m-%d %H:%M")
+        existing = {
+            "next_matchday": {
+                "competitions": [
+                    {
+                        "name": "非报告范围赛程",
+                        "fixtures": [
+                            {
+                                "kickoff_time": future_kickoff,
+                                "home_team": "Schedule Home FC",
+                                "away_team": "Schedule Away FC",
+                            }
+                        ],
+                    }
+                ]
+            }
+        }
         fixtures = parse_football_data_fixtures(
             {
                 "matches": [
@@ -71,9 +85,12 @@ class AnalysisScopeTest(unittest.TestCase):
         self.assertTrue(all(match["competition"].startswith("英超") for match in batch["current_matches"]))
         self.assertTrue(all(match["competition"].startswith("英超") for match in batch["mismatch_history"]))
         self.assertTrue(all(match["competition"].startswith("英超") for match in batch["checker_history"]))
-        schedule_names = {item["name"] for item in batch["next_matchday"]["competitions"]}
-        self.assertIn("德甲", schedule_names)
-        self.assertIn("欧冠", schedule_names)
+        schedule_fixtures = {
+            (fixture["home_team"], fixture["away_team"])
+            for competition in batch["next_matchday"]["competitions"]
+            for fixture in competition.get("fixtures", [])
+        }
+        self.assertIn(("Schedule Home FC", "Schedule Away FC"), schedule_fixtures)
 
     def test_refresh_limits_source_calls_to_enabled_default_leagues(self):
         project_root = Path(__file__).resolve().parents[1]
