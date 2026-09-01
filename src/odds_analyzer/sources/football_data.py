@@ -210,25 +210,26 @@ def fetch_upcoming_fixtures(
     timeout: float = 20,
 ) -> tuple[FootballDataFixture, ...]:
     start = datetime.fromisoformat(start_date).date()
-    end = start + timedelta(days=max(1, days) - 1)
-    payload = _get_json(
-        "/matches",
-        api_key,
-        {
-            "dateFrom": start.isoformat(),
-            "dateTo": end.isoformat(),
-            "competitions": ",".join(competition_codes),
-        },
-        timeout,
-    )
-    requested_codes = set(competition_codes)
-    return tuple(
-        fixture
-        for fixture in parse_football_data_fixtures(payload, "")
-        if fixture.competition_code in requested_codes
-        and fixture.status
-        not in {"CANCELLED", "FINISHED", "POSTPONED", "SUSPENDED"}
-    )
+    end = start + timedelta(days=max(1, days))
+    fixtures: dict[int, FootballDataFixture] = {}
+    for code in dict.fromkeys(competition_codes):
+        payload = _get_json(
+            f"/competitions/{code}/matches",
+            api_key,
+            {
+                "dateFrom": start.isoformat(),
+                "dateTo": end.isoformat(),
+            },
+            timeout,
+        )
+        for fixture in parse_football_data_fixtures(payload, code):
+            if (
+                fixture.competition_code == code
+                and fixture.status
+                not in {"CANCELLED", "FINISHED", "POSTPONED", "SUSPENDED"}
+            ):
+                fixtures[fixture.match_id] = fixture
+    return tuple(fixtures.values())
 
 
 def parse_football_data_fixtures(

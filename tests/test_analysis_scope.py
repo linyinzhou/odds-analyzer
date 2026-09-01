@@ -146,10 +146,10 @@ class AnalysisScopeTest(unittest.TestCase):
             "2026-08-22",
             competition_codes=("PL", "PD", "SA"),
         )
-        upcoming.assert_called_once_with(
-            "football-key",
-            "2026-08-22",
-            competition_codes=ALLOWED_ANALYSIS_COMPETITIONS,
+        self.assertEqual(upcoming.call_count, len(ALLOWED_ANALYSIS_COMPETITIONS))
+        self.assertEqual(
+            [call.kwargs["competition_codes"] for call in upcoming.call_args_list],
+            [(code,) for code in ALLOWED_ANALYSIS_COMPETITIONS],
         )
         odds_api.assert_called_once_with(
             "odds-key",

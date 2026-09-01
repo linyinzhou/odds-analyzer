@@ -33,6 +33,7 @@ from odds_analyzer import (
     settle_chinese_lottery,
 )
 from odds_analyzer.jobs.refresh_evening_slate import (
+    ALLOWED_ANALYSIS_COMPETITIONS,
     _checker_candidates,
     _build_next_matchday,
     _enrich_with_odds_api,
@@ -887,6 +888,51 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertNotIn(athletic["id"], {match["id"] for match in batch["mismatch_history"]})
 
 class FootballDataSourceTest(unittest.TestCase):
+    def test_upcoming_fixtures_use_competition_resources_and_full_fourteen_days(self):
+        def fixture_payload(code, match_id, utc_date):
+            return {
+                "competition": {"code": code, "name": code},
+                "matches": [
+                    {
+                        "id": match_id,
+                        "utcDate": utc_date,
+                        "status": "TIMED",
+                        "matchday": 3,
+                        "stage": "REGULAR_SEASON",
+                        "homeTeam": {"id": match_id * 10, "name": f"{code} Home"},
+                        "awayTeam": {"id": match_id * 10 + 1, "name": f"{code} Away"},
+                    }
+                ],
+            }
+
+        def fake_get_json(path, api_key, query, timeout):
+            self.assertEqual(api_key, "test-key")
+            self.assertEqual(
+                query,
+                {"dateFrom": "2026-09-01", "dateTo": "2026-09-15"},
+            )
+            if path == "/competitions/PL/matches":
+                return fixture_payload("PL", 1, "2026-09-04T19:00:00Z")
+            if path == "/competitions/PD/matches":
+                return fixture_payload("PD", 2, "2026-09-05T14:00:00Z")
+            self.fail(f"Unexpected football-data request: {path}")
+
+        with patch(
+            "odds_analyzer.sources.football_data._get_json",
+            side_effect=fake_get_json,
+        ) as get_json:
+            fixtures = fetch_upcoming_fixtures(
+                "test-key",
+                "2026-09-01",
+                competition_codes=("PL", "PD"),
+            )
+
+        self.assertEqual(get_json.call_count, 2)
+        self.assertEqual(
+            [(fixture.competition_code, fixture.match_id) for fixture in fixtures],
+            [("PL", 1), ("PD", 2)],
+        )
+
     def test_dynamic_next_matchday_uses_earliest_actual_round_and_excludes_qualifiers(self):
         def fixture(match_id, code, utc_date, home, away, matchday, stage="REGULAR_SEASON"):
             return FootballDataFixture(
@@ -924,6 +970,24 @@ class FootballDataSourceTest(unittest.TestCase):
         self.assertEqual(by_name["西甲"]["fixtures"][0]["home_team"], "Round Two Home")
         self.assertEqual(by_name["欧冠"]["fixtures"][0]["home_team"], "League Stage")
         self.assertEqual(by_name["英超"]["fixtures"], [])
+
+    def test_next_matchday_replaces_stale_fallback_with_explicit_source_errors(self):
+        result = _build_next_matchday(
+            (),
+            current_matches=[],
+            query_time=datetime(2026, 9, 1, 18, tzinfo=fixed_timezone(timedelta(hours=8))),
+            fallback={
+                "generated_at": "2026-08-23",
+                "competitions": [{"name": "欧冠", "fixtures": []}],
+            },
+            source_errors={code: "HTTPError" for code in ALLOWED_ANALYSIS_COMPETITIONS},
+        )
+        by_name = {item["name"]: item for item in result["competitions"]}
+
+        self.assertEqual(result["generated_at"], "2026-09-01T18:00:00+08:00")
+        self.assertEqual(result["refresh_status"], "unavailable")
+        self.assertEqual(set(by_name), {"英超", "西甲", "意甲", "德甲", "法甲", "欧冠"})
+        self.assertIn("查询失败", by_name["英超"]["status"])
 
     def test_parse_football_data_fixtures_standings_and_forms(self):
         fixture_payload = {

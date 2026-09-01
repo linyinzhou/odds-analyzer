@@ -964,8 +964,10 @@ def _build_next_matchday(
     query_time: datetime,
     fallback: dict,
     use_fallback_when_empty: bool = True,
+    source_errors: dict[str, str] | None = None,
 ) -> dict:
-    if not upcoming_fixtures and use_fallback_when_empty:
+    source_errors = source_errors or {}
+    if not upcoming_fixtures and use_fallback_when_empty and not source_errors:
         return _filter_next_matchday(fallback, current_matches, query_time)
 
     current_keys = {
@@ -989,10 +991,15 @@ def _build_next_matchday(
         ]
         fixtures.sort(key=lambda fixture: fixture.utc_date)
         if not fixtures:
+            status = (
+                f"football-data.org 查询失败：{source_errors[code]}。"
+                if code in source_errors
+                else "football-data.org 暂未返回未来 14 天可靠赛程。"
+            )
             competitions.append(
                 {
                     "name": label,
-                    "status": "football-data.org 暂未返回未来 14 天可靠赛程。",
+                    "status": status,
                     "fixtures": [],
                 }
             )
@@ -1028,12 +1035,25 @@ def _build_next_matchday(
             }
         )
 
-    return {
+    result = {
         "generated_at": query_time.isoformat(timespec="seconds"),
         "scope_note": "按实际开球时间显示每项赛事最近的未赛轮次；欧冠只包括主阶段。",
         "sources": ["football-data.org upcoming fixtures"],
         "competitions": competitions,
     }
+    if source_errors:
+        result["refresh_status"] = (
+            "unavailable"
+            if len(source_errors) == len(ALLOWED_ANALYSIS_COMPETITIONS)
+            else "partial"
+        )
+        result["refresh_errors"] = {
+            COMPETITION_LABEL_BY_CODE[code]: error
+            for code, error in source_errors.items()
+        }
+    else:
+        result["refresh_status"] = "success"
+    return result
 
 
 def _upcoming_fixture_is_eligible(
@@ -1089,6 +1109,7 @@ def build_evening_slate_batch(
     football_data_snapshot: FootballDataSnapshot | None = None,
     football_data_source: str = "not requested",
     upcoming_fixtures: tuple[FootballDataFixture, ...] = (),
+    upcoming_errors: dict[str, str] | None = None,
     weather_forecasts: dict[int, object] | None = None,
     weather_source: str = "not requested",
     api_football_news: list[ApiFootballMatchNews] | None = None,
@@ -1170,6 +1191,7 @@ def build_evening_slate_batch(
         current_matches,
         query_time,
         existing_payload.get("next_matchday", {}),
+        source_errors=upcoming_errors,
     )
 
     next_date = (date.fromisoformat(slate_date) + timedelta(days=1)).isoformat()
@@ -1238,18 +1260,25 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         except Exception as exc:
             football_data_snapshot = None
             football_data_source = f"football-data.org unavailable: {type(exc).__name__}"
-        try:
-            upcoming_fixtures = fetch_upcoming_fixtures(
-                football_data_key,
-                slate_date,
-                competition_codes=ALLOWED_ANALYSIS_COMPETITIONS,
-            )
-        except Exception:
-            upcoming_fixtures = ()
+        upcoming_fixture_list = []
+        upcoming_errors = {}
+        for code in ALLOWED_ANALYSIS_COMPETITIONS:
+            try:
+                upcoming_fixture_list.extend(
+                    fetch_upcoming_fixtures(
+                        football_data_key,
+                        slate_date,
+                        competition_codes=(code,),
+                    )
+                )
+            except Exception as exc:
+                upcoming_errors[code] = type(exc).__name__
+        upcoming_fixtures = tuple(upcoming_fixture_list)
     else:
         football_data_snapshot = None
         football_data_source = "football-data.org skipped: missing FOOTBALL_DATA_API_KEY"
         upcoming_fixtures = ()
+        upcoming_errors = {}
     if football_data_snapshot and football_data_snapshot.fixtures:
         try:
             weather_batch = fetch_fixture_weather(football_data_snapshot.fixtures)
@@ -1321,6 +1350,7 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         football_data_snapshot=football_data_snapshot,
         football_data_source=football_data_source,
         upcoming_fixtures=upcoming_fixtures,
+        upcoming_errors=upcoming_errors,
         weather_forecasts=weather_forecasts,
         weather_source=weather_source,
         api_football_news=api_football_news,
