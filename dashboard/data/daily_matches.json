@@ -1,15 +1,15 @@
 {
   "slate": {
-    "date": "2026-08-31",
-    "window": "2026-08-31 18:00 -> 2026-09-01 06:00 GMT+8",
-    "generated_at": "2026-09-01T00:32:09+08:00",
+    "date": "2026-09-03",
+    "window": "2026-09-03 18:00 -> 2026-09-04 06:00 GMT+8",
+    "generated_at": "2026-09-03T20:38:41+08:00",
     "source": "manual evening-report job",
     "sporttery_source": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry",
-    "polymarket_source": "Polymarket: 0 games",
-    "odds_api_source": "The Odds API: 5 events",
+    "polymarket_source": "Polymarket: 14 games",
+    "odds_api_source": "The Odds API: 1 events",
     "football_data_source": "football-data.org",
-    "weather_source": "Open-Meteo partial: 2 forecasts; 3 unresolved",
-    "team_news_source": "API-Football unavailable: PL fixtures 2026-08-31: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PL fixtures 2026-09-01: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PD fixtures 2026-08-31: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}",
+    "weather_source": "Open-Meteo unavailable: Sociedad de Fútbol: location not found",
+    "team_news_source": "API-Football unavailable: PL fixtures 2026-09-03: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PL fixtures 2026-09-04: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}; PD fixtures 2026-09-03: API-Football errors: {'plan': 'Free plans do not have access to this season, try from 2022 to 2024.'}",
     "analysis_competitions": [
       "PL",
       "PD",
@@ -19,698 +19,204 @@
   },
   "current_matches": [
     {
-      "id": "2026-09-01-us-lecce-as-roma",
-      "kickoff_time": "2026-09-01 00:30",
-      "competition": "意甲 第 2 轮",
-      "home_team": "US Lecce",
-      "away_team": "AS Roma",
-      "round": "第 2 轮",
-      "venue": "待补",
+      "id": "2026-09-04-real-sociedad-de-f-tbol-rc-celta-de-vigo",
+      "kickoff_time": "2026-09-04 03:00",
+      "competition": "西甲 第 6 轮",
+      "home_team": "Real Sociedad de Fútbol",
+      "away_team": "RC Celta de Vigo",
+      "round": "第 6 轮",
+      "venue": "Reale Arena",
       "weather": "待补",
       "status": "watch",
       "signal_label": "盘口观察",
       "european_odds": {
-        "home": 8.0,
-        "draw": 4.5,
-        "away": 1.47
+        "home": 1.87,
+        "draw": 3.78,
+        "away": 4.34
       },
       "asian_handicap": {
         "provider": "Pinnacle",
-        "handicap": 1.25,
-        "home_odds": 1.86,
-        "away_odds": 2.08
+        "handicap": -0.5,
+        "home_odds": 1.88,
+        "away_odds": 2.05
       },
-      "chinese_lottery": null,
+      "chinese_lottery": {
+        "standard": {
+          "home": 1.65,
+          "draw": 3.58,
+          "away": 4.1
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 3.2,
+          "draw": 3.35,
+          "away": 1.93
+        },
+        "source": "Codex fallback"
+      },
       "fundamentals": [
         {
           "label": "Verified official-match sample",
-          "home": "Lecce: Venezia 0-2 Lecce, Lecce 1-0 Genoa, Sassuolo 2-3 Lecce; 3-match sample: 9 points, GD +4, W-W-W.",
-          "away": "Roma: Roma 4-0 Fiorentina, Hellas Verona 0-2 Roma, Roma 2-0 Lazio; 3-match sample: 9 points, GD +8, W-W-W."
+          "home": "Real Sociedad: Real Betis 1-0 Real Sociedad, Real Madrid 4-1 Real Sociedad, Real Sociedad 2-1 RCD Espanyol; 3-match sample: 3 points, GD -3, L-L-W.",
+          "away": "RC Celta: Valencia CF 0-0 Celta, Celta 1-2 CA Osasuna, Celta 0-2 Athletic Club; 3-match sample: 1 point, GD -3, D-L-L."
         },
         {
           "label": "Verified context",
-          "home": "Lega Serie A lists Eusebio Di Francesco as Lecce coach and Via del Mare as the home stadium.",
-          "away": "Lega Serie A lists Gian Piero Gasperini as Roma coach; its match preview reported no suspensions for this fixture."
+          "home": "LaLiga official club pages list Real Sociedad at Reale Arena/Anoeta; official results show a 4-2-3-1 shape in the two opening losses before a 4-4-2 home win over Espanyol.",
+          "away": "LaLiga official results show Celta used a 3-4-3 in all three league matches and scored once across the sample; Real Sociedad's official 13 May 2025 report recorded the latest home league H2H as a 0-1 loss to RC Celta."
         }
       ],
-      "market_read": "欧赔去水后主/平/客约为 12%/22%/66%，最高方向为AS Roma；Pinnacle主队视角 +1.25。本次竞彩未取得，只做欧亚盘分析。",
+      "market_read": "欧赔去水后主/平/客约为 52%/26%/22%，最高方向为Real Sociedad de Fútbol；Pinnacle主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 35%/32%/33%；Real Sociedad de Fútbol -1.5支持率约 28%，可参与市场交叉验证。",
       "mismatch": {
         "matched": false,
-        "reason": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
+        "reason": "不符合反热门错盘条件：现有基本面与盘口热门方方向一致。",
         "pick": "不进入错盘栏",
         "status": "unavailable"
       },
       "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向AS Roma。",
-        "fundamental_en": "Table position, points per game and goal difference favor AS Roma.",
-        "mismatch": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "mismatch_en": "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid."
+        "fundamental": "排名、场均积分和净胜球样本偏向Real Sociedad de Fútbol。",
+        "fundamental_en": "Table position, points per game and goal difference favor Real Sociedad de Fútbol.",
+        "mismatch": "不符合反热门错盘条件：现有基本面与盘口热门方方向一致。",
+        "mismatch_en": "The deeper Sporttery line is only an observation because fundamentals do not favor the underdog."
       },
       "prediction": {
         "market": "亚盘 Pinnacle",
-        "pick": "US Lecce +1.25",
-        "confidence": 53,
-        "detail": "查询时Pinnacle去水后该方向覆盖概率约 53%，欧赔胜向约 12%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
-        "market_en": "Asian handicap Pinnacle",
-        "pick_en": "US Lecce +1.25",
-        "detail_en": "The de-vigged Asian market gives this side about 53% cover probability and the 1X2 win probability is about 12%. This is a current-market direction, not proof of positive expected value.",
-        "basis": "fresh_european_asian_snapshot",
-        "market_type": "asian_handicap",
-        "home_handicap": 1.25,
-        "selection_keys": [
-          "home"
-        ],
-        "base_confidence": 53,
-        "calibration": {
-          "strategy": "market:asian_handicap",
-          "status": "collecting",
-          "sample_size": 10,
-          "minimum_sample": 20,
-          "adjustment": 0,
-          "trained_through_batch": "2026-08-29"
-        }
-      },
-      "checker": "检验建议：亚盘 Pinnacle US Lecce +1.25（信心 53%）。赛后按这一条具体盘口结算，不改换市场。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "本次未取得竞彩数据，未运行完整三盘比较。",
-        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
-      ],
-      "sources": [
-        "football-data.org",
-        "The Odds API",
-        "Codex fallback: Lega Serie A - Lecce",
-        "Codex fallback: Lega Serie A - Roma",
-        "Codex fallback: Lega Serie A fixture preview"
-      ],
-      "football_data_snapshot": {
-        "match_id": 558621,
-        "competition_code": "SA",
-        "utc_date": "2026-08-31T16:30:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "played_games": 3,
-          "points": 9,
-          "goal_difference": 4,
-          "form": [
-            "W",
-            "W",
-            "W"
-          ]
-        },
-        "away": {
-          "played_games": 3,
-          "points": 9,
-          "goal_difference": 8,
-          "form": [
-            "W",
-            "W",
-            "W"
-          ]
-        }
-      },
-      "odds_api_snapshot": {
-        "event_id": "29ac78994462bce061f8d01e93c7b3f0",
-        "sport_key": "soccer_italy_serie_a",
-        "bookmaker": "Pinnacle",
-        "bookmaker_key": "pinnacle",
-        "updated_at": "2026-08-31T16:29:38Z",
-        "source": "The Odds API"
-      },
-      "market_read_en": "De-vigged 1X2 is about 12%/22%/66%; the highest outcome is AS Roma. Pinnacle lists the home line at +1.25. Current Sporttery data is unavailable, so this is a European/Asian read only.",
-      "report_zh": "US Lecce vs AS Roma，开球：2026-09-01 00:30。欧赔已取得、亚盘已取得、竞彩未取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 12%/22%/66%，最高方向为AS Roma；Pinnacle主队视角 +1.25。本次竞彩未取得，只做欧亚盘分析。 预测：亚盘 Pinnacle US Lecce +1.25（信心 53%）。",
-      "report_en": "US Lecce vs AS Roma, kickoff 2026-09-01 00:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 12%/22%/66%; the highest outcome is AS Roma. Pinnacle lists the home line at +1.25. Current Sporttery data is unavailable, so this is a European/Asian read only. Prediction: Asian handicap Pinnacle US Lecce +1.25 (confidence 53%).",
-      "fallback_research": {
-        "fundamentals": {
-          "queried_at": "2026-09-01T00:47:00+08:00",
-          "sources": [
-            {
-              "name": "Lega Serie A - Lecce",
-              "url": "https://en.legaseriea.it/team/lecce",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "Lega Serie A - Roma",
-              "url": "https://www.legaseriea.it/team/roma/index",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "Lega Serie A fixture preview",
-              "url": "https://en.legaseriea.it/serie-a/news/roma-vs-fiorentina-to-end-matchday-one",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "2026-09-01-ca-osasuna-getafe-cf",
-      "kickoff_time": "2026-09-01 01:30",
-      "competition": "西甲 第 3 轮",
-      "home_team": "CA Osasuna",
-      "away_team": "Getafe CF",
-      "round": "第 3 轮",
-      "venue": "待补",
-      "weather": "待补",
-      "status": "watch",
-      "signal_label": "盘口观察",
-      "european_odds": {
-        "home": 2.31,
-        "draw": 2.86,
-        "away": 4.08
-      },
-      "asian_handicap": {
-        "provider": "Pinnacle",
-        "handicap": -0.25,
-        "home_odds": 1.93,
-        "away_odds": 2.0
-      },
-      "chinese_lottery": null,
-      "fundamentals": [
-        {
-          "label": "Verified official-match sample",
-          "home": "Osasuna: Celta 1-2 Osasuna, Osasuna 0-0 Levante, Osasuna 1-2 Espanyol; 3-match sample: 4 points, GD 0, W-D-L.",
-          "away": "Getafe: Alaves 3-0 Getafe, Getafe 1-0 Racing, Partizan 2-1 Getafe; 3 official-match sample: 3 points, GD -3, L-W-L."
-        },
-        {
-          "label": "Verified context",
-          "home": "LaLiga identifies El Sadar as Osasuna's stadium.",
-          "away": "LaLiga identifies Coliseum as Getafe's stadium; the official fixture listing confirms Osasuna v Getafe on 31 August."
-        }
-      ],
-      "market_read": "欧赔去水后主/平/客约为 42%/34%/24%，最高方向为CA Osasuna；Pinnacle主队视角 -0.25。本次竞彩未取得，只做欧亚盘分析。",
-      "mismatch": {
-        "matched": false,
-        "reason": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "pick": "不进入错盘栏",
-        "status": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向CA Osasuna。",
-        "fundamental_en": "Table position, points per game and goal difference favor CA Osasuna.",
-        "mismatch": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "mismatch_en": "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid."
-      },
-      "prediction": {
-        "market": "亚盘 Pinnacle",
-        "pick": "CA Osasuna -0.25",
-        "confidence": 55,
-        "detail": "查询时Pinnacle去水后该方向覆盖概率约 51%，欧赔胜向约 42%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
-        "market_en": "Asian handicap Pinnacle",
-        "pick_en": "CA Osasuna -0.25",
-        "detail_en": "The de-vigged Asian market gives this side about 51% cover probability and the 1X2 win probability is about 42%. This is a current-market direction, not proof of positive expected value.",
-        "basis": "fresh_european_asian_snapshot",
-        "market_type": "asian_handicap",
-        "home_handicap": -0.25,
-        "selection_keys": [
-          "home"
-        ],
-        "base_confidence": 55,
-        "calibration": {
-          "strategy": "market:asian_handicap",
-          "status": "collecting",
-          "sample_size": 10,
-          "minimum_sample": 20,
-          "adjustment": 0,
-          "trained_through_batch": "2026-08-29"
-        }
-      },
-      "checker": "检验建议：亚盘 Pinnacle CA Osasuna -0.25（信心 55%）。赛后按这一条具体盘口结算，不改换市场。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "本次未取得竞彩数据，未运行完整三盘比较。",
-        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
-      ],
-      "sources": [
-        "football-data.org",
-        "The Odds API",
-        "Codex fallback: LaLiga - Osasuna results",
-        "Codex fallback: LaLiga - Getafe results",
-        "Codex fallback: LaLiga - Osasuna v Getafe fixture"
-      ],
-      "football_data_snapshot": {
-        "match_id": 564657,
-        "competition_code": "PD",
-        "utc_date": "2026-08-31T17:30:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "played_games": 3,
-          "points": 4,
-          "goal_difference": 0,
-          "form": [
-            "W",
-            "D",
-            "L"
-          ]
-        },
-        "away": {
-          "played_games": 3,
-          "points": 3,
-          "goal_difference": -3,
-          "form": [
-            "L",
-            "W",
-            "L"
-          ]
-        }
-      },
-      "odds_api_snapshot": {
-        "event_id": "bbb9408b2825a8699540fe6f53325e17",
-        "sport_key": "soccer_spain_la_liga",
-        "bookmaker": "Pinnacle",
-        "bookmaker_key": "pinnacle",
-        "updated_at": "2026-08-31T16:31:55Z",
-        "source": "The Odds API"
-      },
-      "market_read_en": "De-vigged 1X2 is about 42%/34%/24%; the highest outcome is CA Osasuna. Pinnacle lists the home line at -0.25. Current Sporttery data is unavailable, so this is a European/Asian read only.",
-      "report_zh": "CA Osasuna vs Getafe CF，开球：2026-09-01 01:30。欧赔已取得、亚盘已取得、竞彩未取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 42%/34%/24%，最高方向为CA Osasuna；Pinnacle主队视角 -0.25。本次竞彩未取得，只做欧亚盘分析。 预测：亚盘 Pinnacle CA Osasuna -0.25（信心 55%）。",
-      "report_en": "CA Osasuna vs Getafe CF, kickoff 2026-09-01 01:30. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 42%/34%/24%; the highest outcome is CA Osasuna. Pinnacle lists the home line at -0.25. Current Sporttery data is unavailable, so this is a European/Asian read only. Prediction: Asian handicap Pinnacle CA Osasuna -0.25 (confidence 55%).",
-      "fallback_research": {
-        "fundamentals": {
-          "queried_at": "2026-09-01T00:47:00+08:00",
-          "sources": [
-            {
-              "name": "LaLiga - Osasuna results",
-              "url": "https://www.laliga.com/clubes/c-a-osasuna/resultados",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "LaLiga - Getafe results",
-              "url": "https://www.laliga.com/clubes/getafe-cf/resultados",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "LaLiga - Osasuna v Getafe fixture",
-              "url": "https://www.laliga.com/en-GB/clubs/getafe-cf/next-matches",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "2026-09-01-atalanta-bc-bologna-fc-1909",
-      "kickoff_time": "2026-09-01 02:45",
-      "competition": "意甲 第 2 轮",
-      "home_team": "Atalanta BC",
-      "away_team": "Bologna FC 1909",
-      "round": "第 2 轮",
-      "venue": "待补",
-      "weather": "待补",
-      "status": "pending",
-      "signal_label": "数据不足",
-      "european_odds": null,
-      "asian_handicap": null,
-      "chinese_lottery": null,
-      "fundamentals": [
-        {
-          "label": "Verified official-match sample",
-          "home": "Atalanta: Atalanta 2-1 Sassuolo, Fiorentina 1-1 Atalanta, Atalanta 0-1 Bologna; 3-match sample: 4 points, GD 0, W-D-L.",
-          "away": "Bologna: Bologna 0-1 Lazio, Bologna 3-3 Inter, Atalanta 0-1 Bologna; 3-match sample: 4 points, GD 0, L-D-W."
-        },
-        {
-          "label": "Verified context",
-          "home": "Lega Serie A lists Maurizio Sarri as Atalanta coach; it noted Atalanta conceded 22 shots on Matchday 1.",
-          "away": "Lega Serie A lists Domenico Tedesco as Bologna coach and reported no suspensions for this fixture."
-        }
-      ],
-      "market_read": "缺少本次查询的完整欧赔或亚盘，不生成盘口建议。",
-      "mismatch": {
-        "matched": false,
-        "reason": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "pick": "不进入错盘栏",
-        "status": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "双方现有排名、场均积分和净胜球样本接近，基本面方向中性。",
-        "fundamental_en": "The available table, points-per-game and goal-difference sample is neutral.",
-        "mismatch": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "mismatch_en": "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid."
-      },
-      "prediction": {
-        "market": "无推荐",
-        "pick": "跳过",
-        "confidence": 0,
-        "detail": "本次基本面、欧赔或亚盘不完整，不能生成可复盘的具体建议。",
-        "market_en": "No bet",
-        "pick_en": "Skip",
-        "detail_en": "Current fundamentals, European odds or Asian handicap data is incomplete.",
-        "basis": "insufficient_current_data",
-        "market_type": "none",
-        "selection_keys": []
-      },
-      "checker": "本次数据不足，不进入高信心 checker。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "本次未取得竞彩数据，未运行完整三盘比较。"
-      ],
-      "sources": [
-        "football-data.org",
-        "Codex fallback: Lega Serie A - Atalanta v Bologna preview",
-        "Codex fallback: Lega Serie A - Atalanta",
-        "Codex fallback: Lega Serie A - Bologna"
-      ],
-      "football_data_snapshot": {
-        "match_id": 558628,
-        "competition_code": "SA",
-        "utc_date": "2026-08-31T18:45:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "played_games": 3,
-          "points": 4,
-          "goal_difference": 0,
-          "form": [
-            "W",
-            "D",
-            "L"
-          ]
-        },
-        "away": {
-          "played_games": 3,
-          "points": 4,
-          "goal_difference": 0,
-          "form": [
-            "L",
-            "D",
-            "W"
-          ]
-        }
-      },
-      "market_read_en": "Current European or Asian prices are incomplete, so no market recommendation is generated.",
-      "report_zh": "Atalanta BC vs Bologna FC 1909，开球：2026-09-01 02:45。欧赔未取得、亚盘未取得、竞彩未取得。伤停与官方首发未取得。缺少本次查询的完整欧赔或亚盘，不生成盘口建议。 预测：无推荐 跳过（信心 0%）。",
-      "report_en": "Atalanta BC vs Bologna FC 1909, kickoff 2026-09-01 02:45. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. Current European or Asian prices are incomplete, so no market recommendation is generated. Prediction: No bet Skip (confidence 0%).",
-      "fallback_research": {
-        "fundamentals": {
-          "queried_at": "2026-09-01T00:47:00+08:00",
-          "sources": [
-            {
-              "name": "Lega Serie A - Atalanta v Bologna preview",
-              "url": "https://en.legaseriea.it/serie-a/news/atalanta-vs-bologna-brings-matchday-2-to-a-close",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "Lega Serie A - Atalanta",
-              "url": "https://en.legaseriea.it/team/atalanta/index",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            },
-            {
-              "name": "Lega Serie A - Bologna",
-              "url": "https://en.legaseriea.it/team/bologna",
-              "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "id": "2026-09-01-aston-villa-fc-arsenal-fc",
-      "kickoff_time": "2026-09-01 03:00",
-      "competition": "英超 第 2 轮",
-      "home_team": "Aston Villa FC",
-      "away_team": "Arsenal FC",
-      "round": "第 2 轮",
-      "venue": "待补",
-      "weather": "多云，17°C，降水 16%，风速 17 km/h",
-      "status": "watch",
-      "signal_label": "盘口观察",
-      "european_odds": {
-        "home": 6.26,
-        "draw": 4.46,
-        "away": 1.54
-      },
-      "asian_handicap": {
-        "provider": "Pinnacle",
-        "handicap": 1.0,
-        "home_odds": 2.03,
-        "away_odds": 1.9
-      },
-      "chinese_lottery": null,
-      "fundamentals": [
-        {
-          "home": "Aston Villa FC：排名第 17，1 场 0胜0平1负，进0失4，净胜-4，0分；近5场待补",
-          "away": "Arsenal FC：排名第 9，1 场 1胜0平0负，进3失0，净胜+3，3分；近5场待补"
-        }
-      ],
-      "market_read": "欧赔去水后主/平/客约为 15%/22%/63%，最高方向为Arsenal FC；Pinnacle主队视角 +1。本次竞彩未取得，只做欧亚盘分析。",
-      "mismatch": {
-        "matched": false,
-        "reason": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "pick": "不进入错盘栏",
-        "status": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向Arsenal FC；但当前赛季样本不足3场，方向信心有限。",
-        "fundamental_en": "Table position, points per game and goal difference favor Arsenal FC; however, fewer than three current-season results makes this a low-confidence direction.",
-        "mismatch": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "mismatch_en": "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid."
-      },
-      "prediction": {
-        "market": "亚盘 Pinnacle",
-        "pick": "Arsenal FC -1",
+        "pick": "Real Sociedad de Fútbol -0.5",
         "confidence": 56,
-        "detail": "查询时Pinnacle去水后该方向覆盖概率约 52%，欧赔胜向约 63%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
+        "detail": "查询时Pinnacle去水后该方向覆盖概率约 52%，欧赔胜向约 52%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
         "market_en": "Asian handicap Pinnacle",
-        "pick_en": "Arsenal FC -1",
-        "detail_en": "The de-vigged Asian market gives this side about 52% cover probability and the 1X2 win probability is about 63%. This is a current-market direction, not proof of positive expected value.",
+        "pick_en": "Real Sociedad de Fútbol -0.5",
+        "detail_en": "The de-vigged Asian market gives this side about 52% cover probability and the 1X2 win probability is about 52%. This is a current-market direction, not proof of positive expected value.",
         "basis": "fresh_european_asian_snapshot",
         "market_type": "asian_handicap",
-        "home_handicap": 1.0,
+        "home_handicap": -0.5,
         "selection_keys": [
-          "away"
+          "home"
         ],
         "base_confidence": 56,
         "calibration": {
           "strategy": "market:asian_handicap",
           "status": "collecting",
-          "sample_size": 10,
+          "sample_size": 12,
           "minimum_sample": 20,
           "adjustment": 0,
-          "trained_through_batch": "2026-08-29"
+          "trained_through_batch": "2026-08-31"
         }
       },
-      "checker": "检验建议：亚盘 Pinnacle Arsenal FC -1（信心 56%）。赛后按这一条具体盘口结算，不改换市场。",
+      "checker": "检验建议：亚盘 Pinnacle Real Sociedad de Fútbol -0.5（信心 56%）。赛后按这一条具体盘口结算，不改换市场。",
       "risks": [
         "赔率会临场变化，本报告只使用本次查询快照。",
         "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "本次未取得竞彩数据，未运行完整三盘比较。",
         "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
       ],
       "sources": [
         "football-data.org",
-        "Open-Meteo",
-        "The Odds API"
+        "The Odds API",
+        "Polymarket",
+        "Codex fallback: LaLiga Real Sociedad results",
+        "Codex fallback: LaLiga RC Celta results",
+        "Codex fallback: LaLiga Real Sociedad club page",
+        "Codex fallback: Real Sociedad official Celta match report",
+        "Codex fallback: China Sports Lottery official calculator"
       ],
       "football_data_snapshot": {
-        "match_id": 560557,
-        "competition_code": "PL",
-        "utc_date": "2026-08-31T19:00:00Z",
-        "status": "TIMED",
-        "source": "football-data.org"
-      },
-      "fundamental_context": {
-        "home": {
-          "team_id": 58,
-          "position": 17,
-          "played_games": 1,
-          "won": 0,
-          "draw": 0,
-          "lost": 1,
-          "goals_for": 0,
-          "goals_against": 4,
-          "goal_difference": -4,
-          "points": 0,
-          "form": []
-        },
-        "away": {
-          "team_id": 57,
-          "position": 9,
-          "played_games": 1,
-          "won": 1,
-          "draw": 0,
-          "lost": 0,
-          "goals_for": 3,
-          "goals_against": 0,
-          "goal_difference": 3,
-          "points": 3,
-          "form": []
-        }
-      },
-      "weather_en": "Cloudy, 17°C, precipitation 16%, wind 17 km/h",
-      "weather_snapshot": {
-        "location": "Birmingham",
-        "latitude": 52.48142,
-        "longitude": -1.89983,
-        "forecast_time": "2026-08-31T19:00",
-        "temperature_c": 16.7,
-        "precipitation_probability": 16.0,
-        "weather_code": 3,
-        "wind_speed_kmh": 16.6,
-        "wind_gusts_kmh": 34.2,
-        "source": "Open-Meteo"
-      },
-      "odds_api_snapshot": {
-        "event_id": "2c49e9d1ef855f62962b915e773f906d",
-        "sport_key": "soccer_epl",
-        "bookmaker": "Pinnacle",
-        "bookmaker_key": "pinnacle",
-        "updated_at": "2026-08-31T16:31:48Z",
-        "source": "The Odds API"
-      },
-      "market_read_en": "De-vigged 1X2 is about 15%/22%/63%; the highest outcome is Arsenal FC. Pinnacle lists the home line at +1. Current Sporttery data is unavailable, so this is a European/Asian read only.",
-      "report_zh": "Aston Villa FC vs Arsenal FC，开球：2026-09-01 03:00。欧赔已取得、亚盘已取得、竞彩未取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 15%/22%/63%，最高方向为Arsenal FC；Pinnacle主队视角 +1。本次竞彩未取得，只做欧亚盘分析。 预测：亚盘 Pinnacle Arsenal FC -1（信心 56%）。",
-      "report_en": "Aston Villa FC vs Arsenal FC, kickoff 2026-09-01 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 15%/22%/63%; the highest outcome is Arsenal FC. Pinnacle lists the home line at +1. Current Sporttery data is unavailable, so this is a European/Asian read only. Prediction: Asian handicap Pinnacle Arsenal FC -1 (confidence 56%)."
-    },
-    {
-      "id": "2026-09-01-fc-barcelona-rayo-vallecano-de-madrid",
-      "kickoff_time": "2026-09-01 03:30",
-      "competition": "西甲 第 3 轮",
-      "home_team": "FC Barcelona",
-      "away_team": "Rayo Vallecano de Madrid",
-      "round": "第 3 轮",
-      "venue": "待补",
-      "weather": "多云，26°C，降水 0%，风速 8 km/h",
-      "status": "pending",
-      "signal_label": "数据不足",
-      "european_odds": null,
-      "asian_handicap": null,
-      "chinese_lottery": null,
-      "fundamentals": [
-        {
-          "label": "Verified official-match sample",
-          "home": "Barcelona: Barcelona 2-0 Athletic Club, Elche 0-5 Barcelona, Barcelona 1-0 Rayo; 3-match sample: 9 points, GD +8, W-W-W.",
-          "away": "Rayo: Rayo 1-1 Alaves, Sevilla 2-1 Rayo, Rayo 2-0 Villarreal; 3-match sample: 4 points, GD 0, D-L-W."
-        },
-        {
-          "label": "Verified context",
-          "home": "LaLiga identifies Spotify Camp Nou as Barcelona's stadium and lists Barcelona v Rayo on 31 August.",
-          "away": "LaLiga identifies Estadio de Vallecas as Rayo's stadium; the 2025/26 Barcelona-Rayo meeting used 4-2-3-1 for both teams."
-        }
-      ],
-      "market_read": "缺少本次查询的完整欧赔或亚盘，不生成盘口建议。",
-      "mismatch": {
-        "matched": false,
-        "reason": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "pick": "不进入错盘栏",
-        "status": "unavailable"
-      },
-      "recommendation": {
-        "fundamental": "排名、场均积分和净胜球样本偏向FC Barcelona。",
-        "fundamental_en": "Table position, points per game and goal difference favor FC Barcelona.",
-        "mismatch": "不符合错盘检查条件：本次查询缺少亚盘或竞彩让球。",
-        "mismatch_en": "Mismatch check unavailable because current Asian or Sporttery handicap data is missing or invalid."
-      },
-      "prediction": {
-        "market": "无推荐",
-        "pick": "跳过",
-        "confidence": 0,
-        "detail": "本次基本面、欧赔或亚盘不完整，不能生成可复盘的具体建议。",
-        "market_en": "No bet",
-        "pick_en": "Skip",
-        "detail_en": "Current fundamentals, European odds or Asian handicap data is incomplete.",
-        "basis": "insufficient_current_data",
-        "market_type": "none",
-        "selection_keys": []
-      },
-      "checker": "本次数据不足，不进入高信心 checker。",
-      "risks": [
-        "赔率会临场变化，本报告只使用本次查询快照。",
-        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
-        "本次未取得竞彩数据，未运行完整三盘比较。"
-      ],
-      "sources": [
-        "football-data.org",
-        "Open-Meteo",
-        "Codex fallback: LaLiga - Barcelona results",
-        "Codex fallback: LaLiga - Rayo results",
-        "Codex fallback: LaLiga - Barcelona v Rayo"
-      ],
-      "football_data_snapshot": {
-        "match_id": 564650,
+        "match_id": 564682,
         "competition_code": "PD",
-        "utc_date": "2026-08-31T19:30:00Z",
+        "utc_date": "2026-09-03T19:00:00Z",
         "status": "TIMED",
         "source": "football-data.org"
       },
       "fundamental_context": {
         "home": {
           "played_games": 3,
-          "points": 9,
-          "goal_difference": 8,
+          "points": 3,
+          "goal_difference": -3,
           "form": [
-            "W",
-            "W",
-            "W"
-          ]
-        },
-        "away": {
-          "played_games": 3,
-          "points": 4,
-          "goal_difference": 0,
-          "form": [
-            "D",
+            "L",
             "L",
             "W"
           ]
+        },
+        "away": {
+          "played_games": 3,
+          "points": 1,
+          "goal_difference": -3,
+          "form": [
+            "D",
+            "L",
+            "L"
+          ]
         }
       },
-      "weather_en": "Cloudy, 26°C, precipitation 0%, wind 8 km/h",
-      "weather_snapshot": {
-        "location": "Barcelona",
-        "latitude": 41.38879,
-        "longitude": 2.15899,
-        "forecast_time": "2026-08-31T19:00",
-        "temperature_c": 25.7,
-        "precipitation_probability": 0.0,
-        "weather_code": 2,
-        "wind_speed_kmh": 7.9,
-        "wind_gusts_kmh": 27.0,
-        "source": "Open-Meteo"
+      "odds_api_snapshot": {
+        "event_id": "5a4aaa142d12a350f302f2fb62fef0b3",
+        "sport_key": "soccer_spain_la_liga",
+        "bookmaker": "Pinnacle",
+        "bookmaker_key": "pinnacle",
+        "updated_at": "2026-09-03T12:38:15Z",
+        "source": "The Odds API"
       },
-      "market_read_en": "Current European or Asian prices are incomplete, so no market recommendation is generated.",
-      "report_zh": "FC Barcelona vs Rayo Vallecano de Madrid，开球：2026-09-01 03:30。欧赔未取得、亚盘未取得、竞彩未取得。伤停与官方首发未取得。缺少本次查询的完整欧赔或亚盘，不生成盘口建议。 预测：无推荐 跳过（信心 0%）。",
-      "report_en": "FC Barcelona vs Rayo Vallecano de Madrid, kickoff 2026-09-01 03:30. Query-time snapshot: European 1X2 未取得, Asian handicap 未取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. Current European or Asian prices are incomplete, so no market recommendation is generated. Prediction: No bet Skip (confidence 0%).",
+      "polymarket": {
+        "home": 0.34913793103448276,
+        "draw": 0.32327586206896547,
+        "away": 0.3275862068965517,
+        "favorite_side": "home",
+        "favorite_spread": {
+          "team": "Real Sociedad de Fútbol",
+          "line": -1.5,
+          "probability": 0.275,
+          "volume": 3777.0576709999996
+        },
+        "volume": 330221.707573,
+        "liquidity": 3657213.93932,
+        "signal_eligible": true,
+        "spread_signal_eligible": false,
+        "event_id": "884167",
+        "updated_at": "2026-09-03T12:38:35.439436Z",
+        "url": "https://polymarket.com/event/lal-rso-cel-2026-09-03",
+        "source": "Polymarket"
+      },
+      "market_read_en": "De-vigged 1X2 is about 52%/26%/22%; the highest outcome is Real Sociedad de Fútbol. Pinnacle lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 35%/32%/33%; Real Sociedad de Fútbol -1.5 is about 28%; eligible for cross-market validation.",
+      "report_zh": "Real Sociedad de Fútbol vs RC Celta de Vigo，开球：2026-09-04 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 52%/26%/22%，最高方向为Real Sociedad de Fútbol；Pinnacle主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 35%/32%/33%；Real Sociedad de Fútbol -1.5支持率约 28%，可参与市场交叉验证。 预测：亚盘 Pinnacle Real Sociedad de Fútbol -0.5（信心 56%）。",
+      "report_en": "Real Sociedad de Fútbol vs RC Celta de Vigo, kickoff 2026-09-04 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 52%/26%/22%; the highest outcome is Real Sociedad de Fútbol. Pinnacle lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 35%/32%/33%; Real Sociedad de Fútbol -1.5 is about 28%; eligible for cross-market validation. Prediction: Asian handicap Pinnacle Real Sociedad de Fútbol -0.5 (confidence 56%).",
       "fallback_research": {
         "fundamentals": {
-          "queried_at": "2026-09-01T00:47:00+08:00",
+          "queried_at": "2026-09-03T21:11:04+08:00",
           "sources": [
             {
-              "name": "LaLiga - Barcelona results",
-              "url": "https://www.laliga.com/en-US/clubs/fc-barcelona/results",
+              "name": "LaLiga Real Sociedad results",
+              "url": "https://www.laliga.com/en-GB/clubs/real-sociedad/results",
               "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
+              "queried_at": "2026-09-03T21:11:04+08:00"
             },
             {
-              "name": "LaLiga - Rayo results",
-              "url": "https://www.laliga.com/es-US/clubes/rayo-vallecano/resultados",
+              "name": "LaLiga RC Celta results",
+              "url": "https://www.laliga.com/en-GB/clubs/rc-celta/results",
               "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
+              "queried_at": "2026-09-03T21:11:04+08:00"
             },
             {
-              "name": "LaLiga - Barcelona v Rayo",
-              "url": "https://www.laliga.com/en-GB/match/temporada-2025-2026-laliga-ea-sports-fc-barcelona-rayo-vallecano-29",
+              "name": "LaLiga Real Sociedad club page",
+              "url": "https://www.laliga.com/en-GB/clubs/real-sociedad",
               "tier": "primary",
-              "queried_at": "2026-09-01T00:47:00+08:00"
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            },
+            {
+              "name": "Real Sociedad official Celta match report",
+              "url": "https://www.realsociedad.eus/es/noticias/detalle/se-esfuma",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            }
+          ]
+        },
+        "sporttery": {
+          "queried_at": "2026-09-03T21:11:04+08:00",
+          "sources": [
+            {
+              "name": "China Sports Lottery official calculator",
+              "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c_web&poolCode=had,hhad,crs,ttg,hafu",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
             }
           ]
         }
@@ -3676,6 +3182,211 @@
   ],
   "checker_history": [
     {
+      "id": "2026-09-04-real-sociedad-de-f-tbol-rc-celta-de-vigo",
+      "kickoff_time": "2026-09-04 03:00",
+      "competition": "西甲 第 6 轮",
+      "home_team": "Real Sociedad de Fútbol",
+      "away_team": "RC Celta de Vigo",
+      "round": "第 6 轮",
+      "venue": "Reale Arena",
+      "weather": "待补",
+      "status": "watch",
+      "signal_label": "盘口观察",
+      "european_odds": {
+        "home": 1.87,
+        "draw": 3.78,
+        "away": 4.34
+      },
+      "asian_handicap": {
+        "provider": "Pinnacle",
+        "handicap": -0.5,
+        "home_odds": 1.88,
+        "away_odds": 2.05
+      },
+      "chinese_lottery": {
+        "standard": {
+          "home": 1.65,
+          "draw": 3.58,
+          "away": 4.1
+        },
+        "handicap": -1,
+        "handicap_odds": {
+          "home": 3.2,
+          "draw": 3.35,
+          "away": 1.93
+        },
+        "source": "Codex fallback"
+      },
+      "fundamentals": [
+        {
+          "label": "Verified official-match sample",
+          "home": "Real Sociedad: Real Betis 1-0 Real Sociedad, Real Madrid 4-1 Real Sociedad, Real Sociedad 2-1 RCD Espanyol; 3-match sample: 3 points, GD -3, L-L-W.",
+          "away": "RC Celta: Valencia CF 0-0 Celta, Celta 1-2 CA Osasuna, Celta 0-2 Athletic Club; 3-match sample: 1 point, GD -3, D-L-L."
+        },
+        {
+          "label": "Verified context",
+          "home": "LaLiga official club pages list Real Sociedad at Reale Arena/Anoeta; official results show a 4-2-3-1 shape in the two opening losses before a 4-4-2 home win over Espanyol.",
+          "away": "LaLiga official results show Celta used a 3-4-3 in all three league matches and scored once across the sample; Real Sociedad's official 13 May 2025 report recorded the latest home league H2H as a 0-1 loss to RC Celta."
+        }
+      ],
+      "market_read": "欧赔去水后主/平/客约为 52%/26%/22%，最高方向为Real Sociedad de Fútbol；Pinnacle主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 35%/32%/33%；Real Sociedad de Fútbol -1.5支持率约 28%，可参与市场交叉验证。",
+      "mismatch": {
+        "matched": false,
+        "reason": "不符合反热门错盘条件：现有基本面与盘口热门方方向一致。",
+        "pick": "不进入错盘栏",
+        "status": "unavailable"
+      },
+      "recommendation": {
+        "fundamental": "排名、场均积分和净胜球样本偏向Real Sociedad de Fútbol。",
+        "fundamental_en": "Table position, points per game and goal difference favor Real Sociedad de Fútbol.",
+        "mismatch": "不符合反热门错盘条件：现有基本面与盘口热门方方向一致。",
+        "mismatch_en": "The deeper Sporttery line is only an observation because fundamentals do not favor the underdog."
+      },
+      "prediction": {
+        "market": "亚盘 Pinnacle",
+        "pick": "Real Sociedad de Fútbol -0.5",
+        "confidence": 56,
+        "detail": "查询时Pinnacle去水后该方向覆盖概率约 52%，欧赔胜向约 52%；这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。",
+        "market_en": "Asian handicap Pinnacle",
+        "pick_en": "Real Sociedad de Fútbol -0.5",
+        "detail_en": "The de-vigged Asian market gives this side about 52% cover probability and the 1X2 win probability is about 52%. This is a current-market direction, not proof of positive expected value.",
+        "basis": "fresh_european_asian_snapshot",
+        "market_type": "asian_handicap",
+        "home_handicap": -0.5,
+        "selection_keys": [
+          "home"
+        ],
+        "base_confidence": 56,
+        "calibration": {
+          "strategy": "market:asian_handicap",
+          "status": "collecting",
+          "sample_size": 12,
+          "minimum_sample": 20,
+          "adjustment": 0,
+          "trained_through_batch": "2026-08-31"
+        }
+      },
+      "checker": "检验建议：亚盘 Pinnacle Real Sociedad de Fútbol -0.5（信心 56%）。赛后按这一条具体盘口结算，不改换市场。",
+      "risks": [
+        "赔率会临场变化，本报告只使用本次查询快照。",
+        "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
+        "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。"
+      ],
+      "sources": [
+        "football-data.org",
+        "The Odds API",
+        "Polymarket",
+        "Codex fallback: LaLiga Real Sociedad results",
+        "Codex fallback: LaLiga RC Celta results",
+        "Codex fallback: LaLiga Real Sociedad club page",
+        "Codex fallback: Real Sociedad official Celta match report",
+        "Codex fallback: China Sports Lottery official calculator"
+      ],
+      "football_data_snapshot": {
+        "match_id": 564682,
+        "competition_code": "PD",
+        "utc_date": "2026-09-03T19:00:00Z",
+        "status": "TIMED",
+        "source": "football-data.org"
+      },
+      "fundamental_context": {
+        "home": {
+          "played_games": 3,
+          "points": 3,
+          "goal_difference": -3,
+          "form": [
+            "L",
+            "L",
+            "W"
+          ]
+        },
+        "away": {
+          "played_games": 3,
+          "points": 1,
+          "goal_difference": -3,
+          "form": [
+            "D",
+            "L",
+            "L"
+          ]
+        }
+      },
+      "odds_api_snapshot": {
+        "event_id": "5a4aaa142d12a350f302f2fb62fef0b3",
+        "sport_key": "soccer_spain_la_liga",
+        "bookmaker": "Pinnacle",
+        "bookmaker_key": "pinnacle",
+        "updated_at": "2026-09-03T12:38:15Z",
+        "source": "The Odds API"
+      },
+      "polymarket": {
+        "home": 0.34913793103448276,
+        "draw": 0.32327586206896547,
+        "away": 0.3275862068965517,
+        "favorite_side": "home",
+        "favorite_spread": {
+          "team": "Real Sociedad de Fútbol",
+          "line": -1.5,
+          "probability": 0.275,
+          "volume": 3777.0576709999996
+        },
+        "volume": 330221.707573,
+        "liquidity": 3657213.93932,
+        "signal_eligible": true,
+        "spread_signal_eligible": false,
+        "event_id": "884167",
+        "updated_at": "2026-09-03T12:38:35.439436Z",
+        "url": "https://polymarket.com/event/lal-rso-cel-2026-09-03",
+        "source": "Polymarket"
+      },
+      "market_read_en": "De-vigged 1X2 is about 52%/26%/22%; the highest outcome is Real Sociedad de Fútbol. Pinnacle lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 35%/32%/33%; Real Sociedad de Fútbol -1.5 is about 28%; eligible for cross-market validation.",
+      "report_zh": "Real Sociedad de Fútbol vs RC Celta de Vigo，开球：2026-09-04 03:00。欧赔已取得、亚盘已取得、竞彩已取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 52%/26%/22%，最高方向为Real Sociedad de Fútbol；Pinnacle主队视角 -0.5。本次竞彩已取得，可继续做三盘比较。 Polymarket实时主/平/客约为 35%/32%/33%；Real Sociedad de Fútbol -1.5支持率约 28%，可参与市场交叉验证。 预测：亚盘 Pinnacle Real Sociedad de Fútbol -0.5（信心 56%）。",
+      "report_en": "Real Sociedad de Fútbol vs RC Celta de Vigo, kickoff 2026-09-04 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 已取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 52%/26%/22%; the highest outcome is Real Sociedad de Fútbol. Pinnacle lists the home line at -0.5. Current Sporttery data is available for the three-market check. Polymarket live home/draw/away is about 35%/32%/33%; Real Sociedad de Fútbol -1.5 is about 28%; eligible for cross-market validation. Prediction: Asian handicap Pinnacle Real Sociedad de Fútbol -0.5 (confidence 56%).",
+      "fallback_research": {
+        "fundamentals": {
+          "queried_at": "2026-09-03T21:11:04+08:00",
+          "sources": [
+            {
+              "name": "LaLiga Real Sociedad results",
+              "url": "https://www.laliga.com/en-GB/clubs/real-sociedad/results",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            },
+            {
+              "name": "LaLiga RC Celta results",
+              "url": "https://www.laliga.com/en-GB/clubs/rc-celta/results",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            },
+            {
+              "name": "LaLiga Real Sociedad club page",
+              "url": "https://www.laliga.com/en-GB/clubs/real-sociedad",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            },
+            {
+              "name": "Real Sociedad official Celta match report",
+              "url": "https://www.realsociedad.eus/es/noticias/detalle/se-esfuma",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            }
+          ]
+        },
+        "sporttery": {
+          "queried_at": "2026-09-03T21:11:04+08:00",
+          "sources": [
+            {
+              "name": "China Sports Lottery official calculator",
+              "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c_web&poolCode=had,hhad,crs,ttg,hafu",
+              "tier": "primary",
+              "queried_at": "2026-09-03T21:11:04+08:00"
+            }
+          ]
+        }
+      },
+      "batch_date": "2026-09-03"
+    },
+    {
       "id": "2026-09-01-aston-villa-fc-arsenal-fc",
       "kickoff_time": "2026-09-01 03:00",
       "competition": "英超 第 2 轮",
@@ -3812,7 +3523,23 @@
       "market_read_en": "De-vigged 1X2 is about 15%/22%/63%; the highest outcome is Arsenal FC. Pinnacle lists the home line at +1. Current Sporttery data is unavailable, so this is a European/Asian read only.",
       "report_zh": "Aston Villa FC vs Arsenal FC，开球：2026-09-01 03:00。欧赔已取得、亚盘已取得、竞彩未取得。伤停与官方首发未取得。欧赔去水后主/平/客约为 15%/22%/63%，最高方向为Arsenal FC；Pinnacle主队视角 +1。本次竞彩未取得，只做欧亚盘分析。 预测：亚盘 Pinnacle Arsenal FC -1（信心 56%）。",
       "report_en": "Aston Villa FC vs Arsenal FC, kickoff 2026-09-01 03:00. Query-time snapshot: European 1X2 已取得, Asian handicap 已取得, Sporttery 未取得. Injuries and confirmed lineups unavailable. De-vigged 1X2 is about 15%/22%/63%; the highest outcome is Arsenal FC. Pinnacle lists the home line at +1. Current Sporttery data is unavailable, so this is a European/Asian read only. Prediction: Asian handicap Pinnacle Arsenal FC -1 (confidence 56%).",
-      "batch_date": "2026-08-31"
+      "batch_date": "2026-08-31",
+      "review": {
+        "final_score": "0-1",
+        "reviewed": true,
+        "hit": null,
+        "void": true,
+        "outcome": "push",
+        "settlement": 0.0,
+        "review_note": "Arsenal FC -1结算为亚盘走盘，不计入命中率。",
+        "reviewed_at": "2026-09-03T10:28:53+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 560557,
+        "status": "FINISHED",
+        "source": "football-data.org"
+      }
     },
     {
       "id": "2026-09-01-ca-osasuna-getafe-cf",
@@ -3965,7 +3692,23 @@
           ]
         }
       },
-      "batch_date": "2026-08-31"
+      "batch_date": "2026-08-31",
+      "review": {
+        "final_score": "1-0",
+        "reviewed": true,
+        "hit": true,
+        "void": false,
+        "outcome": "win",
+        "settlement": 1.0,
+        "review_note": "CA Osasuna -0.25结算为亚盘全赢。",
+        "reviewed_at": "2026-09-03T10:28:53+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 564657,
+        "status": "FINISHED",
+        "source": "football-data.org"
+      }
     },
     {
       "id": "2026-09-01-us-lecce-as-roma",
@@ -4118,7 +3861,23 @@
           ]
         }
       },
-      "batch_date": "2026-08-31"
+      "batch_date": "2026-08-31",
+      "review": {
+        "final_score": "0-4",
+        "reviewed": true,
+        "hit": false,
+        "void": false,
+        "outcome": "loss",
+        "settlement": -1.0,
+        "review_note": "US Lecce +1.25结算为亚盘全输。",
+        "reviewed_at": "2026-09-03T10:28:53+08:00",
+        "source": "football-data.org"
+      },
+      "result_snapshot": {
+        "match_id": 558621,
+        "status": "FINISHED",
+        "source": "football-data.org"
+      }
     },
     {
       "id": "2026-08-30-real-madrid-cf-m-laga-cf",
@@ -11026,207 +10785,435 @@
     }
   ],
   "next_matchday": {
-    "generated_at": "2026-08-23",
-    "scope_note": "按实际开球时间显示当前时间之后最近的未赛赛程；如果较高轮次早于延期的低轮次比赛开踢，先显示较高轮次。只显示联赛、对阵和日期；到比赛日再生成详细报告。",
+    "generated_at": "2026-09-03T20:38:41+08:00",
+    "scope_note": "按实际开球时间显示每项赛事最近的未赛轮次；欧冠只包括主阶段。",
     "sources": [
-      "Premier League / 当前英超样例批次",
-      "LALIGA official calendar 2026-2027",
-      "Lega Serie A / Sky Sport Italia fixtures",
-      "Bundesliga official Matchday 1",
-      "L'Equipe Ligue 1 calendar",
-      "UEFA Champions League 2026/27 dates"
+      "football-data.org upcoming fixtures"
     ],
     "competitions": [
       {
+        "name": "英超",
+        "matchday": "2026/27 第 3 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-05 03:00",
+            "home_team": "Ipswich Town FC",
+            "away_team": "Liverpool FC"
+          },
+          {
+            "kickoff_time": "09-05 19:30",
+            "home_team": "Newcastle United FC",
+            "away_team": "AFC Bournemouth"
+          },
+          {
+            "kickoff_time": "09-05 22:00",
+            "home_team": "Nottingham Forest FC",
+            "away_team": "Tottenham Hotspur FC"
+          },
+          {
+            "kickoff_time": "09-05 22:00",
+            "home_team": "Manchester City FC",
+            "away_team": "Coventry City FC"
+          },
+          {
+            "kickoff_time": "09-05 22:00",
+            "home_team": "Brighton & Hove Albion FC",
+            "away_team": "Leeds United FC"
+          },
+          {
+            "kickoff_time": "09-05 22:00",
+            "home_team": "Brentford FC",
+            "away_team": "Sunderland AFC"
+          },
+          {
+            "kickoff_time": "09-05 22:00",
+            "home_team": "Fulham FC",
+            "away_team": "Crystal Palace FC"
+          },
+          {
+            "kickoff_time": "09-06 00:30",
+            "home_team": "Hull City AFC",
+            "away_team": "Aston Villa FC"
+          },
+          {
+            "kickoff_time": "09-06 21:00",
+            "home_team": "Everton FC",
+            "away_team": "Manchester United FC"
+          },
+          {
+            "kickoff_time": "09-06 23:30",
+            "home_team": "Arsenal FC",
+            "away_team": "Chelsea FC"
+          }
+        ]
+      },
+      {
+        "name": "西甲",
+        "matchday": "2026/27 第 4 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-05 03:00",
+            "home_team": "Real Betis Balompié",
+            "away_team": "Real Madrid CF"
+          },
+          {
+            "kickoff_time": "09-05 22:15",
+            "home_team": "Athletic Club",
+            "away_team": "Club Atlético de Madrid"
+          },
+          {
+            "kickoff_time": "09-06 00:30",
+            "home_team": "Rayo Vallecano de Madrid",
+            "away_team": "Real Racing Club de Santander"
+          },
+          {
+            "kickoff_time": "09-06 03:00",
+            "home_team": "Villarreal CF",
+            "away_team": "RC Deportivo La Coruña"
+          },
+          {
+            "kickoff_time": "09-06 22:15",
+            "home_team": "Valencia CF",
+            "away_team": "FC Barcelona"
+          },
+          {
+            "kickoff_time": "09-07 00:30",
+            "home_team": "Deportivo Alavés",
+            "away_team": "CA Osasuna"
+          },
+          {
+            "kickoff_time": "09-07 00:30",
+            "home_team": "Málaga CF",
+            "away_team": "Levante UD"
+          },
+          {
+            "kickoff_time": "09-07 03:00",
+            "home_team": "RCD Espanyol de Barcelona",
+            "away_team": "Sevilla FC"
+          },
+          {
+            "kickoff_time": "09-08 01:00",
+            "home_team": "Getafe CF",
+            "away_team": "RC Celta de Vigo"
+          },
+          {
+            "kickoff_time": "09-08 03:30",
+            "home_team": "Elche CF",
+            "away_team": "Real Sociedad de Fútbol"
+          }
+        ]
+      },
+      {
+        "name": "意甲",
+        "matchday": "2026/27 第 3 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-05 02:45",
+            "home_team": "Genoa CFC",
+            "away_team": "Como 1907"
+          },
+          {
+            "kickoff_time": "09-05 21:00",
+            "home_team": "ACF Fiorentina",
+            "away_team": "Torino FC"
+          },
+          {
+            "kickoff_time": "09-06 00:00",
+            "home_team": "FC Internazionale Milano",
+            "away_team": "SSC Napoli"
+          },
+          {
+            "kickoff_time": "09-06 02:45",
+            "home_team": "AS Roma",
+            "away_team": "Atalanta BC"
+          },
+          {
+            "kickoff_time": "09-06 21:00",
+            "home_team": "Parma Calcio 1913",
+            "away_team": "AC Monza"
+          },
+          {
+            "kickoff_time": "09-06 21:00",
+            "home_team": "Frosinone Calcio",
+            "away_team": "Venezia FC"
+          },
+          {
+            "kickoff_time": "09-07 00:00",
+            "home_team": "Bologna FC 1909",
+            "away_team": "US Sassuolo Calcio"
+          },
+          {
+            "kickoff_time": "09-07 02:45",
+            "home_team": "Juventus FC",
+            "away_team": "AC Milan"
+          },
+          {
+            "kickoff_time": "09-08 00:30",
+            "home_team": "Cagliari Calcio",
+            "away_team": "US Lecce"
+          },
+          {
+            "kickoff_time": "09-08 02:45",
+            "home_team": "Udinese Calcio",
+            "away_team": "SS Lazio"
+          }
+        ]
+      },
+      {
+        "name": "德甲",
+        "matchday": "2026/27 第 2 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-05 02:30",
+            "home_team": "VfB Stuttgart",
+            "away_team": "1. FC Köln"
+          },
+          {
+            "kickoff_time": "09-05 21:30",
+            "home_team": "SV Werder Bremen",
+            "away_team": "RB Leipzig"
+          },
+          {
+            "kickoff_time": "09-05 21:30",
+            "home_team": "TSG 1899 Hoffenheim",
+            "away_team": "Borussia Dortmund"
+          },
+          {
+            "kickoff_time": "09-05 21:30",
+            "home_team": "Bayer 04 Leverkusen",
+            "away_team": "1. FC Union Berlin"
+          },
+          {
+            "kickoff_time": "09-05 21:30",
+            "home_team": "Borussia Mönchengladbach",
+            "away_team": "SV 07 Elversberg"
+          },
+          {
+            "kickoff_time": "09-05 21:30",
+            "home_team": "SC Paderborn 07",
+            "away_team": "SC Freiburg"
+          },
+          {
+            "kickoff_time": "09-06 00:30",
+            "home_team": "FC Schalke 04",
+            "away_team": "FC Bayern München"
+          },
+          {
+            "kickoff_time": "09-06 21:30",
+            "home_team": "Hamburger SV",
+            "away_team": "1. FSV Mainz 05"
+          },
+          {
+            "kickoff_time": "09-06 23:30",
+            "home_team": "Eintracht Frankfurt",
+            "away_team": "FC Augsburg"
+          }
+        ]
+      },
+      {
+        "name": "法甲",
+        "matchday": "2026/27 第 3 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-04 02:45",
+            "home_team": "Toulouse FC",
+            "away_team": "Lille OSC"
+          },
+          {
+            "kickoff_time": "09-05 01:00",
+            "home_team": "Olympique Lyonnais",
+            "away_team": "AJ Auxerre"
+          },
+          {
+            "kickoff_time": "09-05 03:05",
+            "home_team": "Paris Saint-Germain FC",
+            "away_team": "AS Monaco FC"
+          },
+          {
+            "kickoff_time": "09-05 23:15",
+            "home_team": "Racing Club de Lens",
+            "away_team": "FC Lorient"
+          },
+          {
+            "kickoff_time": "09-06 02:45",
+            "home_team": "Le Havre AC",
+            "away_team": "Stade Brestois 29"
+          },
+          {
+            "kickoff_time": "09-06 02:45",
+            "home_team": "OGC Nice",
+            "away_team": "Le Mans FC"
+          },
+          {
+            "kickoff_time": "09-06 21:00",
+            "home_team": "ES Troyes AC",
+            "away_team": "RC Strasbourg Alsace"
+          },
+          {
+            "kickoff_time": "09-06 23:15",
+            "home_team": "Angers SCO",
+            "away_team": "Stade Rennais FC 1901"
+          },
+          {
+            "kickoff_time": "09-07 02:45",
+            "home_team": "Olympique de Marseille",
+            "away_team": "Paris FC"
+          }
+        ]
+      },
+      {
         "name": "欧冠",
-        "status": "欧冠主阶段赛程未从可靠来源取得；不展示资格赛、附加赛或推测对阵。",
-        "fixtures": []
+        "matchday": "2026/27 第 1 轮",
+        "fixtures": [
+          {
+            "kickoff_time": "09-09 00:45",
+            "home_team": "Club Brugge KV",
+            "away_team": "Aston Villa FC"
+          },
+          {
+            "kickoff_time": "09-09 00:45",
+            "home_team": "PAE AEK",
+            "away_team": "LASK Linz"
+          },
+          {
+            "kickoff_time": "09-09 03:00",
+            "home_team": "Real Madrid CF",
+            "away_team": "FC Internazionale Milano"
+          },
+          {
+            "kickoff_time": "09-09 03:00",
+            "home_team": "FC Porto",
+            "away_team": "Manchester City FC"
+          },
+          {
+            "kickoff_time": "09-09 03:00",
+            "home_team": "Borussia Dortmund",
+            "away_team": "Villarreal CF"
+          },
+          {
+            "kickoff_time": "09-09 03:00",
+            "home_team": "Lille OSC",
+            "away_team": "Real Betis Balompié"
+          },
+          {
+            "kickoff_time": "09-10 00:45",
+            "home_team": "FC Barcelona",
+            "away_team": "Feyenoord Rotterdam"
+          },
+          {
+            "kickoff_time": "09-10 00:45",
+            "home_team": "VfB Stuttgart",
+            "away_team": "Viking FK"
+          },
+          {
+            "kickoff_time": "09-10 03:00",
+            "home_team": "Liverpool FC",
+            "away_team": "Club Atlético de Madrid"
+          },
+          {
+            "kickoff_time": "09-10 03:00",
+            "home_team": "Paris Saint-Germain FC",
+            "away_team": "ŠK Slovan Bratislava"
+          },
+          {
+            "kickoff_time": "09-10 03:00",
+            "home_team": "SSC Napoli",
+            "away_team": "Arsenal FC"
+          },
+          {
+            "kickoff_time": "09-10 03:00",
+            "home_team": "Sporting Clube de Portugal",
+            "away_team": "Galatasaray SK"
+          },
+          {
+            "kickoff_time": "09-11 00:45",
+            "home_team": "Fenerbahçe SK",
+            "away_team": "AS Roma"
+          },
+          {
+            "kickoff_time": "09-11 00:45",
+            "home_team": "PSV",
+            "away_team": "FK Shakhtar Donetsk"
+          },
+          {
+            "kickoff_time": "09-11 03:00",
+            "home_team": "FC Bayern München",
+            "away_team": "FK Bodø/Glimt"
+          },
+          {
+            "kickoff_time": "09-11 03:00",
+            "home_team": "Manchester United FC",
+            "away_team": "Sabah FK"
+          },
+          {
+            "kickoff_time": "09-11 03:00",
+            "home_team": "Como 1907",
+            "away_team": "RB Leipzig"
+          },
+          {
+            "kickoff_time": "09-11 03:00",
+            "home_team": "SK Slavia Praha",
+            "away_team": "Racing Club de Lens"
+          }
+        ]
       }
     ],
-    "last_attempt_at": "2026-08-29T13:23:05+08:00",
-    "refresh_status": "unavailable",
-    "refresh_errors": {
-      "英超": "HTTPError",
-      "西甲": "HTTPError",
-      "意甲": "HTTPError",
-      "德甲": "HTTPError",
-      "法甲": "HTTPError",
-      "欧冠": "HTTPError"
-    }
+    "refresh_status": "success"
   },
   "fallback_requests": [
     {
-      "id": "daily:2026-09-01-us-lecce-as-roma",
+      "id": "daily:2026-09-04-real-sociedad-de-f-tbol-rc-celta-de-vigo",
       "scope": "daily",
-      "status": "pending",
-      "match_id": "2026-09-01-us-lecce-as-roma",
+      "status": "resolved",
+      "match_id": "2026-09-04-real-sociedad-de-f-tbol-rc-celta-de-vigo",
       "batch_date": null,
-      "kickoff_time": "2026-09-01 00:30",
-      "competition": "意甲 第 2 轮",
-      "home_team": "US Lecce",
-      "away_team": "AS Roma",
-      "missing_fields": [
-        "sporttery"
-      ],
+      "kickoff_time": "2026-09-04 03:00",
+      "competition": "西甲 第 6 轮",
+      "home_team": "Real Sociedad de Fútbol",
+      "away_team": "RC Celta de Vigo",
+      "missing_fields": [],
       "source_status": {
         "fundamentals": "football-data.org",
         "sporttery": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry"
       },
       "failure_type": "source_failure",
       "search_queries": [
-        "US Lecce vs AS Roma 2026-09-01 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
-        "US Lecce vs AS Roma 2026-09-01 竞彩 让球胜平负 SP"
+        "Real Sociedad de Fútbol vs RC Celta de Vigo 2026-09-04 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
+        "Real Sociedad de Fútbol vs RC Celta de Vigo 2026-09-04 竞彩 让球胜平负 SP"
       ],
       "attempts": 1,
-      "last_attempt_at": "2026-09-01T00:47:00+08:00",
-      "unresolved_reason": "Sporttery official endpoint was blocked by WAF in the API run; no verified replacement SP snapshot was available."
-    },
-    {
-      "id": "daily:2026-09-01-ca-osasuna-getafe-cf",
-      "scope": "daily",
-      "status": "pending",
-      "match_id": "2026-09-01-ca-osasuna-getafe-cf",
-      "batch_date": null,
-      "kickoff_time": "2026-09-01 01:30",
-      "competition": "西甲 第 3 轮",
-      "home_team": "CA Osasuna",
-      "away_team": "Getafe CF",
-      "missing_fields": [
-        "sporttery"
-      ],
-      "source_status": {
-        "fundamentals": "football-data.org",
-        "sporttery": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry"
-      },
-      "failure_type": "source_failure",
-      "search_queries": [
-        "CA Osasuna vs Getafe CF 2026-09-01 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
-        "CA Osasuna vs Getafe CF 2026-09-01 竞彩 让球胜平负 SP"
-      ],
-      "attempts": 1,
-      "last_attempt_at": "2026-09-01T00:47:00+08:00",
-      "unresolved_reason": "Sporttery official endpoint was blocked by WAF in the API run; no verified replacement SP snapshot was available."
-    },
-    {
-      "id": "daily:2026-09-01-atalanta-bc-bologna-fc-1909",
-      "scope": "daily",
-      "status": "pending",
-      "match_id": "2026-09-01-atalanta-bc-bologna-fc-1909",
-      "batch_date": null,
-      "kickoff_time": "2026-09-01 02:45",
-      "competition": "意甲 第 2 轮",
-      "home_team": "Atalanta BC",
-      "away_team": "Bologna FC 1909",
-      "missing_fields": [
-        "european_odds",
-        "asian_handicap",
-        "sporttery"
-      ],
-      "source_status": {
-        "fundamentals": "football-data.org",
-        "european_odds": "The Odds API: 5 events",
-        "asian_handicap": "The Odds API: 5 events",
-        "sporttery": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry"
-      },
-      "failure_type": "source_failure",
-      "search_queries": [
-        "Atalanta BC vs Bologna FC 1909 2026-09-01 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
-        "Atalanta BC vs Bologna FC 1909 2026-09-01 current European 1X2 odds",
-        "Atalanta BC vs Bologna FC 1909 2026-09-01 current Asian handicap odds",
-        "Atalanta BC vs Bologna FC 1909 2026-09-01 竞彩 让球胜平负 SP"
-      ],
-      "attempts": 1,
-      "last_attempt_at": "2026-09-01T00:47:00+08:00",
-      "unresolved_reason": "No verified pre-kickoff European 1X2 or Asian-handicap snapshot was available after the API miss; Sporttery official endpoint was blocked by WAF."
-    },
-    {
-      "id": "daily:2026-09-01-aston-villa-fc-arsenal-fc",
-      "scope": "daily",
-      "status": "pending",
-      "match_id": "2026-09-01-aston-villa-fc-arsenal-fc",
-      "batch_date": null,
-      "kickoff_time": "2026-09-01 03:00",
-      "competition": "英超 第 2 轮",
-      "home_team": "Aston Villa FC",
-      "away_team": "Arsenal FC",
-      "missing_fields": [
-        "fundamentals",
-        "sporttery"
-      ],
-      "source_status": {
-        "fundamentals": "football-data.org",
-        "sporttery": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry"
-      },
-      "failure_type": "source_failure",
-      "search_queries": [
-        "Aston Villa FC vs Arsenal FC 2026-09-01 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
-        "Aston Villa FC vs Arsenal FC 2026-09-01 竞彩 让球胜平负 SP"
-      ],
-      "attempts": 1,
-      "last_attempt_at": "2026-09-01T00:47:00+08:00",
-      "unresolved_reason": "Official Premier League pages verified the fixture and Villa's Matchweek 1 loss, but did not provide a three-match official sample for both teams at query time. Sporttery official endpoint was blocked by WAF; no verified replacement SP snapshot was available."
-    },
-    {
-      "id": "daily:2026-09-01-fc-barcelona-rayo-vallecano-de-madrid",
-      "scope": "daily",
-      "status": "pending",
-      "match_id": "2026-09-01-fc-barcelona-rayo-vallecano-de-madrid",
-      "batch_date": null,
-      "kickoff_time": "2026-09-01 03:30",
-      "competition": "西甲 第 3 轮",
-      "home_team": "FC Barcelona",
-      "away_team": "Rayo Vallecano de Madrid",
-      "missing_fields": [
-        "european_odds",
-        "asian_handicap",
-        "sporttery"
-      ],
-      "source_status": {
-        "fundamentals": "football-data.org",
-        "european_odds": "The Odds API: 5 events",
-        "asian_handicap": "The Odds API: 5 events",
-        "sporttery": "Sporttery unavailable: official endpoint blocked by WAF (HTTP 567); no aggressive retry"
-      },
-      "failure_type": "source_failure",
-      "search_queries": [
-        "FC Barcelona vs Rayo Vallecano de Madrid 2026-09-01 latest team news recent official matches previous season position squad changes tactics injuries head-to-head venue",
-        "FC Barcelona vs Rayo Vallecano de Madrid 2026-09-01 current European 1X2 odds",
-        "FC Barcelona vs Rayo Vallecano de Madrid 2026-09-01 current Asian handicap odds",
-        "FC Barcelona vs Rayo Vallecano de Madrid 2026-09-01 竞彩 让球胜平负 SP"
-      ],
-      "attempts": 1,
-      "last_attempt_at": "2026-09-01T00:47:00+08:00",
-      "unresolved_reason": "No verified pre-kickoff European 1X2 or Asian-handicap snapshot was available after the API miss; Sporttery official endpoint was blocked by WAF."
+      "last_attempt_at": "2026-09-03T21:11:04+08:00",
+      "resolved_at": "2026-09-03T21:11:04+08:00"
     }
   ],
   "last_fallback_import": {
-    "imported_at": "2026-09-01T00:39:01+08:00",
-    "result_count": 5,
-    "field_count": 4,
-    "resolved_count": 0
+    "imported_at": "2026-09-03T21:11:05+08:00",
+    "result_count": 1,
+    "field_count": 2,
+    "resolved_count": 1
   },
   "last_result_review": {
-    "batch_date": "2026-08-29",
-    "reviewed_at": "2026-08-29T13:23:04+08:00",
+    "batch_date": "2026-08-31",
+    "reviewed_at": "2026-09-03T10:28:53+08:00",
     "source": "football-data.org",
-    "fixture_count": 22,
-    "reviewed": 0,
-    "pending": 7,
+    "fixture_count": 5,
+    "reviewed": 3,
+    "pending": 0,
     "unsupported": 0,
     "not_found": 0,
     "status": "success"
   },
   "strategy_performance": {
-    "generated_at": "2026-09-01T00:32:09+08:00",
-    "trained_through_batch": "2026-08-29",
+    "generated_at": "2026-09-03T20:38:41+08:00",
+    "trained_through_batch": "2026-08-31",
     "minimum_sample": 20,
     "max_adjustment": 5,
     "strategies": {
       "market:asian_handicap": {
-        "sample_size": 10,
-        "hits": 8,
-        "hit_rate": 0.8,
-        "average_confidence": 54.6,
+        "sample_size": 12,
+        "hits": 9,
+        "hit_rate": 0.75,
+        "average_confidence": 54.5,
         "adjustment": 0,
         "active": false
       },
