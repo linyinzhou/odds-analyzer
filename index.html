@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Odds Analyzer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Daily Football Odds Dashboard</p>
+          <h1>Odds Analyzer</h1>
+        </div>
+        <div class="top-actions">
+          <a class="manual-trigger" href="https://github.com/linyinzhou/odds-analyzer/actions/workflows/manual-report.yml" target="_blank" rel="noreferrer">
+            <span>Manual</span>
+            <strong>手动触发</strong>
+          </a>
+          <div class="slate">
+            <span id="slateDate">--</span>
+            <strong id="slateWindow">--</strong>
+          </div>
+        </div>
+      </header>
+
+      <section class="run-status" aria-label="最近运行状态">
+        <div>
+          <span>Last run</span>
+          <strong id="runStatusLabel">读取中</strong>
+        </div>
+        <div>
+          <span>Type</span>
+          <strong id="runType">--</strong>
+        </div>
+        <div>
+          <span>Time</span>
+          <strong id="runUpdatedAt">--</strong>
+        </div>
+        <div>
+          <span>Run</span>
+          <a id="runLink" href="https://github.com/linyinzhou/odds-analyzer/actions" target="_blank" rel="noreferrer">Actions</a>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="今日赛事概览">
+        <article>
+          <span>赛事数</span>
+          <strong id="totalMatches">0</strong>
+        </article>
+        <article>
+          <span>错盘信号</span>
+          <strong id="mismatchMatches">0</strong>
+        </article>
+        <article>
+          <span>竞彩待补</span>
+          <strong id="pendingMatches">0</strong>
+        </article>
+        <article>
+          <span>复盘命中</span>
+          <strong id="checkerCount">0/0</strong>
+        </article>
+        <article>
+          <span>待补任务</span>
+          <strong id="fallbackCount">0</strong>
+        </article>
+      </section>
+
+      <section class="view-shell">
+        <nav class="view-nav" aria-label="栏目">
+          <button class="view-button active" data-view="detail">
+            <span>详细栏</span>
+            <strong>全部比赛报告</strong>
+          </button>
+          <button class="view-button" data-view="lottery">
+            <span>竞彩栏</span>
+            <strong>全部竞彩场次</strong>
+          </button>
+          <button class="view-button" data-view="mismatch">
+            <span>错盘栏</span>
+            <strong>命中 + 候选</strong>
+          </button>
+          <button class="view-button" data-view="checker">
+            <span>Checker</span>
+            <strong>赛果与复盘</strong>
+          </button>
+          <button class="view-button" data-view="schedule">
+            <span>下个比赛日</span>
+            <strong>五大联赛 + 欧冠</strong>
+          </button>
+          <button class="view-button" data-view="adhoc">
+            <span>自选比赛</span>
+            <strong>手动输入报告</strong>
+          </button>
+        </nav>
+
+        <section class="panel" aria-live="polite">
+          <div class="panel-head">
+            <div>
+              <p id="viewEyebrow" class="eyebrow">Detail</p>
+              <h2 id="viewTitle">详细栏</h2>
+            </div>
+            <span id="viewCounter" class="counter">0</span>
+          </div>
+          <div id="viewBody" class="panel-body"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js?v=20260829-1"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "trigger": "workflow_dispatch",
+  "run_type": "evening-report",
+  "run_id": "33959410138",
+  "run_attempt": "1",
+  "commit": "4727db8",
+  "branch": "main",
+  "actor": "linyinzhou",
+  "updated_at": "2026-09-05T09:59:12.741341Z",
+  "note": "",
+  "analysis_competitions": "PL,PD,SA"
+}
