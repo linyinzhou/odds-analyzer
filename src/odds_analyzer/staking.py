@@ -74,15 +74,11 @@ def build_staking_plan(lottery: dict | None, selections: list[str], max_total: i
                     note_zh=f"条件配注（先确认让球单关可售及出票赔率）：{detail}，共{total}元。{payoffs}。这是{max_total}元搜索上限内的最小可行投入。两个选项需分别按上述倍数购买；第三种结果开出全亏{total}元，不代表正期望或稳赚。",
                     note_en=f"Conditional staking: confirm handicap singles and ticket odds first. " + "; ".join(f"{row['selection']} at {row['odds']:g}: {row['units']} units / CNY {row['stake']}" for row in allocations) + f". Total CNY {total}; minimum net profit IF a covered outcome wins: CNY {minimum:g}; uncovered outcome loses CNY {total}. Smallest feasible total within CNY {max_total}. Buy selections separately at these multiples. No positive-expectation or guaranteed-profit claim.")
         if plan["single_available"] is False:
-            plan["note_zh"] = (f"串关配比参考：{detail}，基准总投入{total}元。按本场赔率单独测算：{payoffs}。"
-                f"这是{max_total}元上限内的最小可行2元整数倍配比。本场不支持让球单关，上表是配比基准，不是可购买的单关返奖。"
-                "用于串关时，两组须搭配完全相同的其他场次单一选项，再分别按上述倍数购买。设其他腿赔率乘积为K，"
-                "只有其他腿全部命中时，返奖才按上表返奖乘K、净收益为返奖减总投入；任何其他腿失手或本场未覆盖结果开出均可能全亏。"
-                "多选、多个串关组合及走盘退款须按完整票据另算；配比不代表正期望或稳赚。")
-            plan["note_en"] = ("Parlay ratio reference: " + "; ".join(f"{row['selection']} {row['units']} units / CNY {row['stake']}" for row in allocations)
-                + f". Base total CNY {total}; base minimum covered net CNY {minimum:g}. Handicap singles unavailable: table is a standalone calculation only. "
-                "Use identical single selections on all other legs in both tickets. If ALL other legs win, multiply base return by their combined decimal odds K, then subtract total stake. "
-                "Other-leg losses or the uncovered outcome can lose the full stake. Multiple combinations and void legs require full-ticket recalculation. No guaranteed profit.")
+            plan["note_zh"] = f"总投入{total}元；本场不支持单关，以下为配比参考，串关收益另算。"
+            plan["note_en"] = f"Total CNY {total}; handicap singles unavailable. Ratio reference only; calculate parlay returns separately."
+        else:
+            plan["note_zh"] = f"总投入{total}元；按当前赔率测算，购买前确认让球单关可售。"
+            plan["note_en"] = f"Total CNY {total} at saved odds; confirm handicap singles before purchase."
         return plan
     plan.update(status="over_cap", note_zh=f"赔率结构理论可配，但{max_total}元以内没有两个覆盖结果都净盈利的2元整数倍组合；暂不建议双选，不自动加大投入。",
                 note_en=f"The continuous allocation is feasible, but no positive-profit CNY 2-unit pair exists within CNY {max_total}; skip, without increasing the cap.")

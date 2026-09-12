@@ -366,7 +366,7 @@ function renderStakingPlan(match) {
   const primary = prediction.staking_plan ?? match.mismatch?.staking_plan;
   const plan = [primary, ...(match.staking_references ?? [])].find(item => item && matchesSelection(item));
   if (!plan) return `<p class="muted">原推荐双选组合尚缺有效配比数据。</p>`;
-  return `<p class="muted">仅按原推荐组合调整倍数，配比基于已保存赔率${match.staking_refreshed_at ? `，计算于 ${escapeAttribute(match.staking_refreshed_at)}` : ""}；不代表最新报价。</p>${renderStakingCard(plan)}`;
+  return renderStakingCard(plan);
 }
 
 function renderStakingCard(plan) {
@@ -374,11 +374,16 @@ function renderStakingCard(plan) {
   const feasible = plan.status === "feasible";
   const rows = feasible ? plan.scenarios : plan.equal_stake_scenarios;
   return `<section class="staking-plan">
-    <h4>${feasible ? (plan.purchase_status === "parlay_reference" ? "串关配比参考 · 按本场赔率测算" : "条件配注 · 两个覆盖结果分别净盈利") : "配比筛选 · 本场赔率未通过"}</h4>
+    <h4>${feasible ? "推荐组合配比" : "原推荐组合暂无可行配比"}</h4>
     <p>${escapeAttribute(plan.note_zh)}</p>
-    ${rows?.length ? `<p>${feasible ? `配比基准总投入 ${money(plan.total_stake)} 元` : "仅演示各投2元、总投入4元的后果，不是购买建议"}</p>
-    <div class="table-wrap"><table><thead><tr><th>让球结果</th><th>基准返奖（含本金）</th><th>基准净收益</th></tr></thead>
-    <tbody>${rows.map((row) => `<tr><td>${escapeAttribute(row.label)}${row.covered ? "" : "（未覆盖）"}</td><td>${money(row.return)} 元</td><td>${row.net_profit > 0 ? "+" : ""}${money(row.net_profit)} 元</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${!feasible && rows?.length ? `<p>以下仅演示各买1倍、共4元的结果。</p>` : ""}
+    ${rows?.length ? `<div class="table-wrap"><table><thead><tr><th>让球结果</th><th>倍数</th><th>投入</th><th>净收益</th></tr></thead>
+    <tbody>${rows.map((row) => {
+      const allocation = plan.allocations?.find(item => item.selection === row.selection);
+      const units = feasible ? (allocation?.units ?? 0) : (row.covered ? 1 : 0);
+      const stake = feasible ? (allocation?.stake ?? 0) : units * 2;
+      return `<tr><td>${escapeAttribute(row.label)}${row.covered ? "" : "（未覆盖）"}</td><td>${units}倍</td><td>${money(stake)}元</td><td>${row.net_profit > 0 ? "+" : ""}${money(row.net_profit)}元</td></tr>`;
+    }).join("")}</tbody></table></div>` : ""}
   </section>`;
 }
 
