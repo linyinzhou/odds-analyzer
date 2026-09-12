@@ -185,15 +185,17 @@ class AdhocReportTest(unittest.TestCase):
         self.assertIn("renderAdhocView", app)
         self.assertIn("payload.adhoc_history", app)
 
-    def test_dashboard_exposes_current_sporttery_view(self):
+    def test_sporttery_stays_in_match_reports_without_separate_tab(self):
         project_root = Path(__file__).resolve().parents[1]
         index = (project_root / "dashboard" / "index.html").read_text(encoding="utf-8")
         app = (project_root / "dashboard" / "app.js").read_text(encoding="utf-8")
 
-        self.assertIn('data-view="lottery"', index)
-        self.assertIn("renderLotteryView", app)
-        self.assertIn(".filter((match) => match.chinese_lottery)", app)
-        self.assertIn("让球胜平负 SP", app)
+        self.assertNotIn('data-view="lottery"', index)
+        self.assertNotIn("renderLotteryView", app)
+        self.assertIn('data-view="detail"', index)
+        self.assertIn('data-view="mismatch"', index)
+        self.assertIn("formatLottery(match.chinese_lottery)", app)
+        self.assertIn("renderStakingPlan(match)", app)
 
 
 if __name__ == "__main__":
