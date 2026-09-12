@@ -7,7 +7,7 @@ from typing import Any
 from odds_analyzer.analysis import check_lottery_asian_mismatch
 from odds_analyzer.fallback_queue import has_sufficient_fundamental_context
 from odds_analyzer.models import AsianHandicapLine, ChineseLotteryLine, Selection
-from odds_analyzer.staking import build_staking_plan
+from odds_analyzer.staking import build_staking_plan, recommended_staking_references
 
 
 def analyze_slate_matches(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -45,7 +45,7 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
         analyzed["recommendation"]["mismatch_en"] += " " + plan["note_en"]
         prediction["detail"] += " " + plan["note_zh"]
         prediction["detail_en"] += " " + plan["note_en"]
-    analyzed["staking_references"] = [build_staking_plan(lottery, pair) for pair in (["home", "draw"], ["home", "away"], ["draw", "away"])] if lottery else []
+    analyzed["staking_references"] = recommended_staking_references(lottery, prediction)
     analyzed["prediction"] = prediction
     analyzed["checker"] = _checker_text(prediction)
     analyzed["risks"] = _risks(analyzed, prediction)

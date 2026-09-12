@@ -74,7 +74,7 @@ class StakingPlanTest(unittest.TestCase):
         self.assertEqual(plan["total_stake"], 6)
         self.assertEqual([row["units"] for row in plan["allocations"]], [1, 2])
         self.assertEqual([row["net_profit"] for row in plan["scenarios"]], [-6, 1.7, .36])
-        self.assertEqual(len(analyzed["staking_references"]), 3)
+        self.assertEqual(len(analyzed["staking_references"]), 1)
         self.assertFalse(valid_prediction(analyzed))
         self.assertEqual(_checker_candidates([analyzed], "2026-09-12"), [])
 
@@ -96,8 +96,21 @@ class StakingPlanTest(unittest.TestCase):
         for key in ("selection_keys", "confidence", "betting_eligible"):
             self.assertEqual(fresh["prediction"].get(key), match["prediction"].get(key))
         self.assertEqual(fresh["chinese_lottery"], match["chinese_lottery"])
-        self.assertEqual(len(fresh["staking_references"]), 3)
+        self.assertEqual(len(fresh["staking_references"]), 1)
         self.assertFalse(updated["last_staking_refresh"]["forecasts_regenerated"])
+
+    def test_ratio_never_changes_prediction_to_a_profitable_alternative(self):
+        from odds_analyzer.staking import recommended_staking_references
+        quotes = lottery(2.5, 1.4, False)
+        prediction = {"market_type": "sporttery_handicap", "selection_keys": ["draw", "away"]}
+        references = recommended_staking_references(quotes, prediction)
+        self.assertEqual(len(references), 1)
+        self.assertEqual(references[0]["status"], "impossible")
+        self.assertEqual(set(references[0]["selection_odds"]), {"draw", "away"})
+        self.assertEqual(build_staking_plan(quotes, ["home", "draw"])["status"], "feasible")
+        for market, keys in (("sporttery_handicap", ["home"]), ("asian_handicap", ["draw", "away"]),
+                             ("sporttery_standard", ["draw", "away"])):
+            self.assertEqual(recommended_staking_references(quotes, {"market_type": market, "selection_keys": keys}), [])
 
     def test_missing_invalid_and_duplicate_selections(self):
         for price in (None, 0, 1, -1, float("nan"), float("inf"), True, "bad"):

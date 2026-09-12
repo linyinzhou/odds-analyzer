@@ -87,3 +87,12 @@ def build_staking_plan(lottery: dict | None, selections: list[str], max_total: i
     plan.update(status="over_cap", note_zh=f"赔率结构理论可配，但{max_total}元以内没有两个覆盖结果都净盈利的2元整数倍组合；暂不建议双选，不自动加大投入。",
                 note_en=f"The continuous allocation is feasible, but no positive-profit CNY 2-unit pair exists within CNY {max_total}; skip, without increasing the cap.")
     return plan
+
+
+def recommended_staking_references(lottery: dict | None, prediction: dict) -> list[dict]:
+    """Size only the predicted handicap pair; never search alternative selections."""
+    keys = prediction.get("selection_keys")
+    if (prediction.get("market_type") != "sporttery_handicap" or not isinstance(keys, list)
+            or len(keys) != 2 or len(set(keys)) != 2 or any(key not in LABELS for key in keys)):
+        return []
+    return [build_staking_plan(lottery, keys)]

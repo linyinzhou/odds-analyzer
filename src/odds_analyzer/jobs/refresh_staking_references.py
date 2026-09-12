@@ -7,7 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from odds_analyzer.learning import now_iso
-from odds_analyzer.staking import build_staking_plan
+from odds_analyzer.staking import build_staking_plan, recommended_staking_references
 from odds_analyzer.jobs.refresh_evening_slate import _attach_bilingual_reports
 
 
@@ -22,9 +22,8 @@ def refresh_staking_references(payload: dict) -> dict:
             if collection != "current_matches" and (match.get("id") not in current_ids or str(match.get("batch_date") or "") != slate_date):
                 continue
             lottery = match.get("chinese_lottery")
-            match["staking_references"] = [build_staking_plan(lottery, pair) for pair in
-                (["home", "draw"], ["home", "away"], ["draw", "away"])] if lottery else []
             prediction = match.get("prediction") or {}
+            match["staking_references"] = recommended_staking_references(lottery, prediction)
             old = prediction.get("staking_plan") or (match.get("mismatch") or {}).get("staking_plan")
             if old:
                 new = build_staking_plan(lottery, prediction.get("selection_keys") or [])

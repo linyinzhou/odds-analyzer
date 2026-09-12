@@ -892,12 +892,12 @@ def _attach_bilingual_reports(matches: list[dict]) -> list[dict]:
             copied["report_zh"] += " " + plan["note_zh"]
             copied["report_en"] += " " + plan["note_en"]
         references = copied.get("staking_references") or []
-        if references:
-            copied["report_zh"] += " 三种双选配比参考（不代表盘路推荐）：" + " ".join(ref["note_zh"] for ref in references)
-            copied["report_en"] += " All three pair ratios (not selection recommendations): " + " ".join(ref["note_en"] for ref in references)
-        else:
-            copied["report_zh"] += " 配比参考：缺少竞彩让球赔率，暂无法计算。"
-            copied["report_en"] += " Pair ratios unavailable: Sporttery handicap odds missing."
+        if references and not plan:
+            copied["report_zh"] += " 原推荐组合配比：" + references[0]["note_zh"]
+            copied["report_en"] += " Stake ratio for the original selection: " + references[0]["note_en"]
+        elif not references and not plan:
+            copied["report_zh"] += " 原分析未推荐竞彩让球双选，不另选组合计算配比。"
+            copied["report_en"] += " No Sporttery handicap pair was predicted; no alternative pair is generated for staking."
         reports.append(copied)
     return reports
 

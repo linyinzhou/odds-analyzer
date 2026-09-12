@@ -354,12 +354,19 @@ function renderLotteryView() {
 
 
 function renderStakingPlan(match) {
-  const primary = match.prediction?.staking_plan ?? match.mismatch?.staking_plan;
-  const references = match.staking_references ?? [];
-  const heading = (plan) => Object.keys(plan.selection_odds ?? {}).map(key => ({home: "让胜", draw: "让平", away: "让负"})[key]).join("＋");
-  const main = primary ? renderStakingCard(primary) : "";
-  if (!references.length) return main || `<p class="muted">配比参考：缺少本次计算所需的竞彩让球赔率，或旧记录未计算。</p>`;
-  return `<p class="muted">配比基于已保存赔率${match.staking_refreshed_at ? `，计算于 ${escapeAttribute(match.staking_refreshed_at)}` : ""}；不代表最新报价。</p>${main}<details ${primary ? "" : "open"}><summary>本场三种双选配比参考（不代表盘路推荐）</summary>${references.map(plan => `<h4>${heading(plan)}</h4>${renderStakingCard(plan)}`).join("")}</details>`;
+  const prediction = match.prediction ?? {};
+  const keys = prediction.selection_keys ?? [];
+  if (prediction.market_type !== "sporttery_handicap" || keys.length !== 2 || new Set(keys).size !== 2) {
+    return `<p class="muted">原分析未推荐竞彩让球双选，不另选组合计算配比。</p>`;
+  }
+  const matchesSelection = (plan) => {
+    const selections = Object.keys(plan?.selection_odds ?? {});
+    return selections.length === keys.length && keys.every(key => selections.includes(key));
+  };
+  const primary = prediction.staking_plan ?? match.mismatch?.staking_plan;
+  const plan = [primary, ...(match.staking_references ?? [])].find(item => item && matchesSelection(item));
+  if (!plan) return `<p class="muted">原推荐双选组合尚缺有效配比数据。</p>`;
+  return `<p class="muted">仅按原推荐组合调整倍数，配比基于已保存赔率${match.staking_refreshed_at ? `，计算于 ${escapeAttribute(match.staking_refreshed_at)}` : ""}；不代表最新报价。</p>${renderStakingCard(plan)}`;
 }
 
 function renderStakingCard(plan) {

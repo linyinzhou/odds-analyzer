@@ -89,11 +89,13 @@ uses the standard library and adds no dependency.
 
 ## Ratios in every future analysis
 
-Every analysis with Sporttery handicap odds saves `staking_references` for home/draw,
-home/away and draw/away, independently of the market prediction or mismatch flag.
-Daily, ad hoc and fallback analysis share this behavior; bilingual reports and the
-Detail, Sporttery and Mismatch views show it. Missing odds are explicitly reported.
-A mathematically feasible pair is not automatically a selection recommendation.
+Every analysis sizes only its original two-selection Sporttery handicap prediction.
+`staking_references` contains at most that one pair. A single selection, a different
+market, or no recommendation does not produce alternative pairs. If the original
+pair fails the return filter, it remains rejected even when another pair would be
+mathematically feasible. Daily, ad hoc and fallback analysis share this behavior.
+Bilingual reports and the Detail, Sporttery and Mismatch views show the same pair;
+the UI also filters legacy reference arrays against the saved prediction keys.
 
 Known unavailable handicap singles still receive the minimum integer-unit ratio,
 labelled `parlay_reference`. The displayed standalone returns are a calculation
