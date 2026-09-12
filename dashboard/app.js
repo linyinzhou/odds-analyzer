@@ -354,16 +354,23 @@ function renderLotteryView() {
 
 
 function renderStakingPlan(match) {
-  const plan = match.prediction?.staking_plan ?? match.mismatch?.staking_plan;
-  if (!plan) return match.mismatch?.matched ? `<p class="muted">旧记录未做收益筛选，不能视为配注建议。</p>` : "";
+  const primary = match.prediction?.staking_plan ?? match.mismatch?.staking_plan;
+  const references = match.staking_references ?? [];
+  const heading = (plan) => Object.keys(plan.selection_odds ?? {}).map(key => ({home: "让胜", draw: "让平", away: "让负"})[key]).join("＋");
+  const main = primary ? renderStakingCard(primary) : "";
+  if (!references.length) return main || `<p class="muted">配比参考：缺少本次计算所需的竞彩让球赔率，或旧记录未计算。</p>`;
+  return `<p class="muted">配比基于已保存赔率${match.staking_refreshed_at ? `，计算于 ${escapeAttribute(match.staking_refreshed_at)}` : ""}；不代表最新报价。</p>${main}<details ${primary ? "" : "open"}><summary>本场三种双选配比参考（不代表盘路推荐）</summary>${references.map(plan => `<h4>${heading(plan)}</h4>${renderStakingCard(plan)}`).join("")}</details>`;
+}
+
+function renderStakingCard(plan) {
   const money = (value) => Number.isFinite(value) ? value.toFixed(2) : "--";
   const feasible = plan.status === "feasible";
   const rows = feasible ? plan.scenarios : plan.equal_stake_scenarios;
   return `<section class="staking-plan">
-    <h4>${feasible ? "条件配注 · 两个覆盖结果分别净盈利" : "收益筛选 · 暂不建议双选"}</h4>
+    <h4>${feasible ? (plan.purchase_status === "parlay_reference" ? "串关配比参考 · 按本场赔率测算" : "条件配注 · 两个覆盖结果分别净盈利") : "配比筛选 · 本场赔率未通过"}</h4>
     <p>${escapeAttribute(plan.note_zh)}</p>
-    ${rows?.length ? `<p>${feasible ? `方案总投入 ${money(plan.total_stake)} 元` : "仅演示各投2元、总投入4元的后果，不是购买建议"}</p>
-    <div class="table-wrap"><table><thead><tr><th>让球结果</th><th>返奖（含本金）</th><th>净收益</th></tr></thead>
+    ${rows?.length ? `<p>${feasible ? `配比基准总投入 ${money(plan.total_stake)} 元` : "仅演示各投2元、总投入4元的后果，不是购买建议"}</p>
+    <div class="table-wrap"><table><thead><tr><th>让球结果</th><th>基准返奖（含本金）</th><th>基准净收益</th></tr></thead>
     <tbody>${rows.map((row) => `<tr><td>${escapeAttribute(row.label)}${row.covered ? "" : "（未覆盖）"}</td><td>${money(row.return)} 元</td><td>${row.net_profit > 0 ? "+" : ""}${money(row.net_profit)} 元</td></tr>`).join("")}</tbody></table></div>` : ""}
   </section>`;
 }

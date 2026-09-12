@@ -39,12 +39,13 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     if mismatch["dashboard"]["matched"]:
         plan = build_staking_plan(lottery, prediction["selection_keys"])
         prediction["staking_plan"] = plan
-        prediction["betting_eligible"] = plan["status"] == "feasible"
+        prediction["betting_eligible"] = plan["status"] == "feasible" and plan.get("single_available") is not False
         analyzed["mismatch"]["staking_plan"] = plan
         analyzed["recommendation"]["mismatch"] += " " + plan["note_zh"]
         analyzed["recommendation"]["mismatch_en"] += " " + plan["note_en"]
         prediction["detail"] += " " + plan["note_zh"]
         prediction["detail_en"] += " " + plan["note_en"]
+    analyzed["staking_references"] = [build_staking_plan(lottery, pair) for pair in (["home", "draw"], ["home", "away"], ["draw", "away"])] if lottery else []
     analyzed["prediction"] = prediction
     analyzed["checker"] = _checker_text(prediction)
     analyzed["risks"] = _risks(analyzed, prediction)

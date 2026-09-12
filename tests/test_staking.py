@@ -62,8 +62,42 @@ class StakingPlanTest(unittest.TestCase):
 
     def test_single_unavailable_is_not_a_purchase_suggestion(self):
         plan = build_staking_plan(lottery(3.55, 1.6, False), ["draw", "away"])
-        self.assertEqual(plan["status"], "single_unavailable")
-        self.assertEqual(plan["allocations"], [])
+        self.assertEqual(plan["status"], "feasible")
+        self.assertEqual(plan["purchase_status"], "parlay_reference")
+        self.assertEqual([row["units"] for row in plan["allocations"]], [1, 2])
+
+    def test_genoa_ratio_and_non_single_learning_exclusion(self):
+        item = dynamic_analysis_match(True)
+        item["chinese_lottery"] = lottery(3.85, 1.59, False)
+        analyzed = analyze_slate_match(item)
+        plan = analyzed["prediction"]["staking_plan"]
+        self.assertEqual(plan["total_stake"], 6)
+        self.assertEqual([row["units"] for row in plan["allocations"]], [1, 2])
+        self.assertEqual([row["net_profit"] for row in plan["scenarios"]], [-6, 1.7, .36])
+        self.assertEqual(len(analyzed["staking_references"]), 3)
+        self.assertFalse(valid_prediction(analyzed))
+        self.assertEqual(_checker_candidates([analyzed], "2026-09-12"), [])
+
+    def test_display_refresh_preserves_forecasts_and_archives_after_kickoff(self):
+        from odds_analyzer.jobs.refresh_staking_references import refresh_staking_references
+        match = analyze_slate_match(dynamic_analysis_match(True))
+        match["id"] = "saved"
+        match["kickoff_time"] = "2020-01-01 20:00"
+        match["chinese_lottery"] = lottery(3.85, 1.59, False)
+        payload = {"slate": {"date": "2020-01-01"}, "current_matches": [match],
+                   "checker_history": [{"id": "unchanged"}], "prediction_archive": [{"snapshot_id": "unchanged"}],
+                   "result_archive": [{"result_id": "unchanged"}]}
+        before = deepcopy(payload)
+        updated = refresh_staking_references(payload)
+        self.assertEqual(payload, before)
+        for key in ("checker_history", "prediction_archive", "result_archive"):
+            self.assertEqual(updated[key], before[key])
+        fresh = updated["current_matches"][0]
+        for key in ("selection_keys", "confidence", "betting_eligible"):
+            self.assertEqual(fresh["prediction"].get(key), match["prediction"].get(key))
+        self.assertEqual(fresh["chinese_lottery"], match["chinese_lottery"])
+        self.assertEqual(len(fresh["staking_references"]), 3)
+        self.assertFalse(updated["last_staking_refresh"]["forecasts_regenerated"])
 
     def test_missing_invalid_and_duplicate_selections(self):
         for price in (None, 0, 1, -1, float("nan"), float("inf"), True, "bad"):

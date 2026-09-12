@@ -12,7 +12,7 @@ DEFAULT_MAX_TOTAL = 100
 def build_staking_plan(lottery: dict | None, selections: list[str], max_total: int = DEFAULT_MAX_TOTAL) -> dict:
     if type(max_total) is not int or not 4 <= max_total <= 10000:
         raise ValueError("Search cap must be an integer between 4 and 10000 yuan")
-    plan = {"version": "sporttery-pair-v1", "status": "missing_data", "max_total": max_total,
+    plan = {"version": "sporttery-pair-v2", "status": "missing_data", "max_total": max_total,
             "unit_stake": 2, "single_available": (lottery or {}).get("single_handicap"),
             "allocations": [], "scenarios": [], "equal_stake_scenarios": [],
             "note_zh": "缺少有效的竞彩双选赔率，暂不提供配注建议。",
@@ -44,14 +44,9 @@ def build_staking_plan(lottery: dict | None, selections: list[str], max_total: i
     left, right = (odds[key] for key in keys)
     # Exact decimal inequality; even a break-even boundary is not positive profit.
     if left * right <= left + right:
-        plan.update(status="impossible", note_zh="不建议双选：这组赔率无法通过任何金额配比，让两个已覆盖结果命中时都盈利；加倍不能解决。",
-                    note_en="Skip this pair: no stake allocation gives positive profit for both covered results. Multiplying stakes cannot fix it.")
+        plan.update(status="impossible", note_zh="不建议双选（按本场赔率单独测算）：这组赔率无法通过任何金额配比，让两个已覆盖结果命中时都盈利；加倍不能解决。串关是否可行须按完整组合赔率与成本另算。",
+                    note_en="Skip this pair: no stake allocation gives positive profit for both covered results. Multiplying stakes cannot fix it. This is a standalone-odds check; parlays require full-ticket odds and costs.")
         return plan
-    if plan["single_available"] is False:
-        plan.update(status="single_unavailable", note_zh="不建议按此单关方案购买：已标记不支持让球单关，不能套用单关配注收益。",
-                    note_en="No single-match staking suggestion: handicap singles are marked unavailable.")
-        return plan
-
     # Smallest total stake first; among equal totals maximize the worse covered payoff.
     for total_units in range(2, max_total // 2 + 1):
         candidates = []
@@ -75,9 +70,19 @@ def build_staking_plan(lottery: dict | None, selections: list[str], max_total: i
         payoffs = "；".join(f"{row['label']}开出返{row['return']:g}元、净{'赚' if row['net_profit'] > 0 else '亏'}{abs(row['net_profit']):g}元" for row in rows if row["covered"])
         plan.update(status="feasible", total_stake=total, allocations=allocations, scenarios=rows,
                     minimum_covered_profit=minimum, uncovered_loss=total,
-                    purchase_status="ready" if plan["single_available"] is True else "confirm_single",
+                    purchase_status="ready" if plan["single_available"] is True else "parlay_reference" if plan["single_available"] is False else "confirm_single",
                     note_zh=f"条件配注（先确认让球单关可售及出票赔率）：{detail}，共{total}元。{payoffs}。这是{max_total}元搜索上限内的最小可行投入。两个选项需分别按上述倍数购买；第三种结果开出全亏{total}元，不代表正期望或稳赚。",
                     note_en=f"Conditional staking: confirm handicap singles and ticket odds first. " + "; ".join(f"{row['selection']} at {row['odds']:g}: {row['units']} units / CNY {row['stake']}" for row in allocations) + f". Total CNY {total}; minimum net profit IF a covered outcome wins: CNY {minimum:g}; uncovered outcome loses CNY {total}. Smallest feasible total within CNY {max_total}. Buy selections separately at these multiples. No positive-expectation or guaranteed-profit claim.")
+        if plan["single_available"] is False:
+            plan["note_zh"] = (f"串关配比参考：{detail}，基准总投入{total}元。按本场赔率单独测算：{payoffs}。"
+                f"这是{max_total}元上限内的最小可行2元整数倍配比。本场不支持让球单关，上表是配比基准，不是可购买的单关返奖。"
+                "用于串关时，两组须搭配完全相同的其他场次单一选项，再分别按上述倍数购买。设其他腿赔率乘积为K，"
+                "只有其他腿全部命中时，返奖才按上表返奖乘K、净收益为返奖减总投入；任何其他腿失手或本场未覆盖结果开出均可能全亏。"
+                "多选、多个串关组合及走盘退款须按完整票据另算；配比不代表正期望或稳赚。")
+            plan["note_en"] = ("Parlay ratio reference: " + "; ".join(f"{row['selection']} {row['units']} units / CNY {row['stake']}" for row in allocations)
+                + f". Base total CNY {total}; base minimum covered net CNY {minimum:g}. Handicap singles unavailable: table is a standalone calculation only. "
+                "Use identical single selections on all other legs in both tickets. If ALL other legs win, multiply base return by their combined decimal odds K, then subtract total stake. "
+                "Other-leg losses or the uncovered outcome can lose the full stake. Multiple combinations and void legs require full-ticket recalculation. No guaranteed profit.")
         return plan
     plan.update(status="over_cap", note_zh=f"赔率结构理论可配，但{max_total}元以内没有两个覆盖结果都净盈利的2元整数倍组合；暂不建议双选，不自动加大投入。",
                 note_en=f"The continuous allocation is feasible, but no positive-profit CNY 2-unit pair exists within CNY {max_total}; skip, without increasing the cap.")

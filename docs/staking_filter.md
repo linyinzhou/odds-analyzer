@@ -48,12 +48,12 @@ and displayed as conditional. It must not be treated as executable until handica
 singles are confirmed. These calculations cannot be applied unchanged to parlays.
 A verified fallback Sporttery object may include `single_handicap: true/false/null`;
 it must carry the importer's existing Sporttery source audit. Explicit `false`
-blocks the suggestion; unknown stays unknown. No availability is inferred from
+keeps the allocation as `purchase_status=parlay_reference`; unknown stays unknown. No availability is inferred from
 merely having odds.
 
 ## Output and review
 
-Statuses: `feasible`, `impossible`, `over_cap`, `missing_data`, `single_unavailable`.
+Statuses: `feasible`, `impossible`, `over_cap`, `missing_data`. Legacy records may still contain `single_unavailable`.
 The plan saves odds, per-selection unit counts and stakes, total cost, the payout
 and net return for **all three** outcomes, the minimum covered profit, and full
 uncovered loss. Rejected cases show an equal-2-yuan example only as an explanation.
@@ -86,3 +86,33 @@ was checked. External skill/project references considered were
 [football-prediction-skill](https://github.com/JetQiao/football-prediction-skill) and
 [SportteryAPI](https://github.com/Johnserf-Seed/SportteryAPI); this bounded calculation
 uses the standard library and adds no dependency.
+
+## Ratios in every future analysis
+
+Every analysis with Sporttery handicap odds saves `staking_references` for home/draw,
+home/away and draw/away, independently of the market prediction or mismatch flag.
+Daily, ad hoc and fallback analysis share this behavior; bilingual reports and the
+Detail, Sporttery and Mismatch views show it. Missing odds are explicitly reported.
+A mathematically feasible pair is not automatically a selection recommendation.
+
+Known unavailable handicap singles still receive the minimum integer-unit ratio,
+labelled `parlay_reference`. The displayed standalone returns are a calculation
+baseline, not an executable single ticket. Both alternatives must use identical
+single selections on the other legs. Only if every other leg wins may their odds
+product K multiply the baseline return; subtract the full stake afterwards.
+Other-leg losses and the uncovered outcome can lose the whole stake. Multiple
+combinations, additional multi-selections and void legs require full-ticket math.
+A pair failing the standalone filter is not proof that every possible parlay fails.
+
+Such references remain outside single-bet Checker candidates and learning ROI.
+Existing frozen predictions and result archives are never rewritten. To refresh
+only ratio displays on an existing slate (including matches already started):
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m odds_analyzer.jobs.refresh_staking_references --payload path/to/daily_matches.json
+```
+
+This command preserves saved selections, confidence, odds, source audits, Checker
+history and both frozen archives. It records the actual calculation timestamp in
+`last_staking_refresh` and does not claim to fetch new odds or generate forecasts.
