@@ -1,4 +1,4 @@
-const APP_VERSION = "20260912-staking-1";
+const APP_VERSION = "20260912-no-lottery-tab-5";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -130,10 +130,6 @@ function competitionScopeLabel(codes) {
 function render() {
   renderSummary();
   renderActiveButton();
-  if (state.activeView === "lottery") {
-    renderLotteryView();
-    return;
-  }
   if (state.activeView === "mismatch") {
     renderMismatchView();
     return;
@@ -316,42 +312,6 @@ function renderMarkets(match) {
     </section>
   `;
 }
-
-function renderLotteryView() {
-  const matches = state.currentMatches
-    .filter((match) => match.chinese_lottery)
-    .sort(sortByKickoffAsc);
-  elements.viewEyebrow.textContent = "Sporttery";
-  elements.viewTitle.textContent = "竞彩栏";
-  elements.viewCounter.textContent = `${matches.length} 场`;
-  elements.viewBody.innerHTML =
-    matches
-      .map((match) => {
-        const lottery = match.chinese_lottery;
-        const handicap = lottery.handicap === null ? "无让球" : formatLine(lottery.handicap);
-        const mismatch = match.mismatch?.matched
-          ? `${match.mismatch.limited_sample ? "错盘候选" : "错盘命中"}：${match.mismatch.pick}`
-          : `错盘观察：${match.mismatch?.reason ?? "未形成错盘结论"}`;
-        return `
-          <article class="mismatch-row">
-            <header>
-              <span>${match.kickoff_time} · ${match.competition}</span>
-              <h3>${match.home_team} vs ${match.away_team}</h3>
-            </header>
-            <div class="market-grid">
-              <div><span>胜平负 SP</span><strong>${formatThreeWay(lottery.standard)}</strong></div>
-              <div><span>让球</span><strong>${handicap}</strong></div>
-              <div><span>让球胜平负 SP</span><strong>${formatThreeWay(lottery.handicap_odds)}</strong></div>
-              <div><span>亚盘</span><strong>${formatAsian(match.asian_handicap)}</strong></div>
-            </div>
-            <p>${mismatch}</p>
-            ${renderStakingPlan(match)}
-          </article>
-        `;
-      })
-      .join("") || `<p class="empty">当前批次没有取得竞彩数据。</p>`;
-}
-
 
 function renderStakingPlan(match) {
   const prediction = match.prediction ?? {};

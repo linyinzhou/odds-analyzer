@@ -58,7 +58,7 @@ The plan saves odds, per-selection unit counts and stakes, total cost, the payou
 and net return for **all three** outcomes, the minimum covered profit, and full
 uncovered loss. Rejected cases show an equal-2-yuan example only as an explanation.
 
-Detail, Sporttery and Mismatch views display the plan. Chinese and English reports
+Detail and Mismatch views display the plan. Chinese and English reports
 include the reasoning and downside. Old records without this field say they have
 not been screened; they are not presented as staking suggestions. Historical
 snapshots are not rewritten.
@@ -94,7 +94,7 @@ Every analysis sizes only its original two-selection Sporttery handicap predicti
 market, or no recommendation does not produce alternative pairs. If the original
 pair fails the return filter, it remains rejected even when another pair would be
 mathematically feasible. Daily, ad hoc and fallback analysis share this behavior.
-Bilingual reports and the Detail, Sporttery and Mismatch views show the same pair;
+Bilingual reports and the Detail and Mismatch views show the same pair;
 the UI also filters legacy reference arrays against the saved prediction keys.
 
 Known unavailable handicap singles still receive the minimum integer-unit ratio,
