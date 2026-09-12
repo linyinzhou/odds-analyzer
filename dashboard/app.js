@@ -756,7 +756,9 @@ function formatProbability(value) {
 
 function formatPrediction(match) {
   if (!match.prediction) return "待补";
-  const prefix = match.prediction.betting_eligible === false ? "仅作方向观察，不建议双选购买。" : "";
+  const prefix = match.chinese_lottery?.single_handicap === false
+    ? "盘路分析，可作串关选场参考；不支持让球单关，串关收益须按整组另算。"
+    : match.prediction.betting_eligible === false ? "仅作方向观察，不建议按单关双选方案购买。" : "";
   return `${prefix}${match.prediction.market}：${match.prediction.pick}（信心 ${match.prediction.confidence}%）`;
 }
 
