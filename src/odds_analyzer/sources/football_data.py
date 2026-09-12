@@ -171,6 +171,15 @@ def fetch_fixtures_for_beijing_date(
     )
 
 
+def fetch_fixture_by_id(api_key: str, match_id: int, timeout: float = 20) -> FootballDataFixture | None:
+    """Resolve an archived fixture even after postponement or outside daily scope."""
+    if type(match_id) is not int or match_id <= 0:
+        raise ValueError("match_id must be a positive integer")
+    item = _get_json(f"/matches/{match_id}", api_key, {}, timeout)
+    fixtures = parse_football_data_fixtures({"matches": [item]}, "")
+    return fixtures[0] if fixtures else None
+
+
 def fetch_evening_fixtures(
     api_key: str,
     slate_date: str,
@@ -241,7 +250,10 @@ def parse_football_data_fixtures(
         home = item.get("homeTeam") or {}
         away = item.get("awayTeam") or {}
         competition = item.get("competition") or payload.get("competition") or {}
-        full_time = ((item.get("score") or {}).get("fullTime") or {})
+        score = item.get("score") or {}
+        # fullTime can include extra time and penalties in API v4.
+        full_time = (score.get("fullTime") if score.get("duration", "REGULAR") == "REGULAR"
+                     else score.get("regularTime")) or {}
         utc_date = _text(item.get("utcDate"))
         if not utc_date or not _text(home.get("name")) or not _text(away.get("name")):
             continue

@@ -9,7 +9,7 @@ from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from odds_analyzer.calibration import apply_confidence_calibration, build_strategy_performance
+from odds_analyzer.learning import calibrate_predictions, now_iso
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.fallback_queue import build_fallback_requests
 from odds_analyzer.slate_analysis import analyze_slate_matches
@@ -887,6 +887,10 @@ def _attach_bilingual_reports(matches: list[dict]) -> list[dict]:
             f"Prediction: {prediction.get('market_en', market)} {prediction.get('pick_en', pick)} "
             f"(confidence {confidence}%)."
         )
+        plan = prediction.get("staking_plan")
+        if plan:
+            copied["report_zh"] += " " + plan["note_zh"]
+            copied["report_en"] += " " + plan["note_en"]
         reports.append(copied)
     return reports
 
@@ -1167,16 +1171,10 @@ def build_evening_slate_batch(
     current_matches = [
         match for match in current_matches if _match_competition_code(match) in analysis_competitions
     ]
-    strategy_performance = build_strategy_performance(
-        existing_payload.get("checker_history", []),
-        datetime.now(BEIJING).isoformat(timespec="seconds"),
-        slate_date,
-    )
     current_matches = analyze_slate_matches(current_matches)
-    current_matches = [
-        apply_confidence_calibration(match, strategy_performance)
-        for match in current_matches
-    ]
+    current_matches, strategy_performance = calibrate_predictions(
+        existing_payload, current_matches, now_iso()
+    )
     current_matches = _attach_bilingual_reports(current_matches)
     source_status = {
         "football_data_source": football_data_source,
@@ -1236,6 +1234,7 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
         for match in matches
         if match.get("prediction", {}).get("confidence", 0) > 0
         and match.get("prediction", {}).get("market") != "无推荐"
+        and match.get("prediction", {}).get("betting_eligible") is not False
     ]
     candidates.sort(
         key=lambda match: match.get("prediction", {}).get("confidence", 0),

@@ -7,6 +7,7 @@ from typing import Any
 from odds_analyzer.analysis import check_lottery_asian_mismatch
 from odds_analyzer.fallback_queue import has_sufficient_fundamental_context
 from odds_analyzer.models import AsianHandicapLine, ChineseLotteryLine, Selection
+from odds_analyzer.staking import build_staking_plan
 
 
 def analyze_slate_matches(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -35,9 +36,21 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
         "mismatch": mismatch["recommendation_zh"],
         "mismatch_en": mismatch["recommendation_en"],
     }
+    if mismatch["dashboard"]["matched"]:
+        plan = build_staking_plan(lottery, prediction["selection_keys"])
+        prediction["staking_plan"] = plan
+        prediction["betting_eligible"] = plan["status"] == "feasible"
+        analyzed["mismatch"]["staking_plan"] = plan
+        analyzed["recommendation"]["mismatch"] += " " + plan["note_zh"]
+        analyzed["recommendation"]["mismatch_en"] += " " + plan["note_en"]
+        prediction["detail"] += " " + plan["note_zh"]
+        prediction["detail_en"] += " " + plan["note_en"]
     analyzed["prediction"] = prediction
     analyzed["checker"] = _checker_text(prediction)
     analyzed["risks"] = _risks(analyzed, prediction)
+    if prediction.get("staking_plan"):
+        analyzed["checker"] += " " + prediction["staking_plan"]["note_zh"]
+        analyzed["risks"].append("错盘配注仅在已覆盖结果开出时有条件盈利；未覆盖结果可能损失全部投入，且须确认支持单关。")
 
     if mismatch["dashboard"]["matched"]:
         analyzed["status"] = "mismatch"

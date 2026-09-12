@@ -211,16 +211,34 @@ Codex fallback research is applied through a strict importer instead of editing 
 ## Run Status
 
 The dashboard reads `dashboard/data/run_status.json` and shows the latest workflow run in the top status row. GitHub Actions updates this file before publishing `dashboard/` to `gh-pages`, so the page can show the last run status, run type, run id, commit, actor, and timestamp.
-## Checker Strategy Calibration
+## Frozen Prediction Evaluation and Calibration
 
-Result review now builds a persisted `strategy_performance` summary grouped by the exact prediction strategy. The next evening refresh and Codex fallback import use only previously reviewed, non-void checker entries.
+Daily refreshes, ad hoc reports, and fallback imports now append immutable
+prediction snapshots. Result review records when outcomes first became known.
+The next prediction uses only earlier observed outcomes from the first eligible
+pre-match snapshot of each fixture, with the existing 20-sample gate and ±5
+percentage-point confidence cap. Mutable legacy reviews do not enter training;
+calibration starts collecting new frozen samples.
 
-- Fewer than 20 settled picks per strategy: record performance but do not change confidence.
-- At least 20 settled picks: apply a shrinkage-weighted adjustment capped at `-5` to `+5` percentage points.
-- Store `base_confidence`, the applied adjustment, sample size, and the latest training batch on each calibrated prediction.
-- Never use unreviewed or same-batch future results, which keeps the update walk-forward and avoids look-ahead leakage.
+The Checker panel shows base versus calibrated Brier diagnostics and a paired
+same-event market baseline. The offline evaluator also reports chronological
+weekly results, strategy groups, five-way Asian settlement, exclusions and
+unit-stake ROI. Confidence remains a heuristic score; calibration does not change
+picks, and no accuracy improvement is claimed before prospective validation.
 
-The checker panel shows whether calibration is still collecting samples or active. Early hit rates are descriptive only; they are not evidence of a durable betting edge.
+See [the phase-1 learning loop](docs/learning_loop.md) for data contracts,
+settlement semantics, limitations, and the evaluation command.
+
+## Mismatch Return Filter
+
+New Sporttery mismatch pairs include a conditional staking plan in 2-yuan units.
+The filter rejects odds combinations that cannot yield positive net returns for
+both covered outcomes and searches for the smallest feasible total within a
+100-yuan cap. The dashboard shows each outcome's payout, net return and the full
+loss on the uncovered outcome. Single-match availability and ticket odds must be
+confirmed; an odds mismatch is not proof of positive expected value.
+
+See [the staking filter](docs/staking_filter.md) for examples, statuses and tests.
 
 ## Run Tests
 

@@ -81,6 +81,9 @@ jobs:
           import json
           from datetime import datetime
           from pathlib import Path
+          import sys
+          sys.path.insert(0, "src")
+          from odds_analyzer.learning import merge_learning_archives
 
           main_path = Path("dashboard/data/daily_matches.json")
           live_path = Path("/tmp/daily_matches.json")
@@ -120,11 +123,11 @@ jobs:
                   or (quality(live) == quality(main) and freshness(live) > freshness(main))
               )
           )
-          if use_live:
-              main_path.write_text(
-                  json.dumps(live, ensure_ascii=False, indent=2) + chr(10),
-                  encoding="utf-8",
-              )
+          restored = merge_learning_archives(live, main) if use_live else merge_learning_archives(main, live)
+          main_path.write_text(
+              json.dumps(restored, ensure_ascii=False, indent=2) + chr(10),
+              encoding="utf-8",
+          )
           print(
               f"restore_source={'gh-pages' if use_live else 'main'} "
               f"main={main_date}/{quality(main)}/{freshness(main):.0f} "

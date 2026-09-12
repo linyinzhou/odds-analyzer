@@ -104,3 +104,10 @@ python -m odds_analyzer.jobs.apply_fallback_results --results path/to/fallback-r
 ```
 
 The importer rejects team mismatches, unrequested fields, overwriting API-backed values, malformed odds, non-integer Sporttery handicaps, invalid source URLs, and timestamps without timezones. Successful imports regenerate analysis, bilingual reports, mismatch history, checker candidates, queue status, and `last_fallback_import`.
+
+## Handicap single availability
+
+A sourced `sporttery` result can optionally include `single_handicap` as a boolean
+or null. Unknown must not be reported as true. False blocks the single-match
+staking suggestion; null or omission requires availability confirmation. The
+existing Sporttery source and query-time audit requirements also apply to this field.

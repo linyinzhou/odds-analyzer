@@ -4,6 +4,7 @@ from copy import deepcopy
 from typing import Any
 
 from odds_analyzer.fallback_queue import merge_fallback_requests
+from odds_analyzer.learning import freeze_predictions
 
 MatchRecord = dict[str, Any]
 Payload = dict[str, Any]
@@ -49,6 +50,7 @@ def merge_dashboard_payload(existing: Payload, batch: Payload) -> Payload:
         existing_checker,
         with_batch_date(batch.get("checker_history", []), batch_date),
     )
+    freeze_predictions(merged, current_matches, batch_date=batch_date)
     return merged
 
 

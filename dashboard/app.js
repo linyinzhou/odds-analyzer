@@ -1,4 +1,4 @@
-const APP_VERSION = "20260829-1";
+const APP_VERSION = "20260912-staking-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -8,6 +8,7 @@ const state = {
   adhocHistory: [],
   fallbackRequests: [],
   strategyPerformance: { minimum_sample: 20, strategies: {} },
+  learningEvaluation: null,
   nextMatchday: { generated_at: null, competitions: [] },
   analysisCompetitionCodes: ["PL", "PD", "SA"],
   activeView: "detail",
@@ -48,6 +49,7 @@ async function loadDashboard() {
   state.adhocHistory = normalized.adhocHistory;
   state.fallbackRequests = normalized.fallbackRequests;
   state.strategyPerformance = normalized.strategyPerformance;
+  state.learningEvaluation = normalized.learningEvaluation;
   state.nextMatchday = normalized.nextMatchday;
   state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
@@ -101,6 +103,7 @@ function normalizePayload(payload) {
     adhocHistory,
     fallbackRequests,
     strategyPerformance,
+    learningEvaluation: payload.learning_evaluation ?? null,
     nextMatchday,
     analysisCompetitionCodes,
   };
@@ -225,6 +228,7 @@ function renderMatchReport(match) {
         <section class="recommendation">
           <h4>建议</h4>
           <p><strong>最终：</strong>${formatPrediction(match)}</p>
+          ${renderStakingPlan(match)}
           <p><strong>基本面：</strong>${match.recommendation.fundamental}</p>
           <p><strong>错盘：</strong>${match.recommendation.mismatch}</p>
           <p><strong>风险：</strong>${match.risks.join("；")}</p>
@@ -341,12 +345,28 @@ function renderLotteryView() {
               <div><span>亚盘</span><strong>${formatAsian(match.asian_handicap)}</strong></div>
             </div>
             <p>${mismatch}</p>
+            ${renderStakingPlan(match)}
           </article>
         `;
       })
       .join("") || `<p class="empty">当前批次没有取得竞彩数据。</p>`;
 }
 
+
+function renderStakingPlan(match) {
+  const plan = match.prediction?.staking_plan ?? match.mismatch?.staking_plan;
+  if (!plan) return match.mismatch?.matched ? `<p class="muted">旧记录未做收益筛选，不能视为配注建议。</p>` : "";
+  const money = (value) => Number.isFinite(value) ? value.toFixed(2) : "--";
+  const feasible = plan.status === "feasible";
+  const rows = feasible ? plan.scenarios : plan.equal_stake_scenarios;
+  return `<section class="staking-plan">
+    <h4>${feasible ? "条件配注 · 两个覆盖结果分别净盈利" : "收益筛选 · 暂不建议双选"}</h4>
+    <p>${escapeAttribute(plan.note_zh)}</p>
+    ${rows?.length ? `<p>${feasible ? `方案总投入 ${money(plan.total_stake)} 元` : "仅演示各投2元、总投入4元的后果，不是购买建议"}</p>
+    <div class="table-wrap"><table><thead><tr><th>让球结果</th><th>返奖（含本金）</th><th>净收益</th></tr></thead>
+    <tbody>${rows.map((row) => `<tr><td>${escapeAttribute(row.label)}${row.covered ? "" : "（未覆盖）"}</td><td>${money(row.return)} 元</td><td>${row.net_profit > 0 ? "+" : ""}${money(row.net_profit)} 元</td></tr>`).join("")}</tbody></table></div>` : ""}
+  </section>`;
+}
 
 function renderMismatchView() {
   const matches = [...state.mismatchHistory].sort(sortByKickoffDesc);
@@ -370,6 +390,7 @@ function renderMismatchView() {
             </div>
             <p>${match.mismatch.reason}</p>
             <strong class="pick">${match.mismatch.pick}</strong>
+            ${renderStakingPlan(match)}
           </article>
         `,
       )
@@ -554,19 +575,36 @@ function buildLearningSummary() {
   });
 }
 
+function renderFrozenEvaluation() {
+  const report = state.learningEvaluation;
+  if (!report) return `<p>冻结预测评估尚未开始；历史命中率仅供参考。</p>`;
+  const summary = report.overall;
+  const value = (number) => Number.isFinite(number) ? number.toFixed(4) : "--";
+  const market = summary.market_paired;
+  return `<div class="frozen-evaluation">
+    <p>全部比赛与自选报告 · 每场首次有效赛前预测 · ${report.selected_fixtures} 场入档，${summary.settled} 场完成对照，${report.pending_results} 场待赛果。</p>
+    <div class="learning-grid">
+      <article><span>原始评分 Brier</span><strong>${value(summary.base.brier)}</strong><em>${summary.base.n} 场，排除走盘</em></article>
+      <article><span>校准评分 Brier</span><strong>${value(summary.calibrated.brier)}</strong><em>差值 ${value(summary.brier_delta)}，负值较好</em></article>
+      <article><span>同口径市场 Brier</span><strong>${value(market.market.brier)}</strong><em>${market.market.n} 场；该子集原始 / 校准 ${value(market.base.brier)} / ${value(market.calibrated.brier)}</em></article>
+    </div>
+    <p>置信度仍是规则评分，以上为概率评分诊断。仅调信心不会改变选边、命中率或收益；旧记录不补算成冻结样本。</p>
+  </div>`;
+}
+
 function renderLearningSummary(groups) {
   const strategies = Object.values(state.strategyPerformance.strategies ?? {});
   const active = strategies.filter((strategy) => strategy.active);
   const largestSample = Math.max(0, ...strategies.map((strategy) => strategy.sample_size ?? 0));
   const minimumSample = state.strategyPerformance.minimum_sample ?? 20;
   const calibrationStatus = active.length
-    ? `已启用 ${active.length} 类策略校准，单场信心最多修正 ±5%`
+    ? `已启用 ${active.length} 类策略校准，单场信心最多修正 ±5 个百分点`
     : `策略校准样本积累中：最多 ${largestSample}/${minimumSample}，当前不调权`;
 
   return `
     <section class="learning-panel">
       <div>
-        <span>学习样本</span>
+        <span>冻结样本校准</span>
         <strong>${calibrationStatus}</strong>
       </div>
       <div class="learning-grid">
@@ -582,6 +620,7 @@ function renderLearningSummary(groups) {
           )
           .join("")}
       </div>
+      ${renderFrozenEvaluation()}
     </section>
   `;
 }
@@ -717,7 +756,8 @@ function formatProbability(value) {
 
 function formatPrediction(match) {
   if (!match.prediction) return "待补";
-  return `${match.prediction.market}：${match.prediction.pick}（信心 ${match.prediction.confidence}%）`;
+  const prefix = match.prediction.betting_eligible === false ? "仅作方向观察，不建议双选购买。" : "";
+  return `${prefix}${match.prediction.market}：${match.prediction.pick}（信心 ${match.prediction.confidence}%）`;
 }
 
 function formatLine(value) {

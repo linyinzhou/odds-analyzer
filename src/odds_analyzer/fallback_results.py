@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from odds_analyzer.calibration import apply_confidence_calibration
+from odds_analyzer.learning import calibrate_predictions, freeze_predictions, now_iso
 from odds_analyzer.dashboard_payload import upsert_history, with_batch_date, without_batch
 from odds_analyzer.fallback_queue import missing_fields_for_match
 from odds_analyzer.jobs.refresh_evening_slate import (
@@ -48,9 +48,11 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
     for result in results:
         request = _find_request(payload, result)
         match, collection = _find_match(payload, request)
-        updated, filled = _apply_result(
-            match, request, result, payload.get("strategy_performance")
-        )
+        updated, filled = _apply_result(match, request, result)
+        calibrated, performance = calibrate_predictions(payload, [updated], now_iso())
+        updated = _attach_bilingual_reports(calibrated)[0]
+        payload["strategy_performance"] = performance
+        freeze_predictions(payload, [updated], batch_date=str(request.get("batch_date") or ""))
         _replace_match(payload, collection, updated)
         remaining = missing_fields_for_match(updated)
         _settle_request(request, result, remaining)
@@ -97,7 +99,6 @@ def _apply_result(
     match: dict[str, Any],
     request: dict[str, Any],
     result: dict[str, Any],
-    strategy_performance: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     _validate_identity(match, result)
     queried_at = _timestamp(result.get("queried_at"), "queried_at")
@@ -121,10 +122,7 @@ def _apply_result(
         _record_audit(updated, field, queried_at, sources)
         filled.append(field)
 
-    updated = analyze_slate_match(updated)
-    updated = apply_confidence_calibration(updated, strategy_performance)
-    updated = _attach_bilingual_reports([updated])[0]
-    return updated, filled
+    return analyze_slate_match(updated), filled
 
 
 def _validate_identity(match: dict[str, Any], result: dict[str, Any]) -> None:
@@ -223,6 +221,9 @@ def _sporttery(value: Any) -> dict[str, Any]:
         if value.get("handicap_odds")
         else None
     )
+    single = value.get("single_handicap")
+    if single is not None and type(single) is not bool:
+        raise ValueError("Sporttery single_handicap must be boolean or null")
     if standard is None and (handicap is None or handicap_odds is None):
         raise ValueError("Sporttery needs standard odds or handicap plus handicap odds")
     return {
@@ -230,6 +231,7 @@ def _sporttery(value: Any) -> dict[str, Any]:
         "handicap": handicap,
         "handicap_odds": handicap_odds,
         "source": "Codex fallback",
+        "single_handicap": single,
     }
 
 

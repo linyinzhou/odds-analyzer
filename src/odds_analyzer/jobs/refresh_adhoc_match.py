@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from odds_analyzer.dashboard_payload import upsert_history
+from odds_analyzer.learning import calibrate_predictions, freeze_predictions, now_iso
 from odds_analyzer.fallback_queue import build_fallback_requests, merge_fallback_requests
 from odds_analyzer.jobs.refresh_evening_slate import (
     BEIJING,
@@ -130,7 +131,10 @@ def refresh_adhoc_match(
         "odds_sport_key": odds_sport_key,
     }
     match = analyze_slate_match(match)
-    match = _attach_bilingual_reports([match])[0]
+    calibrated, performance = calibrate_predictions(existing, [match], now_iso())
+    match = _attach_bilingual_reports(calibrated)[0]
+    existing["strategy_performance"] = performance
+    freeze_predictions(existing, [match], batch_date=match_date)
 
     existing["adhoc_history"] = upsert_history(existing.get("adhoc_history", []), [match])
     adhoc_status = {

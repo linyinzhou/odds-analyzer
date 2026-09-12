@@ -3,13 +3,19 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 from copy import deepcopy
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from odds_analyzer.calibration import build_strategy_performance
+from odds_analyzer.learning import (
+    available_results,
+    evaluate_archive,
+    record_result,
+    selected_snapshots,
+    timestamp,
+    training_performance,
+)
 from odds_analyzer.jobs.refresh_evening_slate import (
     ALLOWED_ANALYSIS_COMPETITIONS,
     BEIJING,
@@ -19,16 +25,17 @@ from odds_analyzer.jobs.refresh_evening_slate import (
     _dashboard_match_key,
     _football_data_fixture_key,
 )
-from odds_analyzer.models import AsianHandicapLine, ChineseLotteryLine, MatchScore, Selection
-from odds_analyzer.settlement import settle_asian_handicap, settle_chinese_lottery
+from odds_analyzer.models import MatchScore
+from odds_analyzer.prediction_settlement import settle_saved_prediction
 from odds_analyzer.sources import (
     FootballDataFixture,
     fetch_evening_fixtures,
     fetch_upcoming_fixtures,
 )
+from odds_analyzer.sources.football_data import fetch_fixture_by_id
 
 
-FINISHED_STATUSES = {"FINISHED", "AWARDED"}
+FINISHED_STATUSES = {"FINISHED"}
 
 
 def refresh_next_matchday(
@@ -175,7 +182,18 @@ def review_checker_results(
         history.append(copied)
 
     updated["checker_history"] = history
-    updated["strategy_performance"] = build_strategy_performance(history, reviewed_at)
+    # Settle the immutable selection, including forecasts outside the checker top-N.
+    for snapshot in selected_snapshots(updated):
+        if snapshot["batch_date"] != slate_date:
+            continue
+        fixture = _fixture_for_match(snapshot["match"], fixtures_by_id, fixtures_by_key)
+        if fixture is not None:
+            record_result(updated, snapshot, fixture.home_score, fixture.away_score,
+                          reviewed_at, status=fixture.status)
+    # Summary includes this review; future predictions still require strictly earlier observations.
+    summary_time = (timestamp(reviewed_at) + timedelta(microseconds=1)).isoformat()
+    updated["strategy_performance"] = training_performance(updated, summary_time)
+    updated["learning_evaluation"] = evaluate_archive(updated)
     updated["last_result_review"] = {
         "batch_date": slate_date,
         "reviewed_at": reviewed_at,
@@ -184,75 +202,6 @@ def review_checker_results(
         **counts,
     }
     return updated, counts
-
-
-def settle_saved_prediction(match: dict[str, Any], score: MatchScore) -> dict[str, Any] | None:
-    prediction = match.get("prediction") or {}
-    market_type = prediction.get("market_type") or _legacy_market_type(prediction)
-    if market_type == "sporttery_handicap":
-        line = _saved_handicap(prediction)
-        selections = _saved_selections(prediction, handicap=True)
-        if line is None or not selections:
-            return None
-        result = settle_chinese_lottery(score, ChineseLotteryLine(home_handicap=int(line)))
-        hit = result in selections
-        return {
-            "hit": hit,
-            "void": False,
-            "outcome": "win" if hit else "loss",
-            "settlement": result.value,
-            "note": f"竞彩让球结果为{_selection_zh(result)}；保存建议为{prediction.get('pick', '')}，判定{'命中' if hit else '未中'}。",
-        }
-
-    if market_type == "sporttery_standard":
-        selections = _saved_selections(prediction, handicap=False)
-        if not selections:
-            return None
-        result = settle_chinese_lottery(score, ChineseLotteryLine(home_handicap=0))
-        hit = result in selections
-        return {
-            "hit": hit,
-            "void": False,
-            "outcome": "win" if hit else "loss",
-            "settlement": result.value,
-            "note": f"胜平负结果为{_selection_zh(result, handicap=False)}；保存建议为{prediction.get('pick', '')}，判定{'命中' if hit else '未中'}。",
-        }
-
-    if market_type == "asian_handicap":
-        line = _saved_handicap(prediction)
-        selections = _saved_selections(prediction, handicap=False)
-        if line is None or len(selections) != 1 or selections[0] is Selection.DRAW:
-            return None
-        stake_result = settle_asian_handicap(
-            score,
-            AsianHandicapLine(home_handicap=float(line)),
-            selections[0],
-        )
-        void = stake_result == 0
-        hit = None if void else stake_result > 0
-        outcome = {
-            1.0: "win",
-            0.5: "half_win",
-            0.0: "push",
-            -0.5: "half_loss",
-            -1.0: "loss",
-        }[stake_result]
-        note = {
-            "win": "亚盘全赢",
-            "half_win": "亚盘半赢",
-            "push": "亚盘走盘，不计入命中率",
-            "half_loss": "亚盘半输",
-            "loss": "亚盘全输",
-        }[outcome]
-        return {
-            "hit": hit,
-            "void": void,
-            "outcome": outcome,
-            "settlement": stake_result,
-            "note": f"{prediction.get('pick', '')}结算为{note}。",
-        }
-
-    return None
 
 
 def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
@@ -269,20 +218,45 @@ def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
         }
         counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
     else:
-        try:
-            fixtures = fetch_evening_fixtures(api_key, review_date)
-        except Exception as exc:
-            payload["last_result_review"] = {
-                "batch_date": review_date,
-                "reviewed_at": reviewed_at,
-                "status": "unavailable",
-                "source": "football-data.org",
-                "error": type(exc).__name__,
-            }
-            counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
-        else:
-            payload, counts = review_checker_results(payload, review_date, fixtures, reviewed_at)
-            payload["last_result_review"]["status"] = "success"
+        dates = {review_date}
+        results = available_results(payload)
+        for snapshot in selected_snapshots(payload):
+            kickoff = timestamp(snapshot["match"].get("kickoff_time"), kickoff=True)
+            if snapshot["fixture_key"] not in results and kickoff and kickoff < timestamp(reviewed_at):
+                dates.add(snapshot["batch_date"])
+        counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
+        errors = {}
+        successful_batches = 0
+        for batch_date in sorted(dates):
+            try:
+                fixtures = fetch_evening_fixtures(api_key, batch_date)
+            except Exception as exc:
+                errors[batch_date] = type(exc).__name__
+                continue
+            fixtures = list(fixtures)
+            present_ids = {fixture.match_id for fixture in fixtures}
+            for snapshot in selected_snapshots(payload):
+                if snapshot["batch_date"] != batch_date or (snapshot["fixture_key"] in results and batch_date != review_date):
+                    continue
+                match_id = (snapshot["match"].get("football_data_snapshot") or {}).get("match_id")
+                if match_id and match_id not in present_ids:
+                    try:
+                        fixture = fetch_fixture_by_id(api_key, int(match_id))
+                    except Exception as exc:
+                        errors[f"fixture:{match_id}"] = type(exc).__name__
+                    else:
+                        if fixture is not None:
+                            fixtures.append(fixture)
+                            present_ids.add(fixture.match_id)
+            payload, batch_counts = review_checker_results(payload, batch_date, tuple(fixtures), reviewed_at)
+            successful_batches += 1
+            for key in counts:
+                counts[key] += batch_counts[key]
+        payload["last_result_review"] = {
+            "batch_date": review_date, "reviewed_at": reviewed_at,
+            "status": "unavailable" if not successful_batches else "partial" if errors else "success",
+            "source": "football-data.org", "attempted_batches": sorted(dates), "errors": errors, **counts,
+        }
 
     payload, schedule_counts = refresh_next_matchday(payload, api_key)
     _write_payload(path, payload)
@@ -306,57 +280,6 @@ def _fixture_for_match(
     except (TypeError, ValueError):
         fixture = None
     return fixture or fixtures_by_key.get(_dashboard_match_key(match))
-
-
-def _legacy_market_type(prediction: dict[str, Any]) -> str:
-    market = str(prediction.get("market", ""))
-    if "竞彩让球" in market:
-        return "sporttery_handicap"
-    if "竞彩胜平负" in market:
-        return "sporttery_standard"
-    if "亚盘" in market:
-        return "asian_handicap"
-    return "unsupported"
-
-
-def _saved_handicap(prediction: dict[str, Any]) -> float | None:
-    value = prediction.get("home_handicap")
-    if value is not None:
-        try:
-            return float(value)
-        except (TypeError, ValueError):
-            return None
-    match = re.search(r"([+-]\d+(?:\.\d+)?)", str(prediction.get("market", "")))
-    if match:
-        return float(match.group(1))
-    pick_match = re.search(r"([+-]\d+(?:\.\d+)?)\s*$", str(prediction.get("pick", "")))
-    return float(pick_match.group(1)) if pick_match else None
-
-
-def _saved_selections(prediction: dict[str, Any], handicap: bool) -> tuple[Selection, ...]:
-    keys = prediction.get("selection_keys") or []
-    parsed = []
-    for key in keys:
-        try:
-            parsed.append(Selection(str(key)))
-        except ValueError:
-            continue
-    if parsed:
-        return tuple(parsed)
-
-    pick = str(prediction.get("pick", ""))
-    labels = (
-        (("让胜", Selection.HOME), ("让平", Selection.DRAW), ("让负", Selection.AWAY))
-        if handicap
-        else (("主胜", Selection.HOME), ("平", Selection.DRAW), ("客胜", Selection.AWAY))
-    )
-    return tuple(selection for label, selection in labels if label in pick)
-
-
-def _selection_zh(selection: Selection, handicap: bool = True) -> str:
-    if handicap:
-        return {Selection.HOME: "让胜", Selection.DRAW: "让平", Selection.AWAY: "让负"}[selection]
-    return {Selection.HOME: "主胜", Selection.DRAW: "平", Selection.AWAY: "客胜"}[selection]
 
 
 def _latest_review_batch(payload: dict[str, Any]) -> str:
