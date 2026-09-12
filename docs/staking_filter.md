@@ -2,8 +2,9 @@
 
 Matched handicap patterns remain visible for analysis. Each new matched prediction
 now has a `staking_plan` and `betting_eligible` flag; the mismatch record also holds
-the plan for the dashboard. Unprofitable/missing/unsupported plans are excluded
-from checker betting candidates and frozen learning eligibility. They are not
+the plan for the dashboard. Unprofitable or missing plans are excluded from Checker candidates. Known
+unavailable singles with a feasible ratio may enter Checker as parlay references,
+but remain excluded from single-bet frozen learning eligibility. They are not
 silently replaced by a different bet or a higher stake.
 
 ## What the suggestion means
@@ -106,7 +107,7 @@ Other-leg losses and the uncovered outcome can lose the whole stake. Multiple
 combinations, additional multi-selections and void legs require full-ticket math.
 A pair failing the standalone filter is not proof that every possible parlay fails.
 
-Such references remain outside single-bet Checker candidates and learning ROI.
+Such references may enter Checker for outcome review, but remain outside single-bet learning ROI.
 Existing frozen predictions and result archives are never rewritten. To refresh
 only ratio displays on an existing slate (including matches already started):
 
@@ -118,3 +119,15 @@ python -m odds_analyzer.jobs.refresh_staking_references --payload path/to/daily_
 This command preserves saved selections, confidence, odds, source audits, Checker
 history and both frozen archives. It records the actual calculation timestamp in
 `last_staking_refresh` and does not claim to fetch new odds or generate forecasts.
+
+## Checker selection
+
+Pool non-mismatch recommendations and original mismatch pairs with a feasible
+minimum-stake allocation, then rank the eligible pool by confidence descending.
+Keep the existing cap: up to 3 when fewer than 5 qualify, otherwise up to 8.
+Known unavailable singles do not block outcome-review selection for feasible
+mismatch pairs. Rejected pairs cannot enter even at higher confidence. Checker
+shows the market, pick, confidence and a short ratio-status label, not a stake table.
+Use `--refresh-checker` with the saved-odds ratio refresh command to reselect the
+current slate; surviving review records and previous batches are preserved.
+Neither this display update nor reselection creates retrospective frozen forecasts.

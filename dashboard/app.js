@@ -1,4 +1,4 @@
-const APP_VERSION = "20260912-no-lottery-tab-5";
+const APP_VERSION = "20260912-checker-mixed-6";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -439,7 +439,7 @@ function renderCheckerView() {
   elements.viewCounter.textContent = `${hits}/${reviewed} 命中`;
   elements.viewBody.innerHTML = `
     <div class="checker-tools">
-      <span>只显示当前批次胜率排序靠前的 ${matches.length} 场</span>
+      <span>按信心排序选取非错盘推荐与配比可行的错盘推荐</span>
       <strong>已复盘 ${reviewed} 场，命中 ${hits} 场</strong>
     </div>
     ${renderLearningSummary(learning)}
@@ -463,8 +463,8 @@ function renderCheckerItem(match) {
         </div>
         <em class="tag ${match.status}">${match.signal_label}</em>
       </header>
-      <p>${match.checker}</p>
-      <p><strong>最终建议：</strong>${formatPrediction(match)}</p>
+      <p><strong>推荐：</strong>${match.prediction?.market ?? "待补"}：${match.prediction?.pick ?? "待补"}（信心 ${match.prediction?.confidence ?? "--"}%）</p>
+      ${match.mismatch?.matched ? `<p class="muted">错盘推荐 · ${match.prediction?.staking_plan?.status === "feasible" ? "配比可行" : "历史记录，配比未通过或未计算"}${match.chinese_lottery?.single_handicap === false ? " · 串关参考" : ""}</p>` : ""}
       <div class="checker-result">
         <label>
           <span>赛果</span>
@@ -617,9 +617,19 @@ function getCheckerReview(match) {
 }
 
 function getTopCheckerCandidates(matches) {
-  const sorted = [...matches].sort((a, b) => predictionConfidence(b) - predictionConfidence(a));
-  const limit = matches.length <= 5 ? Math.min(3, matches.length) : Math.min(8, matches.length);
-  return sorted.slice(0, limit);
+  const candidates = matches.filter(match => {
+    const prediction = match.prediction ?? {};
+    if (!(prediction.confidence > 0) || !prediction.market || prediction.market === "无推荐") return false;
+    if (!match.mismatch?.matched) return prediction.betting_eligible !== false;
+    const plan = prediction.staking_plan;
+    const keys = prediction.selection_keys ?? [];
+    const allocations = plan?.allocations ?? [];
+    return prediction.market_type === "sporttery_handicap" && keys.length === 2 && new Set(keys).size === 2
+      && plan?.status === "feasible" && plan.minimum_covered_profit > 0 && allocations.length === 2
+      && keys.every(key => allocations.some(row => row.selection === key));
+  });
+  candidates.sort((a, b) => predictionConfidence(b) - predictionConfidence(a));
+  return candidates.slice(0, candidates.length >= 5 ? 8 : 3);
 }
 
 function predictionConfidence(match) {

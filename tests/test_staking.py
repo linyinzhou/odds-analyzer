@@ -76,7 +76,7 @@ class StakingPlanTest(unittest.TestCase):
         self.assertEqual([row["net_profit"] for row in plan["scenarios"]], [-6, 1.7, .36])
         self.assertEqual(len(analyzed["staking_references"]), 1)
         self.assertFalse(valid_prediction(analyzed))
-        self.assertEqual(_checker_candidates([analyzed], "2026-09-12"), [])
+        self.assertEqual(_checker_candidates([analyzed], "2026-09-12"), [analyzed])
 
     def test_display_refresh_preserves_forecasts_and_archives_after_kickoff(self):
         from odds_analyzer.jobs.refresh_staking_references import refresh_staking_references
@@ -111,6 +111,26 @@ class StakingPlanTest(unittest.TestCase):
         for market, keys in (("sporttery_handicap", ["home"]), ("asian_handicap", ["draw", "away"]),
                              ("sporttery_standard", ["draw", "away"])):
             self.assertEqual(recommended_staking_references(quotes, {"market_type": market, "selection_keys": keys}), [])
+
+    def test_checker_ranks_both_kinds_and_rejects_high_confidence_bad_pairs(self):
+        good = analyze_slate_match(dynamic_analysis_match(True))
+        good["chinese_lottery"] = lottery(3.85, 1.59, False)
+        good["prediction"]["confidence"] = 70
+        good["prediction"]["betting_eligible"] = False
+        bad = deepcopy(good)
+        bad["chinese_lottery"] = lottery(2.5, 1.4, False)
+        bad["prediction"]["confidence"] = 99
+        normal = deepcopy(good)
+        normal["mismatch"]["matched"] = False
+        normal["prediction"].pop("betting_eligible")
+        normal["prediction"]["confidence"] = 80
+        self.assertEqual(_checker_candidates([good, bad, normal], "2026-09-12"), [normal, good])
+        many = [deepcopy(normal) for _ in range(10)]
+        for i, item in enumerate(many):
+            item["prediction"]["confidence"] = 50 + i
+        selected = _checker_candidates(many, "2026-09-12")
+        self.assertEqual(len(selected), 8)
+        self.assertEqual([m["prediction"]["confidence"] for m in selected], list(range(59, 51, -1)))
 
     def test_missing_invalid_and_duplicate_selections(self):
         for price in (None, 0, 1, -1, float("nan"), float("inf"), True, "bad"):

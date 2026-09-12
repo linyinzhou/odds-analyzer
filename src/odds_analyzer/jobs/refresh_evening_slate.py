@@ -1236,13 +1236,18 @@ def build_evening_slate_batch(
 
 
 def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
-    candidates = [
-        match
-        for match in matches
-        if match.get("prediction", {}).get("confidence", 0) > 0
-        and match.get("prediction", {}).get("market") != "无推荐"
-        and match.get("prediction", {}).get("betting_eligible") is not False
-    ]
+    from odds_analyzer.staking import recommended_staking_references
+
+    def eligible(match: dict) -> bool:
+        prediction = match.get("prediction") or {}
+        if prediction.get("confidence", 0) <= 0 or not prediction.get("market") or prediction["market"] == "无推荐":
+            return False
+        if (match.get("mismatch") or {}).get("matched"):
+            plans = recommended_staking_references(match.get("chinese_lottery"), prediction)
+            return bool(plans and plans[0]["status"] == "feasible")
+        return prediction.get("betting_eligible") is not False
+
+    candidates = [match for match in matches if eligible(match)]
     candidates.sort(
         key=lambda match: match.get("prediction", {}).get("confidence", 0),
         reverse=True,

@@ -11,7 +11,7 @@ from odds_analyzer.staking import build_staking_plan, recommended_staking_refere
 from odds_analyzer.jobs.refresh_evening_slate import _attach_bilingual_reports
 
 
-def refresh_staking_references(payload: dict) -> dict:
+def refresh_staking_references(payload: dict, *, refresh_checker: bool = False) -> dict:
     updated = deepcopy(payload)
     refreshed_at = now_iso()
     current_ids = {match["id"] for match in updated.get("current_matches", [])}
@@ -43,15 +43,21 @@ def refresh_staking_references(payload: dict) -> dict:
                 count += 1
     updated["last_staking_refresh"] = {"refreshed_at": refreshed_at, "match_count": count,
         "basis": "saved_odds_and_selections", "forecasts_regenerated": False}
+    if refresh_checker:
+        from odds_analyzer.fallback_results import _rebuild_daily_histories
+        _rebuild_daily_histories(updated)
+        updated["last_checker_refresh"] = {"refreshed_at": refreshed_at,
+            "basis": "saved_predictions_and_odds", "forecasts_regenerated": False}
     return updated
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--payload", required=True)
+    parser.add_argument("--refresh-checker", action="store_true", help="Reselect the current slate from saved forecasts using the current Checker filter.")
     args = parser.parse_args()
     path = Path(args.payload)
-    updated = refresh_staking_references(json.loads(path.read_text(encoding="utf-8")))
+    updated = refresh_staking_references(json.loads(path.read_text(encoding="utf-8")), refresh_checker=args.refresh_checker)
     path.write_text(json.dumps(updated, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(updated["last_staking_refresh"]))
 
