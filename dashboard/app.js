@@ -1,4 +1,4 @@
-const APP_VERSION = "20260912-checker-mixed-6";
+const APP_VERSION = "20260912-current-mismatch-7";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -90,7 +90,7 @@ function normalizePayload(payload) {
   const inScope = (match) => matchInAnalysisScope(match, analysisCompetitionCodes);
   const allCurrentMatches = payload.current_matches ?? payload.matches ?? [];
   const currentMatches = allCurrentMatches.filter(inScope);
-  const mismatchHistory = (payload.mismatch_history ?? allCurrentMatches.filter((match) => match.mismatch?.matched)).filter(inScope);
+  const mismatchHistory = currentMatches.filter((match) => match.mismatch?.matched === true);
   const checkerHistory = (payload.checker_history ?? getTopCheckerCandidates(currentMatches)).filter(inScope);
   const adhocHistory = payload.adhoc_history ?? [];
   const fallbackRequests = payload.fallback_requests ?? [];
