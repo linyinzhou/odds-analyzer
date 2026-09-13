@@ -242,7 +242,7 @@ See [the staking filter](docs/staking_filter.md) for examples, statuses and test
 
 ## Conditional Parlay Scenarios
 
-The bottom of the Mismatch panel compares current-slate Checker singles with
+The top of the Mismatch panel compares current-slate Checker singles with
 unchanged mismatch doubles. The default single-confidence threshold is 65/100
 and is editable; it is a filter, not a calibrated hit probability. Historical
 Checker fixtures outside the current slate are excluded. Unsupported predictions

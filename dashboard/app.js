@@ -1,4 +1,4 @@
-const APP_VERSION = "20260913-mismatch-parlays-1";
+const APP_VERSION = "20260913-mismatch-parlays-2";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -375,7 +375,7 @@ function renderMismatchView() {
       )
       .join("") || `<p class="empty">当前没有命中错盘规则的比赛。</p>`;
   elements.viewBody.insertAdjacentHTML("beforeend", renderPagination("mismatch", paged));
-  elements.viewBody.insertAdjacentHTML("beforeend", renderMismatchParlays(matches));
+  elements.viewBody.insertAdjacentHTML("afterbegin", renderMismatchParlays(matches));
   const updateParlays = () => {
     const value = Number(document.querySelector("#parlayMultiplier").value);
     const threshold = Number(document.querySelector("#parlayConfidence").value);
