@@ -705,3 +705,5 @@ h4 {
 .staking-plan .table-wrap { overflow-x: auto; }
 .staking-plan table { width: 100%; border-collapse: collapse; }
 .staking-plan th, .staking-plan td { padding: 6px; text-align: left; border-bottom: 1px solid var(--line); }
+
+.parlay-table { max-height: 480px; overflow: auto; }

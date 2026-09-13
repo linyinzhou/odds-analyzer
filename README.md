@@ -240,6 +240,40 @@ confirmed; an odds mismatch is not proof of positive expected value.
 
 See [the staking filter](docs/staking_filter.md) for examples, statuses and tests.
 
+## Conditional Parlay Scenarios
+
+The bottom of the Mismatch panel compares current-slate Checker singles with
+unchanged mismatch doubles. The default single-confidence threshold is 65/100
+and is editable; it is a filter, not a calibrated hit probability. Historical
+Checker fixtures outside the current slate are excluded. Unsupported predictions
+and missing odds are listed with exclusion reasons. Asian handicap predictions
+are converted only when their full-win condition exactly equals a quoted
+Sporttery single selection; underdog cover is never treated as an outright win.
+
+A second mode evaluates mismatch doubles alone. For up to eight eligible fixtures,
+the calculator enumerates every fixture subset of size 2–8 and every nonempty set
+of pass sizes for that subset, including all combinations at each selected size.
+Mixed mode requires both a single and a double in the selected group. Rows show
+only positive theoretical net returns assuming every selection hits (the lower
+selected odds for doubles). Costs use actual expanded selection counts, at 2 yuan
+per unit. Each row is an independent equal-multiplier plan; custom deleted tickets
+and unequal per-ticket multipliers are outside this enumeration. More than eight
+eligible fixtures produces an explicit limit message, not a partial result.
+
+Multipliers scale cost and return equally. No profitable plan, insufficient input,
+and excluded predictions are distinct states. Displayed amounts are theoretical;
+ticket odds, rounding and prize limits govern settlement. Conditional profitability
+does not establish positive expected value. Existing single-match allocation plans
+and stored prediction/history data are unchanged.
+
+Frontend regression checks (no dependencies):
+
+```bash
+node tests/test_mismatch_parlays.cjs
+node --check dashboard/app.js
+node --check dashboard/mismatch-parlays.js
+```
+
 ## Run Tests
 
 ```bash

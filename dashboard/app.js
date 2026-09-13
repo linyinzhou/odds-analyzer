@@ -1,4 +1,4 @@
-const APP_VERSION = "20260912-current-mismatch-7";
+const APP_VERSION = "20260913-mismatch-parlays-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -375,9 +375,24 @@ function renderMismatchView() {
       )
       .join("") || `<p class="empty">当前没有命中错盘规则的比赛。</p>`;
   elements.viewBody.insertAdjacentHTML("beforeend", renderPagination("mismatch", paged));
+  elements.viewBody.insertAdjacentHTML("beforeend", renderMismatchParlays(matches));
+  const updateParlays = () => {
+    const value = Number(document.querySelector("#parlayMultiplier").value);
+    const threshold = Number(document.querySelector("#parlayConfidence").value);
+    const mixed = document.querySelector("#parlayMode").value === "mixed";
+    const checkerIds = new Set(state.checkerHistory.map(match => match.id));
+    const candidates = mixed ? state.currentMatches.filter(match => match.mismatch?.matched || checkerIds.has(match.id)) : matches;
+    document.querySelector("#parlayResults").innerHTML = Number.isInteger(value) && value >= 1 && value <= 10000
+      && Number.isFinite(threshold) && threshold >= 0 && threshold <= 100
+      ? renderParlayResults(MismatchParlays.calculate(candidates, { mixed, minConfidence: threshold }), value)
+      : "<p>倍数须为 1～10000 的整数，信心门槛须为 0～100。</p>";
+  };
+  for (const id of ["#parlayMultiplier", "#parlayConfidence", "#parlayMode"]) {
+    document.querySelector(id).addEventListener("input", updateParlays);
+  }
+  updateParlays();
   bindPagination();
 }
-
 
 function renderScheduleView() {
   const currentFixtureKeys = new Set(state.currentMatches.map(fixtureIdentity));
@@ -785,3 +800,34 @@ elements.viewButtons.forEach((button) => {
 loadDashboard().catch((error) => {
   elements.viewBody.innerHTML = `<p class="empty">数据加载失败：${error.message}</p>`;
 });
+
+function renderMismatchParlays(matches) {
+  return `<section class="staking-plan" aria-label="错盘双选串关盈亏">
+    <h3>预测＋错盘串关盈利组合</h3>
+    <p>错盘保留原推荐双选；从当前批次 Checker 选入高信心的竞彩单选预测。假设所选预测全部命中，双选按较低赔率计算。每注 2 元，各注同倍；不采用上方单场配比。</p>
+    <p>枚举当前批次任意 2～8 场，以及同组选场的各关数全组合与混合购买（例如全部 2串1＋3串1）。不含单关、自定义删注和各注不同倍数。</p>
+    <label>方案 <select id="parlayMode"><option value="mixed">高信心单选＋错盘双选</option><option value="double">仅错盘双选</option></select></label>
+    <label>单选信心门槛 <input id="parlayConfidence" type="number" min="0" max="100" value="65"> / 100</label>
+    <p class="muted">默认门槛 65 是筛选设置，不是经验证的命中率。错盘双选不会自动压成单选；亚盘仅在获胜条件完全等价时转换为竞彩选项。</p>
+    <label>统一倍数 <input id="parlayMultiplier" type="number" min="1" max="10000" step="1" value="1"></label>
+    <p class="muted">加倍只放大盈亏。理论奖金以出票赔率、取整及奖金限额为准；全中假设不代表收益保证。</p>
+    <div id="parlayResults">${renderParlayResults(MismatchParlays.calculate(matches), 1)}</div>
+  </section>`;
+}
+
+function renderParlayResults(result, multiplier) {
+  const money = value => (value * multiplier).toFixed(2);
+  const labels = { home: "让胜", draw: "让平", away: "让负" };
+  const source = result.eligible.map(({ match, minimumOdds, count, keys, marketType, reason }, i) =>
+    `<li>${i + 1}. ${escapeAttribute(match.home_team)} vs ${escapeAttribute(match.away_team)}：${keys.map(key => marketType === "sporttery_standard" ? ({home:"主胜",draw:"平",away:"客胜"})[key] : labels[key]).join("＋")}，${count === 1 ? "预测单选 · 信心 " + match.prediction.confidence : "错盘双选"}，最低赔率 ${minimumOdds.toFixed(2)}${reason ? "（" + reason + "）" : ""}</li>`).join("");
+  const excluded = result.excluded.length ? `<p>以下 ${result.excluded.length} 场未计算：${result.excluded.map(match => escapeAttribute(match.home_team + " vs " + match.away_team + "：" + match.exclusion)).join("；")}。结果仅覆盖有效场次。</p>` : "";
+  const prefix = `<ul>${source}</ul>${excluded}`;
+  if (result.status === "too_many") return `${prefix}<p>有效错盘超过 8 场，暂不执行全量枚举；未生成盈利结论。</p>`;
+  if (result.status === "insufficient") return `${prefix}<p>当前可用 ${result.eligible.length} 场。仅双选模式至少需要两场；混合模式至少需要一场高信心竞彩单选和一场错盘双选。暂不能生成组合。</p>`;
+  const summary = `<p>已检查 ${result.checked} 种方案，${result.plans.length} 种在全中最低赔率情景下盈利。</p>`;
+  if (!result.plans.length) return `${prefix}${summary}<strong>无盈利组合：即使全部命中，最低奖金也不能超过投入；增加倍数无法改变结果。</strong>
+    <div class="table-wrap"><table><thead><tr><th>关数</th><th>选场组合数</th><th>最佳净利润</th></tr></thead><tbody>${result.bySize.map(row => `<tr><td>${row.k}串1</td><td>${row.count}</td><td>${money(row.bestProfit)} 元</td></tr>`).join("")}</tbody></table></div>`;
+  const names = new Map(result.eligible.map((item, i) => [item.match.id, i + 1]));
+  return `${prefix}${summary}<p>按收益率排序；编号对应上方比赛。每行是独立方案，混合关数包含该组选场下每个关数的全部组合。</p>
+    <div class="table-wrap parlay-table"><table><thead><tr><th>场次</th><th>串关</th><th>倍数</th><th>总注数</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead><tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => names.get(id)).join("、")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}</td><td>${multiplier}</td><td>${plan.cost / 2 * multiplier}</td><td>${money(plan.cost)}</td><td>${money(plan.payout)}</td><td>+${money(plan.profit)}</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>`;
+}
