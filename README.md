@@ -242,10 +242,11 @@ See [the staking filter](docs/staking_filter.md) for examples, statuses and test
 
 ## Conditional Parlay Scenarios
 
-The top of the Mismatch panel compares current-slate Checker singles with
-unchanged mismatch doubles. The default single-confidence threshold is 65/100
-and is editable; it is a filter, not a calibrated hit probability. Historical
-Checker fixtures outside the current slate are excluded. Unsupported predictions
+The top of the Mismatch panel compares all current-slate original single predictions with
+unchanged mismatch doubles. Confidence is displayed for comparison only; there
+is no confidence cutoff, including when the score is missing. Checker ranking
+does not restrict the candidate pool. Historical fixtures outside the current
+slate are excluded. Unsupported predictions
 and missing odds are listed with exclusion reasons. Asian handicap predictions
 are converted only when their full-win condition exactly equals a quoted
 Sporttery single selection; underdog cover is never treated as an outright win.

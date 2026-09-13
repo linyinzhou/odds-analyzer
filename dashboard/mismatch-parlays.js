@@ -12,7 +12,7 @@
     return result;
   }
 
-  function calculate(matches, { mixed = false, minConfidence = 65 } = {}) {
+  function calculate(matches, { mixed = false } = {}) {
     const eligible = [], excluded = [], seen = new Set();
     for (const match of matches) {
       if ((!mixed && !match.mismatch?.matched) || seen.has(match.id)) continue;
@@ -22,9 +22,6 @@
       let keys = prediction.selection_keys;
       let marketType = prediction.market_type;
       let reason = "";
-      if (!isDouble && (!Number.isFinite(prediction.confidence) || prediction.confidence < minConfidence)) {
-        excluded.push({ ...match, exclusion: "预测信心低于门槛或缺失" }); continue;
-      }
       if (!isDouble && prediction.betting_eligible === false) {
         excluded.push({ ...match, exclusion: "原预测不适合投注" }); continue;
       }
