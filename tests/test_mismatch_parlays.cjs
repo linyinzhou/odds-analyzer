@@ -100,3 +100,55 @@ assert.doesNotMatch(node('#viewBody').innerHTML, /parlayConfidence/);
 vm.runInContext('state.currentMatches = [matches[1]]; renderMismatchView()', context);
 assert.match(node('#parlayResults').innerHTML, /可用预测不足/);
 console.log('Mixed prediction and mismatch checks passed.');
+
+const { narrowMismatch } = require('../dashboard/mismatch-parlays.js');
+const narrowable = match('narrow-away', 1.73);
+narrowable.chinese_lottery.handicap = -1;
+narrowable.asian_handicap = {handicap: -0.5, home_odds: 2.02, away_odds: 1.91};
+narrowable.european_odds = {home: 2.01, draw: 3.79, away: 3.73};
+narrowable.fundamental_context = {
+  home: {played_games: 3, points: 1, goal_difference: -5},
+  away: {played_games: 3, points: 5, goal_difference: 2}
+};
+const frozen = JSON.stringify(narrowable);
+assert.equal(narrowMismatch(narrowable).selection, 'away');
+const narrowed = calculate([narrowable, match('double', 1.59)], {narrow:true});
+assert.equal(narrowed.plans[0].cost, 4);
+assert.ok(Math.abs(narrowed.plans[0].profit - 1.5014) < 1e-8);
+assert.equal(JSON.stringify(narrowable), frozen);
+const repriced = structuredClone(narrowable);
+repriced.chinese_lottery.handicap_odds = {home: 9, draw: 1.1, away: 20};
+repriced.review = {hit:false, final_score:'5-0'};
+repriced.prediction.confidence = 1;
+assert.deepEqual(narrowMismatch(repriced), narrowMismatch(narrowable));
+for (const change of [
+  m => { m.asian_handicap.handicap = -0.25; },
+  m => { m.asian_handicap.home_odds = m.asian_handicap.away_odds; },
+  m => { m.fundamental_context.home.points = 9; },
+  m => { m.fundamental_context.away.played_games = 2; },
+  m => { m.european_odds.home = 1.1; },
+  m => { m.chinese_lottery.handicap = 0; },
+  m => { m.prediction.selection_keys = ['home','draw']; },
+  m => { delete m.fundamental_context; },
+]) {
+  const value = structuredClone(narrowable); change(value);
+  assert.equal(narrowMismatch(value).narrowed, false);
+}
+const homeNarrow = structuredClone(narrowable);
+homeNarrow.id = 'home-narrow';
+homeNarrow.prediction.selection_keys = ['home','draw'];
+homeNarrow.chinese_lottery.handicap = 1;
+homeNarrow.asian_handicap = {handicap:0.5, home_odds:1.91, away_odds:2.02};
+homeNarrow.european_odds = {home:3.73, draw:3.79, away:2.01};
+[homeNarrow.fundamental_context.home, homeNarrow.fundamental_context.away] =
+  [homeNarrow.fundamental_context.away, homeNarrow.fundamental_context.home];
+assert.equal(narrowMismatch(homeNarrow).selection, 'home');
+assert.ok(calculate([narrowable,homeNarrow],{narrow:true}).eligible.every(x=>x.count===1));
+node('#parlayMode').value = 'narrow';
+context.matches = [narrowable, match('double',1.59)];
+vm.runInContext('state.currentMatches = matches; state.mismatchHistory = matches; renderMismatchView()', context);
+assert.match(node('#parlayResults').innerHTML, /错盘收窄单选/);
+assert.match(node('#parlayResults').innerHTML, /原双选信心不沿用/);
+assert.match(node('#parlayResults').innerHTML, /1.50/);
+console.log('Independent mismatch narrowing checks passed.');
+

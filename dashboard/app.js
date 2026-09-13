@@ -1,4 +1,4 @@
-const APP_VERSION = "20260913-mismatch-parlays-3";
+const APP_VERSION = "20260913-mismatch-parlays-4";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -378,10 +378,11 @@ function renderMismatchView() {
   elements.viewBody.insertAdjacentHTML("afterbegin", renderMismatchParlays(matches));
   const updateParlays = () => {
     const value = Number(document.querySelector("#parlayMultiplier").value);
-    const mixed = document.querySelector("#parlayMode").value === "mixed";
+    const mode = document.querySelector("#parlayMode").value;
+    const mixed = mode === "mixed";
     const candidates = mixed ? state.currentMatches : matches;
     document.querySelector("#parlayResults").innerHTML = Number.isInteger(value) && value >= 1 && value <= 10000
-      ? renderParlayResults(MismatchParlays.calculate(candidates, { mixed }), value)
+      ? renderParlayResults(MismatchParlays.calculate(candidates, { mixed, narrow: mode === "narrow" }), value)
       : "<p>倍数须为 1～10000 的整数。</p>";
   };
   for (const id of ["#parlayMultiplier", "#parlayMode"]) {
@@ -802,10 +803,10 @@ loadDashboard().catch((error) => {
 function renderMismatchParlays(matches) {
   return `<section class="staking-plan" aria-label="错盘双选串关盈亏">
     <h3>预测＋错盘串关盈利组合</h3>
-    <p>按当前原预测组合：错盘保留双选，其他可用预测单选；不设信心门槛。</p>
-    <label>方案 <select id="parlayMode"><option value="mixed">预测单选＋错盘双选</option><option value="double">仅错盘双选</option></select></label>
+    <p>先独立判断错盘比赛：欧亚盘与积分、净胜球同向且能对应明确竞彩结果时收窄单选，否则保留双选，再计算组合盈亏。</p>
+    <label>方案 <select id="parlayMode"><option value="narrow">错盘独立判断后组合</option><option value="mixed">外部预测单选＋原错盘双选</option><option value="double">仅错盘双选</option></select></label>
     <label>倍数 <input id="parlayMultiplier" type="number" min="1" max="10000" step="1" value="1"></label>
-    <p class="muted">以下盈亏以所选比赛全部命中、双选命中较低赔率为前提，并非保证盈利。</p>
+    <p class="muted">按已有快照推演，不改写原赛前预测。以下盈亏以所选结果全部命中、双选命中较低赔率为前提。</p>
     <div id="parlayResults">${renderParlayResults(MismatchParlays.calculate(matches), 1)}</div>
   </section>`;
 }
@@ -817,9 +818,11 @@ function renderParlayResults(result, multiplier) {
       ? {home:"主胜",draw:"平",away:"客胜"} : {home:"让胜",draw:"让平",away:"让负"};
     const market = item.marketType === "sporttery_standard" ? "胜平负" : "让球 " + formatLine(item.match.chinese_lottery.handicap);
     const confidence = Number.isFinite(item.match.prediction.confidence) ? item.match.prediction.confidence : "未提供";
-    return `${escapeAttribute(item.match.home_team)} vs ${escapeAttribute(item.match.away_team)}：${market} ${item.keys.map(key => names[key]).join("＋")}（${item.count === 1 ? "预测单选" : "错盘双选"}；信心 ${confidence}）`;
+    return `${escapeAttribute(item.match.home_team)} vs ${escapeAttribute(item.match.away_team)}：${market} ${item.keys.map(key => names[key]).join("＋")}（${item.narrowing?.narrowed ? "错盘收窄单选；原双选信心不沿用" : (item.count === 1 ? "预测单选" : "错盘双选") + "；信心 " + confidence}）`;
   };
-  const details = `<details><summary>查看计算依据与未入选比赛</summary>
+  const narrowingSummary = result.eligible.some(item => item.narrowing)
+    ? `<details open><summary>错盘收窄判断</summary><ul>${result.eligible.map(item => `<li>${label(item)}<details><summary>判断依据</summary>${escapeAttribute(item.reason)}${item.narrowing?.narrowed ? "<p>收窄会失去原双选另一选项的保护；判断错误时，该场相关串关可能全部损失。</p>" : ""}</details></li>`).join("")}</ul></details>` : "";
+  const details = `${narrowingSummary}<details><summary>查看计算依据与未入选比赛</summary>
     <p>信心分仅供比较，不参与筛选，也不代表实际命中率。每注 2 元，各注同倍；加倍只放大盈亏。实际以出票赔率、取整及奖金限额为准。</p>
     <p>枚举最多 8 场的任意选场及各关数全组合、混合关数；不含单关、自定义删注和各注不同倍数。混合模式至少包含一场预测单选和一场错盘双选。</p>
     <ul>${result.eligible.map(item => `<li>${label(item)}；最低赔率 ${item.minimumOdds.toFixed(2)}${item.reason ? "；" + item.reason : ""}</li>`).join("")}</ul>

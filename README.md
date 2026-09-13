@@ -242,7 +242,23 @@ See [the staking filter](docs/staking_filter.md) for examples, statuses and test
 
 ## Conditional Parlay Scenarios
 
-The top of the Mismatch panel compares all current-slate original single predictions with
+The default mode at the top of the Mismatch panel now evaluates **mismatch
+fixtures themselves** before building parlays. Each original pair stays unchanged
+in stored predictions and Checker history. A separate, visible scenario narrows
+a pair only when the more-supported Asian side on a half-goal line is exactly
+equivalent to one of its Sporttery outcomes, the corresponding normalized 1X2
+event exceeds 50%, and both season points per game and goal difference per game
+favor that side with at least three played games per team. Integer/quarter lines,
+ambiguous margins, missing data and disagreement retain the pair. The rules use
+market/fundamental snapshots, never Sporttery prices, computed profit, saved
+results or the double's confidence to choose the single. This is an uncalibrated
+direction heuristic, not a validated probability model; incomplete form/injury
+coverage is disclosed, and the old double's confidence is not assigned to the
+single. Existing historical slates are snapshot-based scenario replays, not new
+claims of pre-match forecasting success. The UI lists narrowed/retained choices
+and reasons, including the protection lost when narrowing.
+
+Other modes compare all current-slate original single predictions with
 unchanged mismatch doubles. Confidence is displayed for comparison only; there
 is no confidence cutoff, including when the score is missing. Checker ranking
 does not restrict the candidate pool. Historical fixtures outside the current
@@ -254,7 +270,9 @@ Sporttery single selection; underdog cover is never treated as an outright win.
 A second mode evaluates mismatch doubles alone. For up to eight eligible fixtures,
 the calculator enumerates every fixture subset of size 2–8 and every nonempty set
 of pass sizes for that subset, including all combinations at each selected size.
-Mixed mode requires both a single and a double in the selected group. Rows show
+External-single mixed mode requires both a single and a double in the selected
+group. The default narrowed-mismatch mode also permits all-single or all-double
+groups when those are the independent decisions. Rows show
 only positive theoretical net returns assuming every selection hits (the lower
 selected odds for doubles). Costs use actual expanded selection counts, at 2 yuan
 per unit. Each row is an independent equal-multiplier plan; custom deleted tickets
