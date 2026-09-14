@@ -396,6 +396,7 @@ def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapsh
             "home": _fundamental_context(fixture.home_team_id, snapshot),
             "away": _fundamental_context(fixture.away_team_id, snapshot),
         }
+        retained_forms = _retain_verified_forms(match, copied, fixture)
         copied["fundamentals"] = [
             {
                 "home": _fundamental_summary(
@@ -410,6 +411,11 @@ def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapsh
                 ),
             }
         ]
+        for side in retained_forms:
+            form = "-".join(copied["fundamental_context"][side]["form"])
+            copied["fundamentals"][0][side] = copied["fundamentals"][0][side].replace(
+                "近5场待补", f"近况 {form}（沿用同场赛前已核验记录）"
+            )
         sources = list(copied.get("sources", []))
         if "football-data.org" not in sources:
             sources.append("football-data.org")
@@ -418,6 +424,44 @@ def _enrich_with_football_data(matches: list[dict], snapshot: FootballDataSnapsh
             copied["signal_label"] = "基本面已抓取"
         enriched.append(copied)
     return enriched
+
+
+def _retain_verified_forms(previous: dict, refreshed: dict, fixture: FootballDataFixture) -> list[str]:
+    """Fill missing forms from the same fixture's dated, unchanged pre-match sample."""
+    audit = (previous.get("fallback_research") or {}).get("fundamentals") or {}
+    try:
+        queried_at = datetime.fromisoformat(str(audit.get("queried_at")).replace("Z", "+00:00"))
+        kickoff = datetime.strptime(fixture.kickoff_time, "%Y-%m-%d %H:%M").replace(tzinfo=BEIJING)
+        if queried_at.tzinfo is None:
+            return []
+        queried_at = queried_at.astimezone(BEIJING)
+    except (TypeError, ValueError):
+        return []
+    if (
+        not audit.get("sources")
+        or queried_at.date() != kickoff.date()
+        or queried_at >= kickoff
+        or previous.get("kickoff_time") != fixture.kickoff_time
+        or (previous.get("football_data_snapshot") or {}).get("match_id") != fixture.match_id
+    ):
+        return []
+    retained = []
+    stats = ("team_id", "played_games", "won", "draw", "lost", "goals_for", "goals_against")
+    for side in ("home", "away"):
+        old = (previous.get("fundamental_context") or {}).get(side) or {}
+        new = refreshed["fundamental_context"][side]
+        form = old.get("form")
+        if (
+            not new.get("form")
+            and isinstance(form, list)
+            and len(form) >= 3
+            and all(result in ("W", "D", "L") for result in form)
+            and all(old.get(key) is not None and old[key] == new.get(key) for key in stats)
+        ):
+            new["form"] = deepcopy(form)
+            new["form_provenance"] = deepcopy(audit)
+            retained.append(side)
+    return retained
 
 
 def _enrich_with_weather(matches: list[dict], forecasts: dict[int, object]) -> list[dict]:

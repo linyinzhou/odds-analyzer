@@ -1,0 +1,157 @@
+{
+  "id": "2026-09-13-levante-ud-fc-barcelona",
+  "kickoff_time": "2026-09-13 22:15",
+  "competition": "西甲 第 5 轮",
+  "home_team": "Levante UD",
+  "away_team": "FC Barcelona",
+  "fundamental_context": {
+    "home": {
+      "team_id": 88,
+      "position": 13,
+      "played_games": 4,
+      "won": 1,
+      "draw": 2,
+      "lost": 1,
+      "goals_for": 5,
+      "goals_against": 5,
+      "goal_difference": 0,
+      "points": 5,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "L"
+      ]
+    },
+    "away": {
+      "team_id": 81,
+      "position": 1,
+      "played_games": 4,
+      "won": 4,
+      "draw": 0,
+      "lost": 0,
+      "goals_for": 17,
+      "goals_against": 2,
+      "goal_difference": 15,
+      "points": 12,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "W"
+      ]
+    }
+  },
+  "fallback_research": {
+    "fundamentals": {
+      "queried_at": "2026-09-13T16:55:36+08:00",
+      "sources": [
+        {
+          "name": "LaLiga official results",
+          "url": "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-1",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        },
+        {
+          "name": "LaLiga official results",
+          "url": "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-2",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        },
+        {
+          "name": "LaLiga official results",
+          "url": "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-3",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        },
+        {
+          "name": "LaLiga official results",
+          "url": "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-4",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        },
+        {
+          "name": "Pre-match team update",
+          "url": "https://www.fcbarcelona.es/es/futbol/primer-equipo/noticias/4575331/la-convocatoria-pel-llevant-barca",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        }
+      ]
+    },
+    "sporttery": {
+      "queried_at": "2026-09-13T16:55:36+08:00",
+      "sources": [
+        {
+          "name": "China Sports Lottery official calculator API",
+          "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c_web&poolCode=had,hhad,crs,ttg,hafu",
+          "tier": "primary",
+          "queried_at": "2026-09-13T16:55:36+08:00"
+        }
+      ]
+    }
+  },
+  "football_data_snapshot": {
+    "match_id": 564675,
+    "competition_code": "PD",
+    "utc_date": "2026-09-13T14:15:00Z",
+    "status": "TIMED",
+    "source": "football-data.org"
+  },
+  "european_odds": {
+    "home": 14.93,
+    "draw": 8.78,
+    "away": 1.16
+  },
+  "asian_handicap": {
+    "provider": "Pinnacle",
+    "handicap": 2.25,
+    "home_odds": 1.89,
+    "away_odds": 2.02
+  },
+  "chinese_lottery": {
+    "standard": null,
+    "handicap": 2,
+    "handicap_odds": {
+      "home": 2.73,
+      "draw": 4.5,
+      "away": 1.85
+    },
+    "source": "Codex fallback",
+    "single_handicap": false
+  },
+  "fundamentals": [
+    {
+      "label": "本季联赛战绩（新到旧；比分为本队在前）",
+      "home": "09-06 Malaga 0-0；08-29 Betis 5-2；08-24 Osasuna 0-0；08-16 Espanyol 0-3",
+      "away": "09-06 Valencia 5-0；08-31 Rayo 5-2；08-27 Athletic 2-0；08-23 Elche 5-0",
+      "source_urls": [
+        "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-1",
+        "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-2",
+        "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-3",
+        "https://www.laliga.com/laliga-easports/resultados/2026-27/jornada-4"
+      ],
+      "queried_at": "2026-09-13T16:55:36+08:00"
+    },
+    {
+      "label": "样本范围",
+      "home": "本季联赛 4 场，不含杯赛和友谊赛。",
+      "away": "本季联赛 4 场，不含杯赛和友谊赛。"
+    },
+    {
+      "label": "赛前消息（查询时）",
+      "home": "正式首发尚未公布。",
+      "away": "巴萨官方名单：De Jong、Roony 伤缺；Eric Garcia 结束欧战停赛后归队。",
+      "source_urls": [
+        "https://www.fcbarcelona.es/es/futbol/primer-equipo/noticias/4575331/la-convocatoria-pel-llevant-barca"
+      ],
+      "queried_at": "2026-09-13T16:55:36+08:00"
+    }
+  ],
+  "sources": [
+    "football-data.org",
+    "The Odds API",
+    "Codex fallback: LaLiga official results",
+    "Codex fallback: Pre-match team update",
+    "Codex fallback: China Sports Lottery official calculator API"
+  ]
+}

@@ -90,8 +90,20 @@ def _fundamental_read(
         home = match.get("home_team", "主队")
         away = match.get("away_team", "客队")
         limited_sample = not has_sufficient_fundamental_context(context)
-        zh_caveat = "；但当前赛季样本不足3场，方向信心有限。" if limited_sample else "。"
-        en_caveat = "; however, fewer than three current-season results makes this a low-confidence direction." if limited_sample else "."
+        missing_form = all(
+            int((context.get(side) or {}).get("played_games") or 0) >= 3
+            for side in ("home", "away")
+        ) and any(
+            len((context.get(side) or {}).get("form") or []) < 3
+            for side in ("home", "away")
+        )
+        sample_reason = "近期战绩记录不足3条" if missing_form else "当前赛季样本不足3场"
+        sample_reason_en = (
+            "fewer than three recent-form records are available" if missing_form
+            else "fewer than three current-season games have been played"
+        )
+        zh_caveat = f"；但{sample_reason}，方向信心有限。" if limited_sample else "。"
+        en_caveat = f"; however, {sample_reason_en}, making this a low-confidence direction." if limited_sample else "."
         if comparison > 0.2:
             return (
                 f"排名、场均积分和净胜球样本偏向{home}{zh_caveat}",
