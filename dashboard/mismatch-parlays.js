@@ -149,7 +149,8 @@
         }
       }
     }
-    plans.sort((a, b) => b.roi - a.roi || a.cost - b.cost);
+    plans.sort((a, b) => Math.max(...b.sizes) - Math.max(...a.sizes)
+      || a.sizes.length - b.sizes.length || b.roi - a.roi || a.cost - b.cost);
     return { eligible, excluded, plans, checked, bySize: bySize.filter(Boolean),
       status: eligible.length < 2 || (mixed && !(eligible.some(item => item.count === 1) && eligible.some(item => item.count === 2))) ? "insufficient" : "complete" };
   }

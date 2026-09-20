@@ -1,4 +1,4 @@
-const APP_VERSION = "20260913-mismatch-parlays-4";
+const APP_VERSION = "20260920-parlay-order-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -832,7 +832,7 @@ function renderParlayResults(result, multiplier) {
   if (result.status === "insufficient") return `<strong>暂无可列出的盈利组合。</strong><p>可用预测不足以组成当前方案；这不代表已证明所有组合都亏损。</p>${details}`;
   if (!result.plans.length) return `<strong>没有盈利组合。</strong><p>按可用预测全部命中、双选取最低赔率计算，奖金仍不足以产生净利润。</p>${details}`;
   const entries = new Map(result.eligible.map(item => [item.match.id, item]));
-  return `<p><strong>找到 ${result.plans.length} 个全中时盈利的组合。</strong>按收益率排序，每行是一种独立方案。</p>
+  return `<p><strong>找到 ${result.plans.length} 个全中时盈利的组合。</strong>按最高关数从多到少排序；同关数先纯串关、后混合方案，再按收益率排序。每行是一种独立方案。</p>
     <div class="table-wrap parlay-table"><table><thead><tr><th>比赛与选项</th><th>买法</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead>
     <tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => label(entries.get(id))).join("<br>")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}，${multiplier}倍${plan.ids.length > Math.min(...plan.sizes) ? "（各关数全部组合）" : ""}</td><td>${money(plan.cost)}元</td><td>${money(plan.payout)}元</td><td>+${money(plan.profit)}元</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>${details}`;
 }
