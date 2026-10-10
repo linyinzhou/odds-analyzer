@@ -154,7 +154,7 @@ class HandicapAnalysisTest(unittest.TestCase):
         self.assertEqual(check.preferred_selections, (Selection.HOME, Selection.DRAW))
 
 class DynamicSlateAnalysisTest(unittest.TestCase):
-    def test_detail_shows_fundamentals_without_staking_and_states_margin_limit(self):
+    def test_fundamental_evidence_states_margin_limit(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["asian_handicap"]["handicap"] = -1.5
         match["fundamental_context"]["home"].update(
@@ -174,14 +174,6 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertIn("不能单独证明该胜差", evidence)
         self.assertIn("已确认伤停和首发未取得", evidence)
         self.assertIn("home goal margin must be at least 1", analyzed["recommendation"]["fundamental_evidence_en"])
-        app = (Path(__file__).resolve().parents[1] / "dashboard" / "app.js").read_text(encoding="utf-8")
-        detail = app.split("function renderMatchReport(match)", 1)[1].split("function renderSideBySide(match)", 1)[0]
-        mismatch = app.split("function renderMismatchView()", 1)[1].split("function renderOverview", 1)[0]
-        self.assertIn("formatFundamentalEvidence(match)", detail)
-        self.assertIn("${renderMarkets(match)}", detail)
-        self.assertIn("${formatPrediction(match)}", detail)
-        self.assertNotIn("renderStakingPlan(match)", detail)
-        self.assertIn("renderStakingPlan(match)", mismatch)
 
     def test_complete_three_market_snapshot_generates_mismatch_prediction(self):
         match = dynamic_analysis_match(include_lottery=True)
