@@ -1,4 +1,4 @@
-const APP_VERSION = "20261010-fundamentals-1";
+const APP_VERSION = "20261010-fundamentals-2";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -212,7 +212,7 @@ function renderMatchReport(match) {
       <div class="report-content">
         <section>
           <h4>基本面</h4>
-          <p>${match.recommendation.fundamental} ${formatFundamentalEvidence(match)}</p>
+          <p>${formatFundamentalEvidence(match)}</p>
         </section>
         ${renderMarkets(match)}
 
@@ -263,24 +263,55 @@ function formatFundamentalEvidence(match) {
     const side = context[key] ?? {};
     const fields = ["position", "played_games", "won", "draw", "lost", "goals_for", "goals_against"];
     if (fields.some(field => !Number.isInteger(side[field]))) return null;
+    if (side.played_games <= 0) return null;
     const form = Array.isArray(side.form) && side.form.length >= 3
-      && side.form.every(result => ["W", "D", "L"].includes(result))
-      ? `、近${side.form.length}场${side.form.filter(x => x === "W").length}胜${side.form.filter(x => x === "D").length}平${side.form.filter(x => x === "L").length}负`
-      : "";
-    return `${index === 0 ? "主队" : "客队"}第${side.position}、${side.played_games}场${side.won}胜${side.draw}平${side.lost}负、进${side.goals_for}失${side.goals_against}${form}`;
+      && side.form.every(result => ["W", "D", "L"].includes(result)) ? side.form : null;
+    return {
+      name: (index === 0 ? match.home_team : match.away_team) ?? (index === 0 ? "主队" : "客队"),
+      ...side,
+      ppg: (3 * side.won + side.draw) / side.played_games,
+      gdpg: (side.goals_for - side.goals_against) / side.played_games,
+      form,
+    };
   });
   if (sides.includes(null)) return "缺少双方完整的赛季战绩与进失球，暂不能据此判断实力差或所需胜差。";
-  let evidence = `${sides.join("；")}。`;
+  const [home, away] = sides;
+  let evidence = `${home.name}第${home.position}，${home.played_games}场${home.won}胜${home.draw}平${home.lost}负、进${home.goals_for}失${home.goals_against}；`
+    + `${away.name}第${away.position}，${away.played_games}场${away.won}胜${away.draw}平${away.lost}负、进${away.goals_for}失${away.goals_against}。`
+    + `场均积分${home.ppg.toFixed(1)}比${away.ppg.toFixed(1)}、场均净胜球${formatSignedDecimal(home.gdpg)}比${formatSignedDecimal(away.gdpg)}`;
+  if (home.form && away.form) {
+    evidence += `，近${home.form.length}场主队${home.form.filter(x => x === "W").length}胜、近${away.form.length}场客队${away.form.filter(x => x === "W").length}胜`;
+  }
+  const homeAhead = home.position < away.position && home.ppg > away.ppg + 0.1 && home.gdpg > away.gdpg + 0.1;
+  const awayAhead = away.position < home.position && away.ppg > home.ppg + 0.1 && away.gdpg > home.gdpg + 0.1;
+  evidence += homeAhead || awayAhead
+    ? `，这三项一致支持${homeAhead ? home.name : away.name}整体占优。`
+    : "，排名、积分效率和净胜球未形成一致优势。";
+  if ((homeAhead || awayAhead) && home.form && away.form) {
+    const recentGap = home.form.filter(x => x === "W").length / home.form.length
+      - away.form.filter(x => x === "W").length / away.form.length;
+    if ((homeAhead && recentGap < 0) || (awayAhead && recentGap > 0)) {
+      evidence += "但近期胜场呈反向信号。";
+    }
+  }
+  if (Math.min(home.played_games, away.played_games) < 3) {
+    evidence += "赛季样本不足3场，方向判断不稳。";
+  } else if (!home.form || !away.form) {
+    evidence += "近期战绩记录不足3条，未核验近期状态。";
+  }
   const handicap = match.chinese_lottery?.handicap;
   const selections = match.prediction?.selection_keys ?? [];
   if (Number.isInteger(handicap) && selections.length === 2 && selections.includes("draw")) {
     const comparison = selections.includes("home") ? "至少" : "至多";
-    evidence += `竞彩让球${handicap >= 0 ? "+" : ""}${handicap}的所选结果要求主队净胜球${comparison}为${-handicap}；`;
-  } else {
-    evidence += "现有基本面只供判断强弱方向；";
+    const threshold = -handicap;
+    const relation = home.gdpg > threshold ? "高于" : home.gdpg < threshold ? "低于" : "等于";
+    evidence += `竞彩让球${handicap >= 0 ? "+" : ""}${handicap}双选要求主队净胜球${comparison}为${threshold}；主队本季场均净胜${formatSignedDecimal(home.gdpg)}球，${relation}该门槛，但均值不能说明逐场达标频率。`;
   }
-  evidence += "排名和总进失球不能单独证明该胜差或赔率存在优势。";
   return evidence;
+}
+
+function formatSignedDecimal(value) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(1)}`;
 }
 
 function formatRelevantRisks(match) {

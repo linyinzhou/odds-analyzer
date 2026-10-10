@@ -181,10 +181,16 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
 
         analyzed = analyze_slate_match(match)
         evidence = analyzed["recommendation"]["fundamental_evidence"]
-        self.assertIn("主队第4、7场5胜0平2负、进18失8", evidence)
-        self.assertIn("近3场", evidence)
+        self.assertEqual(analyzed["recommendation"]["fundamental"], evidence)
+        self.assertNotIn("样本偏向", evidence)
+        self.assertIn("主队第4，7场5胜0平2负、进18失8", evidence)
+        self.assertIn("场均积分2.1比1.1", evidence)
+        self.assertIn("场均净胜球+1.4比+0.1", evidence)
+        self.assertIn("近3场主队0胜、近3场客队2胜", evidence)
+        self.assertIn("近期胜场呈反向信号", evidence)
         self.assertIn("主队净胜球至少为1", evidence)
-        self.assertIn("不能单独证明该胜差", evidence)
+        self.assertIn("主队本季场均净胜+1.4球，高于该门槛", evidence)
+        self.assertIn("均值不能说明逐场达标频率", evidence)
         self.assertIn("home goal margin must be at least 1", analyzed["recommendation"]["fundamental_evidence_en"])
 
     def test_complete_three_market_snapshot_generates_mismatch_prediction(self):
@@ -225,7 +231,7 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertFalse(analyzed["mismatch"]["matched"])
         self.assertIn("基本面与盘口热门方方向一致", analyzed["mismatch"]["reason"])
 
-    def test_limited_sample_keeps_fundamental_direction_and_marks_candidate(self):
+    def test_limited_sample_does_not_invent_fundamental_direction_and_marks_candidate(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["fundamental_context"]["home"].update(
             {"played_games": 1, "points": 0, "goal_difference": -3, "form": []}
@@ -240,8 +246,7 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertTrue(analyzed["mismatch"]["limited_sample"])
         self.assertEqual(analyzed["signal_label"], "错盘候选")
         self.assertEqual(analyzed["prediction"]["confidence"], 58)
-        self.assertIn("偏向客队", analyzed["recommendation"]["fundamental"])
-        self.assertIn("样本不足3场", analyzed["recommendation"]["fundamental"])
+        self.assertIn("缺少双方完整的赛季战绩与进失球", analyzed["recommendation"]["fundamental"])
 
     def test_lottery_deeper_mismatch_is_supported_by_underdog_fundamentals(self):
         match = dynamic_analysis_match(include_lottery=True)
