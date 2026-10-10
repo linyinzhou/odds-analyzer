@@ -26,6 +26,7 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     market_zh, market_en = _market_read(analyzed, european_probabilities)
     mismatch = _mismatch_read(analyzed, context, european_probabilities)
     prediction = _prediction(analyzed, context, european_probabilities, mismatch)
+    evidence_zh, evidence_en = _fundamental_evidence(analyzed, context, prediction)
 
     analyzed["market_read"] = market_zh
     analyzed["market_read_en"] = market_en
@@ -33,6 +34,8 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     analyzed["recommendation"] = {
         "fundamental": fundamental_zh,
         "fundamental_en": fundamental_en,
+        "fundamental_evidence": evidence_zh,
+        "fundamental_evidence_en": evidence_en,
         "mismatch": mismatch["recommendation_zh"],
         "mismatch_en": mismatch["recommendation_en"],
     }
@@ -48,10 +51,9 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     analyzed["staking_references"] = recommended_staking_references(lottery, prediction)
     analyzed["prediction"] = prediction
     analyzed["checker"] = _checker_text(prediction)
-    analyzed["risks"] = _risks(analyzed, prediction)
+    analyzed["risks"] = _risks(analyzed)
     if prediction.get("staking_plan"):
         analyzed["checker"] += " " + prediction["staking_plan"]["note_zh"]
-        analyzed["risks"].append("错盘配注仅在已覆盖结果开出时有条件盈利；未覆盖结果可能损失全部投入，且须确认支持单关。")
 
     if mismatch["dashboard"]["matched"]:
         analyzed["status"] = "mismatch"
@@ -133,6 +135,64 @@ def _fundamental_read(
         "基本面与盘口数据不足，暂不形成赛前方向。",
         "Fundamental and market data is insufficient for a pre-match direction.",
     )
+
+
+def _fundamental_evidence(
+    match: dict[str, Any], context: dict[str, Any], prediction: dict[str, Any]
+) -> tuple[str, str]:
+    """Explain observed strength separately from any unproven winning-margin claim."""
+    sides = []
+    for side, zh_label, en_label in (("home", "主队", "Home"), ("away", "客队", "Away")):
+        data = context.get(side) or {}
+        try:
+            played = int(data["played_games"])
+            won = int(data["won"])
+            drawn = int(data["draw"])
+            lost = int(data["lost"])
+            goals_for = int(data["goals_for"])
+            goals_against = int(data["goals_against"])
+            position = int(data["position"])
+        except (KeyError, TypeError, ValueError):
+            return (
+                "缺少双方完整的赛季战绩与进失球，暂不能据此判断实力差或所需胜差。",
+                "Complete season records and goals are unavailable for both teams; the strength and required margin cannot be assessed from them.",
+            )
+        if played <= 0 or min(won, drawn, lost, goals_for, goals_against) < 0:
+            return (
+                "赛季样本尚未形成，暂不能据此判断实力差或所需胜差。",
+                "The season sample is not yet usable for a strength or winning-margin assessment.",
+            )
+        form = data.get("form") or []
+        form_zh = form_en = ""
+        if isinstance(form, list) and len(form) >= 3 and all(result in ("W", "D", "L") for result in form):
+            form_zh = f"、近{len(form)}场{form.count('W')}胜{form.count('D')}平{form.count('L')}负"
+            form_en = f", last {len(form)}: {form.count('W')}W-{form.count('D')}D-{form.count('L')}L"
+        sides.append((
+            f"{zh_label}第{position}、{played}场{won}胜{drawn}平{lost}负、进{goals_for}失{goals_against}{form_zh}",
+            f"{en_label}: {position}th, {won}W-{drawn}D-{lost}L in {played}, goals {goals_for}-{goals_against}{form_en}",
+        ))
+
+    zh = "；".join(side[0] for side in sides) + "。"
+    en = "; ".join(side[1] for side in sides) + "."
+    lottery = match.get("chinese_lottery") or {}
+    selections = set(prediction.get("selection_keys") or [])
+    handicap = lottery.get("handicap")
+    if isinstance(handicap, int) and selections in ({"home", "draw"}, {"draw", "away"}):
+        margin = -handicap
+        if selections == {"home", "draw"}:
+            requirement_zh = f"主队净胜球至少为{margin}"
+            requirement_en = f"the home goal margin must be at least {margin}"
+        else:
+            requirement_zh = f"主队净胜球至多为{margin}"
+            requirement_en = f"the home goal margin must be at most {margin}"
+        zh += f"竞彩让球{handicap:+d}的所选结果要求{requirement_zh}；"
+        en += f" The selected Sporttery handicap {handicap:+d} outcomes require that {requirement_en}; "
+    else:
+        zh += "现有基本面只供判断强弱方向；"
+        en += "These fundamentals indicate relative strength only; "
+    zh += "排名和总进失球不能单独证明该胜差或赔率存在优势。"
+    en += "standings and aggregate goals alone do not establish that margin or a pricing edge."
+    return zh, en
 
 
 def _market_read(
@@ -599,18 +659,8 @@ def _checker_text(prediction: dict[str, Any]) -> str:
     )
 
 
-def _risks(match: dict[str, Any], prediction: dict[str, Any]) -> list[str]:
-    risks = ["赔率会临场变化，本报告只使用本次查询快照。"]
-    team_news = match.get("team_news") or {}
-    if team_news:
-        sides = [team_news.get("home") or {}, team_news.get("away") or {}]
-        absence_count = sum(len(side.get("absences") or []) for side in sides)
-        lineup_count = sum(1 for side in sides if side.get("lineup"))
-        risks.append(
-            f"API-Football 本次返回 {absence_count} 条确认缺阵，{lineup_count}/2 队官方首发；空结果不等同于确定无人缺阵。"
-        )
-    else:
-        risks.append("本次未取得已确认伤停和官方首发，不将预测阵容作为事实。")
+def _risks(match: dict[str, Any]) -> list[str]:
+    risks = []
     weather = match.get("weather_snapshot") or {}
     if (weather.get("precipitation_probability") or 0) >= 50:
         risks.append(f"开赛时降水概率约 {weather['precipitation_probability']:.0f}%，需关注湿滑场地对节奏的影响。")
@@ -618,8 +668,6 @@ def _risks(match: dict[str, Any], prediction: dict[str, Any]) -> list[str]:
         risks.append(f"开赛时阵风约 {weather['wind_gusts_kmh']:.0f} km/h，长传和高球稳定性可能受影响。")
     if not match.get("chinese_lottery"):
         risks.append("本次未取得竞彩数据，未运行完整三盘比较。")
-    if prediction["market"] != "无推荐":
-        risks.append("信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。")
     return risks
 
 
@@ -642,3 +690,4 @@ def _format_line(value: float) -> str:
     if abs(value) < 0.001:
         return "0"
     return f"{value:+g}"
+

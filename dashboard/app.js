@@ -1,4 +1,4 @@
-const APP_VERSION = "20260920-parlay-order-1";
+const APP_VERSION = "20261010-fundamentals-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -210,24 +210,16 @@ function renderMatchReport(match) {
       </summary>
 
       <div class="report-content">
-        <div class="info-grid">
-          <div><span>场地</span><strong>${match.venue}</strong></div>
-          <div><span>天气</span><strong>${match.weather}</strong></div>
-          <div><span>欧赔</span><strong>${formatThreeWay(match.european_odds)}</strong></div>
-          <div><span>竞彩</span><strong>${formatLottery(match.chinese_lottery)}</strong></div>
-        </div>
-
-        ${renderSideBySide(match)}
-        ${renderTeamNews(match)}
+        <section>
+          <h4>基本面</h4>
+          <p>${match.recommendation.fundamental} ${formatFundamentalEvidence(match)}</p>
+        </section>
         ${renderMarkets(match)}
 
         <section class="recommendation">
           <h4>建议</h4>
-          <p><strong>最终：</strong>${formatPrediction(match)}</p>
-          ${renderStakingPlan(match)}
-          <p><strong>基本面：</strong>${match.recommendation.fundamental}</p>
-          <p><strong>错盘：</strong>${match.recommendation.mismatch}</p>
-          <p><strong>风险：</strong>${match.risks.join("；")}</p>
+          <p>${formatPrediction(match)}</p>
+          ${formatRelevantRisks(match)}
         </section>
 
         <p class="muted">来源：${match.sources.join("；")}</p>
@@ -262,6 +254,46 @@ function renderSideBySide(match) {
       </table>
     </section>
   `;
+}
+
+function formatFundamentalEvidence(match) {
+  if (match.recommendation?.fundamental_evidence) return match.recommendation.fundamental_evidence;
+  const context = match.fundamental_context ?? {};
+  const sides = ["home", "away"].map((key, index) => {
+    const side = context[key] ?? {};
+    const fields = ["position", "played_games", "won", "draw", "lost", "goals_for", "goals_against"];
+    if (fields.some(field => !Number.isInteger(side[field]))) return null;
+    const form = Array.isArray(side.form) && side.form.length >= 3
+      && side.form.every(result => ["W", "D", "L"].includes(result))
+      ? `、近${side.form.length}场${side.form.filter(x => x === "W").length}胜${side.form.filter(x => x === "D").length}平${side.form.filter(x => x === "L").length}负`
+      : "";
+    return `${index === 0 ? "主队" : "客队"}第${side.position}、${side.played_games}场${side.won}胜${side.draw}平${side.lost}负、进${side.goals_for}失${side.goals_against}${form}`;
+  });
+  if (sides.includes(null)) return "缺少双方完整的赛季战绩与进失球，暂不能据此判断实力差或所需胜差。";
+  let evidence = `${sides.join("；")}。`;
+  const handicap = match.chinese_lottery?.handicap;
+  const selections = match.prediction?.selection_keys ?? [];
+  if (Number.isInteger(handicap) && selections.length === 2 && selections.includes("draw")) {
+    const comparison = selections.includes("home") ? "至少" : "至多";
+    evidence += `竞彩让球${handicap >= 0 ? "+" : ""}${handicap}的所选结果要求主队净胜球${comparison}为${-handicap}；`;
+  } else {
+    evidence += "现有基本面只供判断强弱方向；";
+  }
+  evidence += "排名和总进失球不能单独证明该胜差或赔率存在优势。";
+  return evidence;
+}
+
+function formatRelevantRisks(match) {
+  const boilerplate = new Set([
+    "赔率会临场变化，本报告只使用本次查询快照。",
+    "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
+    "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。",
+    "错盘配注仅在已覆盖结果开出时有条件盈利；未覆盖结果可能损失全部投入，且须确认支持单关。",
+  ]);
+  const relevant = (match.risks ?? []).filter(risk =>
+    !boilerplate.has(risk) && !risk.startsWith("API-Football 本次返回 "),
+  );
+  return relevant.length ? `<p><strong>注意：</strong>${relevant.map(escapeAttribute).join("；")}</p>` : "";
 }
 
 function renderTeamNews(match) {
@@ -836,3 +868,4 @@ function renderParlayResults(result, multiplier) {
     <div class="table-wrap parlay-table"><table><thead><tr><th>比赛与选项</th><th>买法</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead>
     <tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => label(entries.get(id))).join("<br>")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}，${multiplier}倍${plan.ids.length > Math.min(...plan.sizes) ? "（各关数全部组合）" : ""}</td><td>${money(plan.cost)}元</td><td>${money(plan.payout)}元</td><td>+${money(plan.profit)}元</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>${details}`;
 }
+
