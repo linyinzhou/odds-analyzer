@@ -154,6 +154,19 @@ class HandicapAnalysisTest(unittest.TestCase):
         self.assertEqual(check.preferred_selections, (Selection.HOME, Selection.DRAW))
 
 class DynamicSlateAnalysisTest(unittest.TestCase):
+    def test_risks_only_include_match_specific_facts(self):
+        match = dynamic_analysis_match(include_lottery=True)
+        self.assertEqual(analyze_slate_match(match)["risks"], [])
+
+        match["weather_snapshot"] = {"precipitation_probability": 70, "wind_gusts_kmh": 50}
+        risks = analyze_slate_match(match)["risks"]
+        self.assertEqual(len(risks), 2)
+        self.assertIn("70%", risks[0])
+        self.assertIn("50 km/h", risks[1])
+
+        without_lottery = analyze_slate_match(dynamic_analysis_match(include_lottery=False))
+        self.assertEqual(without_lottery["risks"], ["本次未取得竞彩数据，未运行完整三盘比较。"])
+
     def test_fundamental_evidence_states_margin_limit(self):
         match = dynamic_analysis_match(include_lottery=True)
         match["asian_handicap"]["handicap"] = -1.5
@@ -172,7 +185,6 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertIn("近3场", evidence)
         self.assertIn("主队净胜球至少为1", evidence)
         self.assertIn("不能单独证明该胜差", evidence)
-        self.assertIn("已确认伤停和首发未取得", evidence)
         self.assertIn("home goal margin must be at least 1", analyzed["recommendation"]["fundamental_evidence_en"])
 
     def test_complete_three_market_snapshot_generates_mismatch_prediction(self):
