@@ -219,6 +219,7 @@ function renderMatchReport(match) {
         <section class="recommendation">
           <h4>建议</h4>
           <p>${formatPrediction(match)}</p>
+          ${formatRelevantRisks(match)}
         </section>
 
         <p class="muted">来源：${match.sources.join("；")}</p>
@@ -279,8 +280,20 @@ function formatFundamentalEvidence(match) {
     evidence += "现有基本面只供判断强弱方向；";
   }
   evidence += "排名和总进失球不能单独证明该胜差或赔率存在优势。";
-  if (!match.team_news) evidence += "已确认伤停和首发未取得。";
   return evidence;
+}
+
+function formatRelevantRisks(match) {
+  const boilerplate = new Set([
+    "赔率会临场变化，本报告只使用本次查询快照。",
+    "本次未取得已确认伤停和官方首发，不将预测阵容作为事实。",
+    "信心值为市场与有限基本面的排序指标，不等同于长期盈利概率。",
+    "错盘配注仅在已覆盖结果开出时有条件盈利；未覆盖结果可能损失全部投入，且须确认支持单关。",
+  ]);
+  const relevant = (match.risks ?? []).filter(risk =>
+    !boilerplate.has(risk) && !risk.startsWith("API-Football 本次返回 "),
+  );
+  return relevant.length ? `<p><strong>注意：</strong>${relevant.map(escapeAttribute).join("；")}</p>` : "";
 }
 
 function renderTeamNews(match) {
