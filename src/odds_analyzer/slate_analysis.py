@@ -22,7 +22,6 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     context = analyzed.get("fundamental_context") or {}
 
     european_probabilities = _normalized_probabilities(european)
-    fundamental_zh, fundamental_en = _fundamental_read(analyzed, context, european_probabilities)
     market_zh, market_en = _market_read(analyzed, european_probabilities)
     mismatch = _mismatch_read(analyzed, context, european_probabilities)
     prediction = _prediction(analyzed, context, european_probabilities, mismatch)
@@ -32,8 +31,8 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
     analyzed["market_read_en"] = market_en
     analyzed["mismatch"] = mismatch["dashboard"]
     analyzed["recommendation"] = {
-        "fundamental": fundamental_zh,
-        "fundamental_en": fundamental_en,
+        "fundamental": evidence_zh,
+        "fundamental_en": evidence_en,
         "fundamental_evidence": evidence_zh,
         "fundamental_evidence_en": evidence_en,
         "mismatch": mismatch["recommendation_zh"],
@@ -82,65 +81,10 @@ def _normalized_probabilities(odds: dict[str, Any] | None) -> dict[str, float] |
     return {key: value / total for key, value in raw.items()}
 
 
-def _fundamental_read(
-    match: dict[str, Any],
-    context: dict[str, Any],
-    probabilities: dict[str, float] | None,
-) -> tuple[str, str]:
-    comparison = _fundamental_comparison(context)
-    if comparison is not None:
-        home = match.get("home_team", "主队")
-        away = match.get("away_team", "客队")
-        limited_sample = not has_sufficient_fundamental_context(context)
-        missing_form = all(
-            int((context.get(side) or {}).get("played_games") or 0) >= 3
-            for side in ("home", "away")
-        ) and any(
-            len((context.get(side) or {}).get("form") or []) < 3
-            for side in ("home", "away")
-        )
-        sample_reason = "近期战绩记录不足3条" if missing_form else "当前赛季样本不足3场"
-        sample_reason_en = (
-            "fewer than three recent-form records are available" if missing_form
-            else "fewer than three current-season games have been played"
-        )
-        zh_caveat = f"；但{sample_reason}，方向信心有限。" if limited_sample else "。"
-        en_caveat = f"; however, {sample_reason_en}, making this a low-confidence direction." if limited_sample else "."
-        if comparison > 0.2:
-            return (
-                f"排名、场均积分和净胜球样本偏向{home}{zh_caveat}",
-                f"Table position, points per game and goal difference favor {home}{en_caveat}",
-            )
-        if comparison < -0.2:
-            return (
-                f"排名、场均积分和净胜球样本偏向{away}{zh_caveat}",
-                f"Table position, points per game and goal difference favor {away}{en_caveat}",
-            )
-        return (
-            f"双方现有排名、场均积分和净胜球样本接近，基本面方向中性{zh_caveat}",
-            f"The available table, points-per-game and goal-difference sample is neutral{en_caveat}",
-        )
-
-    if match.get("football_data_snapshot"):
-        return (
-            "已取得官方赛程与排名接口数据，但赛季初有效比赛样本不足；本次方向主要参考查询时欧亚盘。",
-            "Official fixture and standings data is available, but the early-season sample is limited; the call is market-led.",
-        )
-    if probabilities:
-        return (
-            "缺少可比较的排名与近期战绩，本次只记录市场方向，不形成高信心基本面结论。",
-            "Comparable standings and form are unavailable; this is a market observation, not a high-confidence fundamental call.",
-        )
-    return (
-        "基本面与盘口数据不足，暂不形成赛前方向。",
-        "Fundamental and market data is insufficient for a pre-match direction.",
-    )
-
-
 def _fundamental_evidence(
     match: dict[str, Any], context: dict[str, Any], prediction: dict[str, Any]
 ) -> tuple[str, str]:
-    """Explain observed strength separately from any unproven winning-margin claim."""
+    """Give a numerical comparison without treating strength as proof of a margin."""
     sides = []
     for side, zh_label, en_label in (("home", "主队", "Home"), ("away", "客队", "Away")):
         data = context.get(side) or {}
@@ -163,17 +107,77 @@ def _fundamental_evidence(
                 "The season sample is not yet usable for a strength or winning-margin assessment.",
             )
         form = data.get("form") or []
-        form_zh = form_en = ""
-        if isinstance(form, list) and len(form) >= 3 and all(result in ("W", "D", "L") for result in form):
-            form_zh = f"、近{len(form)}场{form.count('W')}胜{form.count('D')}平{form.count('L')}负"
-            form_en = f", last {len(form)}: {form.count('W')}W-{form.count('D')}D-{form.count('L')}L"
-        sides.append((
-            f"{zh_label}第{position}、{played}场{won}胜{drawn}平{lost}负、进{goals_for}失{goals_against}{form_zh}",
-            f"{en_label}: {position}th, {won}W-{drawn}D-{lost}L in {played}, goals {goals_for}-{goals_against}{form_en}",
-        ))
+        recent_wins = (
+            form.count("W") if isinstance(form, list) and len(form) >= 3
+            and all(result in ("W", "D", "L") for result in form) else None
+        )
+        sides.append({
+            "name": match.get(f"{side}_team") or zh_label,
+            "en_label": en_label,
+            "position": position,
+            "played": played,
+            "won": won,
+            "drawn": drawn,
+            "lost": lost,
+            "goals_for": goals_for,
+            "goals_against": goals_against,
+            "ppg": (3 * won + drawn) / played,
+            "gdpg": (goals_for - goals_against) / played,
+            "form_games": len(form) if recent_wins is not None else 0,
+            "recent_wins": recent_wins,
+        })
 
-    zh = "；".join(side[0] for side in sides) + "。"
-    en = "; ".join(side[1] for side in sides) + "."
+    home, away = sides
+    zh = (
+        f"{home['name']}第{home['position']}，{home['played']}场{home['won']}胜{home['drawn']}平{home['lost']}负、"
+        f"进{home['goals_for']}失{home['goals_against']}；"
+        f"{away['name']}第{away['position']}，{away['played']}场{away['won']}胜{away['drawn']}平{away['lost']}负、"
+        f"进{away['goals_for']}失{away['goals_against']}。"
+        f"场均积分{home['ppg']:.1f}比{away['ppg']:.1f}、场均净胜球{home['gdpg']:+.1f}比{away['gdpg']:+.1f}"
+    )
+    en = (
+        f"{home['en_label']} are {home['position']}th with {home['won']}W-{home['drawn']}D-{home['lost']}L "
+        f"and {home['goals_for']}-{home['goals_against']} goals in {home['played']} games; "
+        f"{away['en_label']} are {away['position']}th with {away['won']}W-{away['drawn']}D-{away['lost']}L "
+        f"and {away['goals_for']}-{away['goals_against']} goals in {away['played']}. "
+        f"Points per game are {home['ppg']:.1f} vs {away['ppg']:.1f}, goal difference per game "
+        f"{home['gdpg']:+.1f} vs {away['gdpg']:+.1f}"
+    )
+    if home["recent_wins"] is not None and away["recent_wins"] is not None:
+        zh += (
+            f"，近{home['form_games']}场主队{home['recent_wins']}胜、"
+            f"近{away['form_games']}场客队{away['recent_wins']}胜"
+        )
+        en += (
+            f", with {home['recent_wins']} wins in the last {home['form_games']} "
+            f"vs {away['recent_wins']} in the last {away['form_games']}"
+        )
+    home_ahead = (
+        home["position"] < away["position"] and home["ppg"] > away["ppg"] + 0.1
+        and home["gdpg"] > away["gdpg"] + 0.1
+    )
+    away_ahead = (
+        away["position"] < home["position"] and away["ppg"] > home["ppg"] + 0.1
+        and away["gdpg"] > home["gdpg"] + 0.1
+    )
+    if home_ahead or away_ahead:
+        stronger = home if home_ahead else away
+        zh += f"，这三项一致支持{stronger['name']}整体占优。"
+        en += f"; these three measures agree that {stronger['en_label'].lower()} have the stronger record."
+        if home["recent_wins"] is not None and away["recent_wins"] is not None:
+            recent_gap = home["recent_wins"] / home["form_games"] - away["recent_wins"] / away["form_games"]
+            if (home_ahead and recent_gap < 0) or (away_ahead and recent_gap > 0):
+                zh += "但近期胜场呈反向信号。"
+                en += " Recent wins point the other way."
+    else:
+        zh += "，排名、积分效率和净胜球未形成一致优势。"
+        en += "; rank, points rate and goal difference do not show a consistent edge."
+    if min(home["played"], away["played"]) < 3:
+        zh += "赛季样本不足3场，方向判断不稳。"
+        en += " Fewer than three season games make this direction uncertain."
+    elif not home["form_games"] or not away["form_games"]:
+        zh += "近期战绩记录不足3条，未核验近期状态。"
+        en += " Fewer than three recent results are available, so current form is unverified."
     lottery = match.get("chinese_lottery") or {}
     selections = set(prediction.get("selection_keys") or [])
     handicap = lottery.get("handicap")
@@ -185,13 +189,18 @@ def _fundamental_evidence(
         else:
             requirement_zh = f"主队净胜球至多为{margin}"
             requirement_en = f"the home goal margin must be at most {margin}"
-        zh += f"竞彩让球{handicap:+d}的所选结果要求{requirement_zh}；"
-        en += f" The selected Sporttery handicap {handicap:+d} outcomes require that {requirement_en}; "
-    else:
-        zh += "现有基本面只供判断强弱方向；"
-        en += "These fundamentals indicate relative strength only; "
-    zh += "排名和总进失球不能单独证明该胜差或赔率存在优势。"
-    en += "standings and aggregate goals alone do not establish that margin or a pricing edge."
+        relation_zh = "高于" if home["gdpg"] > margin else "低于" if home["gdpg"] < margin else "等于"
+        relation_en = "above" if home["gdpg"] > margin else "below" if home["gdpg"] < margin else "equal to"
+        zh += (
+            f"竞彩让球{handicap:+d}双选要求{requirement_zh}；"
+            f"主队本季场均净胜{home['gdpg']:+.1f}球，{relation_zh}该门槛，"
+            "但均值不能说明逐场达标频率。"
+        )
+        en += (
+            f" The selected Sporttery handicap {handicap:+d} pair requires {requirement_en}; "
+            f"the home side's season goal difference is {home['gdpg']:+.1f} per game, {relation_en} that threshold, "
+            "but the average does not establish how often the margin occurs."
+        )
     return zh, en
 
 
