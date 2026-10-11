@@ -161,6 +161,8 @@ class FallbackResultsTest(unittest.TestCase):
         self.assertEqual(request["status"], "resolved")
         self.assertEqual(request["missing_fields"], [])
         self.assertEqual(updated["last_fallback_import"]["field_count"], 4)
+        self.assertEqual(updated["manual_override"]["slate_date"], "2026-08-22")
+        self.assertEqual(updated["manual_override"]["source"], "fallback")
         self.assertIn("european_odds", match["fallback_research"])
         self.assertIn("report_zh", match)
         self.assertIn("report_en", match)
