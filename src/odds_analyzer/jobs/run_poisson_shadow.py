@@ -74,6 +74,10 @@ def main() -> None:
             "home_team": m.get("home_team"),
             "away_team": m.get("away_team"),
             "mismatch": (m.get("mismatch") or {}).get("matched") is True,
+            "market_snapshot": {
+                "asian_handicap": m.get("asian_handicap"),
+                "chinese_lottery": m.get("chinese_lottery"),
+            },
             "analysis": shadow_match(m, fixtures),
         } for m in matches if not (m.get("mismatch") or {}).get("matched")],
     }

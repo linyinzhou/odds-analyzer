@@ -1,8 +1,9 @@
-const APP_VERSION = "20261011-observation-1";
+const APP_VERSION = "20261011-poisson-shadow-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
   currentMatches: [],
+  poissonShadow: {},
   mismatchHistory: [],
   checkerHistory: [],
   adhocHistory: [],
@@ -44,6 +45,7 @@ async function loadDashboard() {
   const payload = await response.json();
   const normalized = normalizePayload(payload);
   state.currentMatches = normalized.currentMatches;
+  state.poissonShadow = {};
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
   state.adhocHistory = normalized.adhocHistory;
@@ -58,6 +60,22 @@ async function loadDashboard() {
   elements.slateWindow.textContent = payload.slate.window + " · 分析：" + scope;
   loadRunStatus();
   render();
+  loadPoissonShadow(payload.slate.date);
+}
+
+async function loadPoissonShadow(slateDate) {
+  try {
+    const response = await fetch(`./data/poisson_shadow.json?v=${APP_VERSION}-${Date.now()}`);
+    if (!response.ok) return;
+    const report = await response.json();
+    if (report.slate_date !== slateDate || report.status !== "research_only_not_validated" || !Array.isArray(report.matches)) return;
+    state.poissonShadow = Object.fromEntries(report.matches
+      .filter((item) => item.match_id && item.mismatch === false)
+      .map((item) => [item.match_id, item]));
+    if (state.activeView === "detail") renderDetailView();
+  } catch {
+    // The research report is optional; the main dashboard remains usable.
+  }
 }
 
 async function loadRunStatus() {
@@ -215,6 +233,7 @@ function renderMatchReport(match) {
           <p>${formatFundamentalEvidence(match)}</p>
         </section>
         ${renderMarkets(match)}
+        ${renderPoissonShadow(match)}
 
         <section class="recommendation">
           <h4>建议</h4>
@@ -374,6 +393,27 @@ function renderMarkets(match) {
       <p class="market-read">${match.market_read}</p>
     </section>
   `;
+}
+
+function renderPoissonShadow(match) {
+  const item = state.poissonShadow[match.id];
+  if (!item || match.mismatch?.matched === true || !item.market_snapshot) return "";
+  const market = item.market_snapshot;
+  if (JSON.stringify(market.asian_handicap) !== JSON.stringify(match.asian_handicap)
+      || JSON.stringify(market.chinese_lottery) !== JSON.stringify(match.chinese_lottery)) return "";
+  const analysis = item.analysis;
+  if (!analysis?.status?.startsWith("shadow")
+      || !Number.isFinite(analysis.expected_home_goals)
+      || !Number.isFinite(analysis.expected_away_goals)) return "";
+  const ev = (value) => Number.isFinite(value) ? `${value >= 0 ? "+" : ""}${value.toFixed(2)}` : "--";
+  const asian = analysis.asian_handicap;
+  const lottery = analysis.sporttery_handicap;
+  const sample = Number.isInteger(analysis.home_team_matches) && Number.isInteger(analysis.away_team_matches)
+    ? `赛季样本主/客 ${analysis.home_team_matches}/${analysis.away_team_matches} 场；` : "";
+  return `<section>
+    <h4>模型试算（未验证，继续观望）</h4>
+    <p>预计进球 ${analysis.expected_home_goals.toFixed(2)} / ${analysis.expected_away_goals.toFixed(2)}；${sample}每投入1元的模拟预期盈亏：亚盘主/客 ${ev(asian?.home?.expected_profit_per_unit)} / ${ev(asian?.away?.expected_profit_per_unit)} 元，竞彩让球主/平/客 ${ev(lottery?.home)} / ${ev(lottery?.draw)} / ${ev(lottery?.away)} 元。仅用有限赛季数据试算，未验证预测能力。</p>
+  </section>`;
 }
 
 function renderStakingPlan(match) {
