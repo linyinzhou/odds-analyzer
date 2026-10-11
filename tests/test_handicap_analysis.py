@@ -213,7 +213,8 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertFalse(analyzed["mismatch"]["matched"])
         self.assertEqual(analyzed["prediction"]["market"], "亚盘 Pinnacle")
         self.assertEqual(analyzed["prediction"]["pick"], "主队 -0.25")
-        self.assertEqual(analyzed["prediction"]["basis"], "fresh_european_asian_snapshot")
+        self.assertEqual(analyzed["prediction"]["basis"], "market_observation_v1")
+        self.assertFalse(analyzed["prediction"]["betting_eligible"])
         self.assertIn("本次竞彩未取得", analyzed["market_read"])
 
     def test_deeper_line_with_favorite_aligned_fundamentals_is_not_mismatch(self):
@@ -1448,4 +1449,3 @@ def sample_match(match_id, confidence, batch_date=None):
 
 if __name__ == "__main__":
     unittest.main()
-

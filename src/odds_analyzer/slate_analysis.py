@@ -201,6 +201,13 @@ def _fundamental_evidence(
             f"the home side's season goal difference is {home['gdpg']:+.1f} per game, {relation_en} that threshold, "
             "but the average does not establish how often the margin occurs."
         )
+    if prediction.get("market_type") == "asian_handicap":
+        selected_home = prediction.get("selection_keys") == ["home"]
+        line = prediction["home_handicap"] * (1 if selected_home else -1)
+        requirement_zh, requirement_en = _asian_margin_requirement(line)
+        selected = home if selected_home else away
+        zh += f"亚盘{line:+g}：{requirement_zh}；该队赛季场均净胜{selected['gdpg']:+.1f}球。全季均值未区分主客场及对手强度，不能作为本场达标概率。"
+        en += f" Asian {line:+g}: {requirement_en}; selected-team season goal difference is {selected['gdpg']:+.1f} per game. This average is not adjusted for venue or opponents and is not a cover probability."
     return zh, en
 
 
@@ -459,7 +466,7 @@ def _prediction(
         home_line = float(asian["handicap"])
     except (KeyError, TypeError, ValueError):
         return _no_prediction()
-    if min(home_price, away_price) <= 1:
+    if not all(math.isfinite(value) for value in (home_price, away_price, home_line)) or min(home_price, away_price) <= 1 or not (home_line * 4).is_integer():
         return _no_prediction()
 
     home_cover, away_cover = _two_way_probabilities(home_price, away_price)
@@ -468,25 +475,27 @@ def _prediction(
     else:
         pick_home = home_cover > away_cover
     selected_cover = home_cover if pick_home else away_cover
-    selected_win = probabilities["home"] if pick_home else probabilities["away"]
-    favorite_agrees = (pick_home and probabilities["home"] >= probabilities["away"]) or (
-        not pick_home and probabilities["away"] > probabilities["home"]
-    )
-    fundamental_agrees = _fundamental_agrees(context, pick_home)
-    confidence = round(selected_cover * 100) + (2 if favorite_agrees else 0) + (2 if fundamental_agrees else 0)
-    confidence = max(51, min(60, confidence))
+    # Market-implied weights are not an independent estimate of handicap returns.
+    confidence = round(selected_cover * 100)
 
     team = match.get("home_team", "主队") if pick_home else match.get("away_team", "客队")
     selection_line = home_line if pick_home else -home_line
     line = _format_line(selection_line)
     provider = asian.get("provider") or "亚盘"
-    detail = (
-        f"查询时{provider}去水后该方向覆盖概率约 {selected_cover:.0%}，欧赔胜向约 {selected_win:.0%}；"
-        "这是基于当前市场与有限基本面的盘口方向，不代表存在正期望收益。"
-    )
+    reasons = []
+    if not has_sufficient_fundamental_context(context):
+        reasons.append("双方赛季或近期战绩不足3场")
+    comparison = _fundamental_comparison(context)
+    if comparison is None:
+        reasons.append("缺少可比较的积分和净胜球数据")
+    elif not _fundamental_agrees(context, pick_home):
+        reasons.append("赛季实力指标与盘口所选方向相反，尚无让球幅度分析解释该分歧")
+    reasons.append("缺少经赛前样本验证的净胜球分布，无法计算该盘口的独立预期收益")
+    requirement_zh, requirement_en = _asian_margin_requirement(selection_line)
+    detail = f"观望：{team} {line}，{requirement_zh}。" + "；".join(reasons) + "。"
     detail_en = (
-        f"The de-vigged Asian market gives this side about {selected_cover:.0%} cover probability and the 1X2 win probability is about {selected_win:.0%}. "
-        "This is a current-market direction, not proof of positive expected value."
+        f"Watch only: {team} {line}; {requirement_en}. "
+        "No validated independent goal-margin distribution is available to estimate expected returns."
     )
     return {
         "market": f"亚盘 {provider}",
@@ -496,11 +505,37 @@ def _prediction(
         "market_en": f"Asian handicap {provider}",
         "pick_en": f"{team} {line}",
         "detail_en": detail_en,
-        "basis": "fresh_european_asian_snapshot",
+        "decision": "watch",
+        "betting_eligible": False,
+        "watch_reasons": reasons,
+        "score_kind": "market_weight_not_probability",
+        "basis": "market_observation_v1",
         "market_type": "asian_handicap",
         "home_handicap": home_line,
         "selection_keys": ["home" if pick_home else "away"],
     }
+
+
+def _asian_margin_requirement(line: float) -> tuple[str, str]:
+    """Explain settlement from the selected team's goal-margin perspective."""
+    from odds_analyzer.settlement import settle_asian_handicap
+    from odds_analyzer.models import MatchScore
+
+    boundary = math.floor(-line)
+    labels = {1.0: "全赢", 0.5: "半赢", 0.0: "走盘", -0.5: "半输", -1.0: "全输"}
+    english = {1.0: "win", 0.5: "half win", 0.0: "push", -0.5: "half loss", -1.0: "loss"}
+    margins = (boundary - 1, boundary, boundary + 1)
+    outcomes = [settle_asian_handicap(
+        MatchScore(home_goals=max(margin, 0), away_goals=max(-margin, 0)),
+        AsianHandicapLine(home_handicap=line), Selection.HOME,
+    ) for margin in margins]
+    zh = "所选球队净胜球" + "、".join(
+        f"{margin:+d}{labels[outcome]}" for margin, outcome in zip(margins, outcomes)
+    )
+    en = "selected-team goal margin: " + ", ".join(
+        f"{margin:+d} {english[outcome]}" for margin, outcome in zip(margins, outcomes)
+    )
+    return zh, en
 
 
 def _polymarket_lottery_validation(match: dict[str, Any], status: str) -> dict[str, str]:
@@ -699,4 +734,3 @@ def _format_line(value: float) -> str:
     if abs(value) < 0.001:
         return "0"
     return f"{value:+g}"
-

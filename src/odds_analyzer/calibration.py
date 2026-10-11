@@ -80,6 +80,8 @@ def apply_confidence_calibration(
 ) -> dict[str, Any]:
     calibrated = deepcopy(match)
     prediction = calibrated.get("prediction") or {}
+    if prediction.get("decision") == "watch":
+        return calibrated
     confidence = prediction.get("confidence")
     key = strategy_key(calibrated)
     if key is None or not isinstance(confidence, (int, float)) or confidence <= 0:

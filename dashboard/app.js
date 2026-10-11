@@ -1,4 +1,4 @@
-const APP_VERSION = "20261010-fundamentals-2";
+const APP_VERSION = "20261011-observation-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
@@ -599,7 +599,7 @@ function saveChecker() {
   localStorage.setItem(CHECKER_STORAGE_KEY, JSON.stringify(state.checker));
 }
 
-function buildLearningSummary() {
+function buildHistoricalSummary() {
   const reviewed = state.checkerHistory
     .map((match) => ({ match, review: getCheckerReview(match) }))
     .filter((item) => item.review?.reviewed && !item.review?.void);
@@ -627,6 +627,22 @@ function buildLearningSummary() {
       total,
       hits,
       rate: total ? Math.round((hits / total) * 100) : null,
+    };
+  });
+}
+
+function buildLearningSummary() {
+  const strategies = state.learningEvaluation?.by_strategy ?? {};
+  return Object.entries(strategies).map(([key, summary]) => {
+    const outcomes = summary.outcomes ?? {};
+    const hits = (outcomes.win ?? 0) + (outcomes.half_win ?? 0);
+    const total = summary.settled - (outcomes.push ?? 0);
+    return {
+      label: key.includes("market:asian_handicap") ? "赛前冻结 · 亚盘单选" : `赛前冻结 · ${key}`,
+      total, hits, rate: total ? Math.round(hits / total * 100) : null,
+      roi: summary.roi?.return_per_unit,
+      priced: summary.roi?.priced_n ?? 0,
+      pushes: outcomes.push ?? 0,
     };
   });
 }
@@ -660,7 +676,7 @@ function renderLearningSummary(groups) {
   return `
     <section class="learning-panel">
       <div>
-        <span>冻结样本校准</span>
+        <span>策略评估 · 每场首次有效赛前预测</span>
         <strong>${calibrationStatus}</strong>
       </div>
       <div class="learning-grid">
@@ -670,12 +686,17 @@ function renderLearningSummary(groups) {
               <article>
                 <span>${group.label}</span>
                 <strong>${group.total ? `${group.hits}/${group.total}` : "--"}</strong>
-                <em>${group.rate === null ? "待积累" : `${group.rate}%`}</em>
+                <em>${group.rate === null ? "待积累" : `${group.rate}%`} · 走盘 ${group.pushes} 场</em>
+                <em>单位投注模拟收益率 ${Number.isFinite(group.roi) ? `${(group.roi * 100).toFixed(1)}%（${group.priced}场）` : "暂无"}</em>
               </article>
             `,
           )
           .join("")}
       </div>
+      <p>半赢计命中，半输计未中，走盘剔除；收益按保存赔率及实际盘口结算。双选与单选分开评估。</p>
+      <details><summary>旧复盘统计（含人工记录及不同推荐版本，不用于评价新策略）</summary>
+        ${buildHistoricalSummary().map(group => `<p>${group.label}：${group.hits}/${group.total}，${group.rate ?? "--"}%</p>`).join("")}
+      </details>
       ${renderFrozenEvaluation()}
     </section>
   `;
@@ -822,6 +843,7 @@ function formatProbability(value) {
 
 function formatPrediction(match) {
   if (!match.prediction) return "待补";
+  if (match.prediction.decision === "watch") return match.prediction.detail;
   const prefix = match.chinese_lottery?.single_handicap === false
     ? "盘路分析，可作串关选场参考；不支持让球单关，串关收益须按整组另算。"
     : match.prediction.betting_eligible === false ? "仅作方向观察，不建议按单关双选方案购买。" : "";
@@ -900,4 +922,3 @@ function renderParlayResults(result, multiplier) {
     <div class="table-wrap parlay-table"><table><thead><tr><th>比赛与选项</th><th>买法</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead>
     <tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => label(entries.get(id))).join("<br>")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}，${multiplier}倍${plan.ids.length > Math.min(...plan.sizes) ? "（各关数全部组合）" : ""}</td><td>${money(plan.cost)}元</td><td>${money(plan.payout)}元</td><td>+${money(plan.profit)}元</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>${details}`;
 }
-
