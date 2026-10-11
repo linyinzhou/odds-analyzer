@@ -5,6 +5,7 @@ from odds_analyzer.models import Selection
 from odds_analyzer.poisson_baseline import (
     expected_asian_return,
     expected_sporttery_return,
+    fit_from_standings,
     fit_goals,
     score_probabilities,
     shadow_match,
@@ -64,6 +65,26 @@ class PoissonBaselineTest(unittest.TestCase):
         result = shadow_match(match, self.fixtures)
         self.assertEqual(result["status"], "shadow")
         self.assertEqual(match["prediction"], {"decision": "watch", "betting_eligible": False})
+
+    def test_existing_season_aggregates_work_without_api_key(self):
+        context = {
+            "home": {"played_games": 5, "goals_for": 9, "goals_against": 6, "team_id": 1},
+            "away": {"played_games": 5, "goals_for": 14, "goals_against": 3, "team_id": 2},
+        }
+        fitted = fit_from_standings(context)
+        self.assertAlmostEqual(fitted["expected_home_goals"], 1.2)
+        self.assertAlmostEqual(fitted["expected_away_goals"], 2.0)
+        match = {
+            "football_data_snapshot": {"competition_code": "SA", "utc_date": "2026-10-11T10:30:00Z"},
+            "fundamental_context": context,
+            "asian_handicap": {"handicap": -.25, "home_odds": 1.9, "away_odds": 1.9},
+            "prediction": {"decision": "watch", "betting_eligible": False},
+        }
+        result = shadow_match(match, [])
+        self.assertEqual(result["status"], "shadow_aggregate")
+        self.assertEqual(match["prediction"]["decision"], "watch")
+        context["home"]["played_games"] = 2
+        self.assertIsNone(fit_from_standings(context))
 
 
 if __name__ == "__main__":

@@ -83,6 +83,39 @@ def fit_goals(
     }
 
 
+def fit_from_standings(context: dict[str, Any]) -> dict[str, Any] | None:
+    """Provisional two-team baseline from the already captured pre-match table."""
+    rates = {}
+    for side in ("home", "away"):
+        team = context.get(side) or {}
+        try:
+            played = team["played_games"]
+            scored = team["goals_for"]
+            conceded = team["goals_against"]
+            if (any(type(value) is not int for value in (played, scored, conceded))
+                    or played < 3 or min(scored, conceded) < 0):
+                return None
+        except (KeyError, TypeError):
+            return None
+        rates[side] = (scored / played, conceded / played, played)
+    home, away = rates["home"], rates["away"]
+    # Equal weight to a team's scoring rate and its opponent's concession rate.
+    # There is no market price, assumed league mean, or invented venue coefficient.
+    expected_home = (home[0] + away[1]) / 2
+    expected_away = (away[0] + home[1]) / 2
+    if not all(0 < value <= 5 for value in (expected_home, expected_away)):
+        return None
+    return {
+        "expected_home_goals": expected_home,
+        "expected_away_goals": expected_away,
+        "home_team_matches": home[2],
+        "away_team_matches": away[2],
+        "model": "independent_poisson_season_aggregate_v1",
+        "source": "existing_prematch_fundamental_context",
+        "limitations": ["只含赛季汇总，不区分主客场", "未调整对手强度", "少量比赛的进失球均值波动大"],
+    }
+
+
 def score_probabilities(home_goals: float, away_goals: float) -> dict[tuple[int, int], float]:
     """Include the full practical goal tail; report no artificial probability mass."""
     if not all(math.isfinite(x) and 0 < x <= 5 for x in (home_goals, away_goals)):
@@ -143,20 +176,25 @@ def shadow_match(match: dict[str, Any], fixtures: list[dict[str, Any]]) -> dict[
     if not snapshot.get("utc_date") or not asian:
         return {"status": "unavailable", "reason": "缺少开球时间或亚盘报价"}
     try:
-        home_id = context["home"]["team_id"]
-        away_id = context["away"]["team_id"]
-        if type(home_id) is not int or type(away_id) is not int:
-            raise ValueError("missing team id")
-        fitted = fit_goals(fixtures, snapshot["competition_code"], snapshot["utc_date"], home_id, away_id)
+        home_id = (context.get("home") or {}).get("team_id")
+        away_id = (context.get("away") or {}).get("team_id")
+        fitted = (fit_goals(fixtures, snapshot["competition_code"], snapshot["utc_date"], home_id, away_id)
+                  if type(home_id) is int and type(away_id) is int and fixtures else None)
         if fitted is None:
-            return {"status": "unavailable", "reason": "联赛或球队赛前逐场样本不足"}
+            fitted = fit_from_standings(context)
+        if fitted is None:
+            return {"status": "unavailable", "reason": "缺少可用的赛前逐场或赛季进失球样本"}
         matrix = score_probabilities(fitted["expected_home_goals"], fitted["expected_away_goals"])
         asian_result = {}
         for side, selection in (("home", Selection.HOME), ("away", Selection.AWAY)):
             asian_result[side] = expected_asian_return(
                 matrix, float(asian["handicap"]), selection, float(asian[f"{side}_odds"])
             )
-        result: dict[str, Any] = {"status": "shadow", **fitted, "asian_handicap": asian_result}
+        result: dict[str, Any] = {
+            "status": "shadow_aggregate" if fitted["model"].endswith("aggregate_v1") else "shadow",
+            **fitted,
+            "asian_handicap": asian_result,
+        }
         lottery = match.get("chinese_lottery") or {}
         if lottery.get("handicap") is not None and lottery.get("handicap_odds"):
             result["sporttery_handicap"] = {

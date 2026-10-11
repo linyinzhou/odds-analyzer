@@ -14,7 +14,13 @@ Training JSON uses `{"matches":[{"competition_code":"PL","utc_date":"2025-08-01T
 The independent Poisson baseline shrinks team goals scored and conceded toward
 the competition mean, retaining the observed league home advantage. It requires
 at least 100 completed league matches and eight completed matches per involved
-team. Promoted teams or restricted API seasons can therefore be unavailable.
+team. When historical fixtures are unavailable, the report can still compute a
+**provisional aggregate baseline** from each team's season goals scored and
+conceded per game already captured in `fundamental_context`. It averages home
+attack with away defence, and away attack with home defence. At least three
+matches per team are required. This fallback has no league calibration or
+home advantage estimate; it is labeled `shadow_aggregate`. Promoted teams or
+restricted API seasons can therefore still produce a provisional calculation.
 The model has no recent weighting, opponent adjustment in training, injury or
 lineup feature, or Dixon–Coles low-score correction. These are known limits of
 this first baseline.
