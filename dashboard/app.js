@@ -90,7 +90,8 @@ function normalizePayload(payload) {
   const inScope = (match) => matchInAnalysisScope(match, analysisCompetitionCodes);
   const allCurrentMatches = payload.current_matches ?? payload.matches ?? [];
   const currentMatches = allCurrentMatches.filter(inScope);
-  const mismatchHistory = currentMatches.filter((match) => match.mismatch?.matched === true);
+  const mismatchHistory = (payload.mismatch_history ?? allCurrentMatches)
+    .filter((match) => match.mismatch?.matched === true && inScope(match));
   const checkerHistory = (payload.checker_history ?? getTopCheckerCandidates(currentMatches)).filter(inScope);
   const adhocHistory = payload.adhoc_history ?? [];
   const fallbackRequests = payload.fallback_requests ?? [];
