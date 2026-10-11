@@ -102,6 +102,7 @@ jobs:
               candidates = [
                   (payload.get("slate") or {}).get("generated_at"),
                   (payload.get("last_fallback_import") or {}).get("imported_at"),
+                  (payload.get("manual_override") or {}).get("updated_at"),
                   (payload.get("last_result_review") or {}).get("reviewed_at"),
                   (payload.get("strategy_performance") or {}).get("generated_at"),
               ]
@@ -116,11 +117,16 @@ jobs:
 
           main_date = str((main.get("slate") or {}).get("date") or "")
           live_date = str((live.get("slate") or {}).get("date") or "")
+          live_manual = (live.get("manual_override") or {}).get("slate_date") == live_date
+          main_manual = (main.get("manual_override") or {}).get("slate_date") == main_date
           use_live = live_date > main_date or (
               live_date == main_date
               and (
-                  quality(live) > quality(main)
-                  or (quality(live) == quality(main) and freshness(live) > freshness(main))
+                  (live_manual and not main_manual)
+                  or (live_manual == main_manual and (
+                      quality(live) > quality(main)
+                      or (quality(live) == quality(main) and freshness(live) > freshness(main))
+                  ))
               )
           )
           restored = merge_learning_archives(live, main) if use_live else merge_learning_archives(main, live)
@@ -135,6 +141,28 @@ jobs:
           )
           PY
           fi
+
+      - name: Skip automatic refresh after manual work
+        id: manual_guard
+        if: ${{ github.event.schedule == '17 8 * * *' }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          payload = json.loads(Path("dashboard/data/daily_matches.json").read_text(encoding="utf-8"))
+          slate_date = os.environ.get("SLATE_DATE") or datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+          marker = payload.get("manual_override") or {}
+          skip = marker.get("slate_date") == slate_date
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"skip={'true' if skip else 'false'}\n")
+          print(f"automatic_refresh={'skipped' if skip else 'enabled'} slate_date={slate_date} manual_source={marker.get('source', '')}")
+          PY
+        env:
+          SLATE_DATE: ${{ inputs.slate_date }}
 
       - name: Show manual trigger context
         run: |
@@ -151,7 +179,7 @@ jobs:
           echo "Dispatch accepted."
 
       - name: Refresh evening slate
-        if: ${{ github.event.schedule == '17 8 * * *' || inputs.run_type == 'evening-report' }}
+        if: ${{ (github.event.schedule == '17 8 * * *' || inputs.run_type == 'evening-report') && steps.manual_guard.outputs.skip != 'true' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.refresh_evening_slate --date "${SLATE_DATE}"
         env:
           SLATE_DATE: ${{ inputs.slate_date }}
@@ -190,9 +218,11 @@ jobs:
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
       - name: Validate dashboard data
+        if: ${{ steps.manual_guard.outputs.skip != 'true' }}
         run: python -m json.tool dashboard/data/daily_matches.json > /dev/null
 
       - name: Summarize fallback queue
+        if: ${{ steps.manual_guard.outputs.skip != 'true' }}
         run: |
           python - <<'PY'
           import json
@@ -209,6 +239,7 @@ jobs:
           PY
 
       - name: Run tests
+        if: ${{ steps.manual_guard.outputs.skip != 'true' }}
         run: |
           cp dashboard/data/daily_matches.json /tmp/generated_daily_matches.json
           git checkout -- dashboard/data/daily_matches.json
@@ -216,6 +247,7 @@ jobs:
           cp /tmp/generated_daily_matches.json dashboard/data/daily_matches.json
 
       - name: Write run status
+        if: ${{ steps.manual_guard.outputs.skip != 'true' }}
         run: |
           python - <<'PY'
           import json
@@ -245,6 +277,7 @@ jobs:
           RUN_ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || 'PL,PD,SA' }}
 
       - name: Publish dashboard to gh-pages
+        if: ${{ steps.manual_guard.outputs.skip != 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

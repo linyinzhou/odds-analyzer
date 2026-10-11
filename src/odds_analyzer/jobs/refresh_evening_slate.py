@@ -1302,6 +1302,9 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
     existing_payload = _load_payload(path)
+    is_scheduled = os.environ.get("GITHUB_EVENT_NAME") == "schedule"
+    if is_scheduled and (existing_payload.get("manual_override") or {}).get("slate_date") == slate_date:
+        return existing_payload
     analysis_competitions = parse_analysis_competitions(os.environ.get("ANALYSIS_COMPETITIONS"))
     football_data_key = os.environ.get("FOOTBALL_DATA_API_KEY", "").strip()
     if football_data_key:
@@ -1413,6 +1416,12 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
         analysis_competitions=analysis_competitions,
     )
     merged_payload = merge_dashboard_payload(existing_payload, batch_payload)
+    if not is_scheduled:
+        merged_payload["manual_override"] = {
+            "slate_date": slate_date,
+            "source": "evening-report",
+            "updated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
+        }
     _write_payload(path, merged_payload)
     return merged_payload
 

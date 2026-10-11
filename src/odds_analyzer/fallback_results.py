@@ -60,15 +60,23 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
         if not remaining:
             resolved += 1
 
-    if any(str(result.get("request_id") or "").startswith("daily:") for result in results):
+    daily_results = any(str(result.get("request_id") or "").startswith("daily:") for result in results)
+    if daily_results:
         _rebuild_daily_histories(payload)
 
+    imported_at = datetime.now(BEIJING).isoformat(timespec="seconds")
     payload["last_fallback_import"] = {
-        "imported_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
+        "imported_at": imported_at,
         "result_count": len(results),
         "field_count": applied,
         "resolved_count": resolved,
     }
+    if daily_results and applied:
+        payload["manual_override"] = {
+            "slate_date": str((payload.get("slate") or {}).get("date") or ""),
+            "source": "fallback",
+            "updated_at": imported_at,
+        }
     payload_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload
 

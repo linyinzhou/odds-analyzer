@@ -56,6 +56,7 @@ jobs:
               candidates = [
                   (payload.get("slate") or {}).get("generated_at"),
                   (payload.get("last_fallback_import") or {}).get("imported_at"),
+                  (payload.get("manual_override") or {}).get("updated_at"),
                   (payload.get("last_result_review") or {}).get("reviewed_at"),
                   (payload.get("strategy_performance") or {}).get("generated_at"),
               ]
@@ -70,11 +71,16 @@ jobs:
 
           main_date = str((main.get("slate") or {}).get("date") or "")
           live_date = str((live.get("slate") or {}).get("date") or "")
+          live_manual = (live.get("manual_override") or {}).get("slate_date") == live_date
+          main_manual = (main.get("manual_override") or {}).get("slate_date") == main_date
           use_live = live_date > main_date or (
               live_date == main_date
               and (
-                  quality(live) > quality(main)
-                  or (quality(live) == quality(main) and freshness(live) > freshness(main))
+                  (live_manual and not main_manual)
+                  or (live_manual == main_manual and (
+                      quality(live) > quality(main)
+                      or (quality(live) == quality(main) and freshness(live) > freshness(main))
+                  ))
               )
           )
           restored = merge_learning_archives(live, main) if use_live else merge_learning_archives(main, live)
