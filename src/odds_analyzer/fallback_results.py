@@ -77,6 +77,8 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
             "source": "fallback",
             "updated_at": imported_at,
         }
+    from odds_analyzer.season_model import update_predictions
+    update_predictions(payload, imported_at)
     payload_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload
 

@@ -1,9 +1,12 @@
-const APP_VERSION = "20261011-poisson-shadow-1";
+const APP_VERSION = "20261013-season-model-1";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
   currentMatches: [],
   poissonShadow: {},
+  modelForecasts: [],
+  modelReviews: [],
+  modelEvaluation: {},
   mismatchHistory: [],
   checkerHistory: [],
   adhocHistory: [],
@@ -46,6 +49,9 @@ async function loadDashboard() {
   const normalized = normalizePayload(payload);
   state.currentMatches = normalized.currentMatches;
   state.poissonShadow = {};
+  state.modelForecasts = payload.model_forecasts ?? [];
+  state.modelReviews = payload.model_reviews ?? [];
+  state.modelEvaluation = payload.model_evaluation ?? {};
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
   state.adhocHistory = normalized.adhocHistory;
@@ -396,6 +402,7 @@ function renderMarkets(match) {
 }
 
 function renderPoissonShadow(match) {
+  if (match.model_forecast) return renderSeasonModel(match.model_forecast);
   const item = state.poissonShadow[match.id];
   if (!item || match.mismatch?.matched === true || !item.market_snapshot) return "";
   const market = item.market_snapshot;
@@ -414,6 +421,39 @@ function renderPoissonShadow(match) {
     <h4>模型试算（未验证，继续观望）</h4>
     <p>预计进球 ${analysis.expected_home_goals.toFixed(2)} / ${analysis.expected_away_goals.toFixed(2)}；${sample}每投入1元的模拟预期盈亏：亚盘主/客 ${ev(asian?.home?.expected_profit_per_unit)} / ${ev(asian?.away?.expected_profit_per_unit)} 元，竞彩让球主/平/客 ${ev(lottery?.home)} / ${ev(lottery?.draw)} / ${ev(lottery?.away)} 元。仅用有限赛季数据试算，未验证预测能力。</p>
   </section>`;
+}
+
+function renderSeasonModel(model) {
+  if (model.status !== "research") return `<p class="muted">模型预测：${escapeAttribute(model.reason ?? "数据不足")}</p>`;
+  const labels = { home: "主胜", draw: "平", away: "客胜" };
+  const p = model.probabilities;
+  const pick = model.selection;
+  const line = pick ? (pick.side === "home" ? pick.home_handicap : -pick.home_handicap) : null;
+  const market = pick ? `亚盘预测：${pick.side === "home" ? "主队" : "客队"} ${line >= 0 ? "+" : ""}${line}，赔率 ${pick.odds.toFixed(2)}，每单位模拟预期盈亏 ${pick.expected_profit_per_unit >= 0 ? "+" : ""}${pick.expected_profit_per_unit.toFixed(2)}。` : "缺少有效亚盘，仅输出胜平负。";
+  const coverage = model.feature_coverage;
+  return `<section><h4>模型预测（研究记录）</h4>
+    <p>胜平负：${labels[model.outcome_pick]}；主/平/客概率 ${(p.home*100).toFixed(1)}% / ${(p.draw*100).toFixed(1)}% / ${(p.away*100).toFixed(1)}%。预计进球 ${model.expected_home_goals.toFixed(2)} / ${model.expected_away_goals.toFixed(2)}。${market}</p>
+    <p class="muted">本赛季${model.training_matches}场，主/客球队${model.team_samples.home}/${model.team_samples.away}场；含近期权重、对手攻防及主客场。可用排名${coverage.ranking_training_matches}场、历史盘口${coverage.historical_handicap_matches}场。预测已留档，赛后自动复盘；尚未验证投注收益。</p></section>`;
+}
+
+function renderModelChecker() {
+  const selected = new Map();
+  [...state.modelForecasts].sort((a,b) => Date.parse(a.recorded_at)-Date.parse(b.recorded_at)).forEach(f => {
+    const key = `${f.fixture_key}:${f.version}`;
+    if (!selected.has(key)) selected.set(key, f);
+  });
+  const reviews = new Map();
+  [...state.modelReviews].sort((a,b) => Date.parse(a.observed_at)-Date.parse(b.observed_at)).forEach(r => reviews.set(r.forecast_id, r));
+  const labels = {home:"主胜",draw:"平",away:"客胜"};
+  const evaluation = state.modelEvaluation;
+  return `<details class="schedule-note"><summary>非错盘模型复盘 · 已预测 ${evaluation.forecasts ?? 0} 场 / 已复盘 ${evaluation.reviewed ?? 0} 场</summary>
+    <p>固定每场每个模型版本的首次赛前预测；胜平负命中 ${evaluation.hits ?? 0}/${evaluation.reviewed ?? 0}，亚盘模拟收益率 ${Number.isFinite(evaluation.unit_roi) ? (evaluation.unit_roi*100).toFixed(1)+"%" : "待积累"}（${evaluation.market_reviewed ?? 0}场）。</p>
+    <div class="table-wrap"><table><thead><tr><th>比赛</th><th>原预测</th><th>赛果</th><th>亚盘单位盈亏</th></tr></thead><tbody>${[...selected.values()].reverse().map(f => {
+      const r = reviews.get(f.forecast_id), s = f.analysis.selection;
+      const line = s ? (s.side === "home" ? s.home_handicap : -s.home_handicap) : null;
+      const pick = s ? `${s.side === "home" ? "主队" : "客队"} ${line >= 0 ? "+" : ""}${line} @${s.odds}` : "亚盘缺失";
+      return `<tr><td>${escapeAttribute(f.match.home_team)} vs ${escapeAttribute(f.match.away_team)}<br>${escapeAttribute(f.match.kickoff_time)}</td><td>${labels[f.analysis.outcome_pick]}；${pick}</td><td>${r ? `${r.final_score}（${r.outcome_hit ? "命中" : "未中"}）` : "待复盘"}</td><td>${Number.isFinite(r?.unit_profit) ? r.unit_profit.toFixed(2) : "--"}</td></tr>`;
+    }).join("")}</tbody></table></div></details>`;
 }
 
 function renderStakingPlan(match) {
@@ -559,6 +599,7 @@ function renderCheckerView() {
       <strong>已复盘 ${reviewed} 场，命中 ${hits} 场</strong>
     </div>
     ${renderLearningSummary(learning)}
+    ${renderModelChecker()}
     <div class="checker-list">
       ${paged.items.map(renderCheckerItem).join("")}
     </div>

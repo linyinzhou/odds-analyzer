@@ -1422,6 +1422,8 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
             "source": "evening-report",
             "updated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
         }
+    from odds_analyzer.season_model import update_predictions
+    update_predictions(merged_payload)
     _write_payload(path, merged_payload)
     return merged_payload
 

@@ -347,7 +347,9 @@ def evaluate_archive(payload: dict) -> dict:
 def merge_learning_archives(preferred: dict, other: dict) -> dict:
     """Preserve both ledgers even when UI payload selection prefers stale main data."""
     merged = deepcopy(preferred)
-    for collection, key in (("prediction_archive", "snapshot_id"), ("result_archive", "result_id")):
+    for collection, key in (("prediction_archive", "snapshot_id"), ("result_archive", "result_id"),
+                            ("season_results", "observation_id"), ("model_forecasts", "forecast_id"),
+                            ("model_reviews", "model_review_id")):
         records = {}
         for item in [*preferred.get(collection, []), *other.get(collection, [])]:
             if item[key] in records and records[item[key]] != item:
@@ -355,4 +357,6 @@ def merge_learning_archives(preferred: dict, other: dict) -> dict:
             records[item[key]] = deepcopy(item)
         merged[collection] = list(records.values())
     merged["learning_evaluation"] = evaluate_archive(merged)
+    from odds_analyzer.season_model import review_predictions
+    review_predictions(merged)
     return merged
