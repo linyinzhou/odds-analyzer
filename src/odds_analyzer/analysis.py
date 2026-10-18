@@ -46,13 +46,25 @@ def check_lottery_asian_mismatch(
     asian_line: AsianHandicapLine,
     lottery_line: ChineseLotteryLine,
     max_supported_home_margin: float | None,
+    *,
+    fundamentals_against_favorite: bool = False,
 ) -> HandicapMismatchCheck:
     """Check whether integer lottery handicap is meaningfully deeper or shallower than Asian handicap."""
 
     line_gap = lottery_line.home_handicap - asian_line.home_handicap
     lottery_draw_margin = -lottery_line.home_handicap
 
-    if line_gap <= -0.5:
+    if fundamentals_against_favorite:
+        # Preserve the historical strategy key; eligibility now uses direction, not line gap.
+        return HandicapMismatchCheck(
+            status="lottery_deeper_small_win",
+            line_gap=line_gap,
+            preferred_selections=(Selection.DRAW, Selection.AWAY),
+            reason="基本面方向与欧赔、亚盘热门方相反，符合反热门错盘条件；不设盘口线差门槛。",
+            risk="基本面方向分歧不等于受让方一定赢盘，仍需核对具体让球结算与赔率。",
+        )
+
+    if line_gap < 0:
         if max_supported_home_margin is not None and max_supported_home_margin <= lottery_draw_margin:
             return HandicapMismatchCheck(
                 status="lottery_deeper_small_win",

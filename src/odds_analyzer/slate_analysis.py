@@ -338,6 +338,7 @@ def _mismatch_read(
         AsianHandicapLine(home_handicap=favorite_asian_line),
         ChineseLotteryLine(home_handicap=favorite_lottery_line),
         max_supported_home_margin=max_margin,
+        fundamentals_against_favorite=fundamentals_conflict,
     )
 
     limited_sample = False
@@ -378,7 +379,7 @@ def _mismatch_read(
     polymarket_validation = _polymarket_lottery_validation(match, check.status)
     check_reason = check.reason
     if check.status == "lottery_deeper_small_win":
-        check_reason = check_reason.rstrip("。") + "；基本面偏受让方，不支持盘口热门方打穿竞彩深盘。"
+        check_reason = check_reason.rstrip("。") + "；基本面偏受让方，结合竞彩让球结算检查反热门双选。"
         if limited_sample:
             check_reason += "当前赛季样本不足3场，按错盘候选处理。"
     check_reason = check_reason.rstrip("。") + polymarket_validation["note_zh"]

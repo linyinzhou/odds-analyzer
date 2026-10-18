@@ -193,6 +193,16 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertIn("均值不能说明逐场达标频率", evidence)
         self.assertIn("home goal margin must be at least 1", analyzed["recommendation"]["fundamental_evidence_en"])
 
+    def test_opposing_fundamentals_do_not_require_half_goal_gap(self):
+        for line in (-0.75, -1.0, -1.25):
+            with self.subTest(asian_line=line):
+                match = dynamic_analysis_match(include_lottery=True)
+                match["asian_handicap"]["handicap"] = line
+                analyzed = analyze_slate_match(match)
+                self.assertTrue(analyzed["mismatch"]["matched"])
+                self.assertEqual(analyzed["prediction"]["selection_keys"], ["draw", "away"])
+                self.assertIn("不设盘口线差门槛", analyzed["mismatch"]["reason"])
+
     def test_complete_three_market_snapshot_generates_mismatch_prediction(self):
         match = dynamic_analysis_match(include_lottery=True)
 
