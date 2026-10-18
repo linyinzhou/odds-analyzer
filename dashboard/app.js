@@ -518,7 +518,9 @@ function renderMismatchView() {
       )
       .join("") || `<p class="empty">当前没有命中错盘规则的比赛。</p>`;
   elements.viewBody.insertAdjacentHTML("beforeend", renderPagination("mismatch", paged));
-  elements.viewBody.insertAdjacentHTML("afterbegin", renderMismatchParlays(matches));
+  const parlaySection = renderMismatchParlays(matches);
+  if (!parlaySection) { bindPagination(); return; }
+  elements.viewBody.insertAdjacentHTML("afterbegin", parlaySection);
   const updateParlays = () => {
     const value = Number(document.querySelector("#parlayMultiplier").value);
     const mode = document.querySelector("#parlayMode").value;
@@ -967,13 +969,19 @@ loadDashboard().catch((error) => {
 
 
 function renderMismatchParlays(matches) {
-  return `<section class="staking-plan" aria-label="错盘双选串关盈亏">
-    <h3>预测＋错盘串关盈利组合</h3>
-    <p>先独立判断错盘比赛：欧亚盘与积分、净胜球同向且能对应明确竞彩结果时收窄单选，否则保留双选，再计算组合盈亏。</p>
-    <label>方案 <select id="parlayMode"><option value="narrow">错盘独立判断后组合</option><option value="mixed">外部预测单选＋原错盘双选</option><option value="double">仅错盘双选</option></select></label>
+  const modes = [
+    { key: "narrow", title: "错盘收窄后组合", result: MismatchParlays.calculate(matches, { narrow: true }) },
+    { key: "mixed", title: "预测单选＋错盘双选", result: MismatchParlays.calculate(state.currentMatches, { mixed: true }) },
+    { key: "double", title: "错盘双选组合", result: MismatchParlays.calculate(matches) },
+  ].filter(mode => mode.result.plans.length && (mode.key !== "narrow"
+    || mode.result.plans.some(plan => mode.result.eligible.some(item => plan.ids.includes(item.match.id) && item.narrowing?.narrowed))));
+  if (!modes.length) return "";
+  return `<section class="staking-plan" aria-label="串关组合">
+    <h3>串关组合</h3>
+    <label>方案 <select id="parlayMode">${modes.map(mode => `<option value="${mode.key}">${mode.title}</option>`).join("")}</select></label>
     <label>倍数 <input id="parlayMultiplier" type="number" min="1" max="10000" step="1" value="1"></label>
     <p class="muted">按已有快照推演，不改写原赛前预测。以下盈亏以所选结果全部命中、双选命中较低赔率为前提。</p>
-    <div id="parlayResults">${renderParlayResults(MismatchParlays.calculate(matches), 1)}</div>
+    <div id="parlayResults">${renderParlayResults(modes[0].result, 1)}</div>
   </section>`;
 }
 
@@ -986,17 +994,12 @@ function renderParlayResults(result, multiplier) {
     const confidence = Number.isFinite(item.match.prediction.confidence) ? item.match.prediction.confidence : "未提供";
     return `${escapeAttribute(item.match.home_team)} vs ${escapeAttribute(item.match.away_team)}：${market} ${item.keys.map(key => names[key]).join("＋")}（${item.narrowing?.narrowed ? "错盘收窄单选；原双选信心不沿用" : (item.count === 1 ? "预测单选" : "错盘双选") + "；信心 " + confidence}）`;
   };
-  const narrowingSummary = result.eligible.some(item => item.narrowing)
-    ? `<details open><summary>错盘收窄判断</summary><ul>${result.eligible.map(item => `<li>${label(item)}<details><summary>判断依据</summary>${escapeAttribute(item.reason)}${item.narrowing?.narrowed ? "<p>收窄会失去原双选另一选项的保护；判断错误时，该场相关串关可能全部损失。</p>" : ""}</details></li>`).join("")}</ul></details>` : "";
-  const details = `${narrowingSummary}<details><summary>查看计算依据与未入选比赛</summary>
-    <p>信心分仅供比较，不参与筛选，也不代表实际命中率。每注 2 元，各注同倍；加倍只放大盈亏。实际以出票赔率、取整及奖金限额为准。</p>
-    <p>枚举最多 8 场的任意选场及各关数全组合、混合关数；不含单关、自定义删注和各注不同倍数。混合模式至少包含一场预测单选和一场错盘双选。</p>
-    <ul>${result.eligible.map(item => `<li>${label(item)}；最低赔率 ${item.minimumOdds.toFixed(2)}${item.reason ? "；" + item.reason : ""}</li>`).join("")}</ul>
-    ${result.excluded.length ? `<p>未入选：${result.excluded.map(match => escapeAttribute(match.home_team + " vs " + match.away_team + "：" + match.exclusion)).join("；")}。结论仅覆盖可用预测。</p>` : ""}
-    </details>`;
-  if (result.status === "too_many") return `<strong>暂未计算：可用比赛超过 8 场。</strong>${details}`;
-  if (result.status === "insufficient") return `<strong>暂无可列出的盈利组合。</strong><p>可用预测不足以组成当前方案；这不代表已证明所有组合都亏损。</p>${details}`;
-  if (!result.plans.length) return `<strong>没有盈利组合。</strong><p>按可用预测全部命中、双选取最低赔率计算，奖金仍不足以产生净利润。</p>${details}`;
+  if (result.status !== "complete" || !result.plans.length) return "";
+  const usedIds = new Set(result.plans.flatMap(plan => plan.ids));
+  const narrowed = result.eligible.filter(item => usedIds.has(item.match.id) && item.narrowing?.narrowed);
+  const details = narrowed.length
+    ? `<details><summary>单选收窄依据</summary><ul>${narrowed.map(item => `<li>${label(item)}：${escapeAttribute(item.reason)}</li>`).join("")}</ul></details>`
+    : "";
   const entries = new Map(result.eligible.map(item => [item.match.id, item]));
   return `<p><strong>找到 ${result.plans.length} 个全中时盈利的组合。</strong>按最高关数从多到少排序；同关数先纯串关、后混合方案，再按收益率排序。每行是一种独立方案。</p>
     <div class="table-wrap parlay-table"><table><thead><tr><th>比赛与选项</th><th>买法</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead>

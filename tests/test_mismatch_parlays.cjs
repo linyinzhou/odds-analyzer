@@ -51,10 +51,8 @@ vm.runInContext(app, context);
 node('#parlayMode').value = 'double';
 context.matches = example;
 vm.runInContext('state.mismatchHistory = matches; renderMismatchView()', context);
-assert.match(node('#viewBody').innerHTML, /没有盈利组合/);
-node('#parlayMultiplier').value = '2';
-node('#parlayMultiplier').input();
-assert.match(node('#parlayResults').innerHTML, /没有盈利组合/);
+assert.doesNotMatch(node('#viewBody').innerHTML, /id="parlayMode"/);
+assert.equal(vm.runInContext('renderParlayResults(MismatchParlays.calculate(matches), 1)', context), '');
 context.matches = [match('a', 2.5), match('b', 2.5)];
 vm.runInContext('state.mismatchHistory = matches; renderMismatchView()', context);
 node('#parlayMultiplier').value = '2';
@@ -98,7 +96,7 @@ vm.runInContext('state.checkerHistory = []; renderMismatchView()', context);
 assert.match(node('#parlayResults').innerHTML, /4.65/);
 assert.doesNotMatch(node('#viewBody').innerHTML, /parlayConfidence/);
 vm.runInContext('state.currentMatches = [matches[1]]; renderMismatchView()', context);
-assert.match(node('#parlayResults').innerHTML, /可用预测不足/);
+assert.doesNotMatch(node('#viewBody').innerHTML, /id="parlayMode"/);
 console.log('Mixed prediction and mismatch checks passed.');
 
 const { narrowMismatch } = require('../dashboard/mismatch-parlays.js');
@@ -152,3 +150,10 @@ assert.match(node('#parlayResults').innerHTML, /原双选信心不沿用/);
 assert.match(node('#parlayResults').innerHTML, /1.50/);
 console.log('Independent mismatch narrowing checks passed.');
 
+
+assert.doesNotMatch(node('#parlayResults').innerHTML, /查看计算依据与未入选比赛|错盘收窄判断/);
+context.matches = [match('a', 2.5), match('b', 2.5)];
+const onlyDouble = vm.runInContext('state.currentMatches = matches; renderMismatchParlays(matches)', context);
+assert.match(onlyDouble, /value="double"/);
+assert.doesNotMatch(onlyDouble, /value="narrow"|value="mixed"|单选收窄依据/);
+console.log('Empty and duplicate parlay sections are hidden.');
