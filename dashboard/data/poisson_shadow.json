@@ -1,0 +1,543 @@
+{
+  "slate_date": "2026-10-24",
+  "generated_at": "2026-10-24T07:21:58.001234+00:00",
+  "status": "research_only_not_validated",
+  "training_source": "football-data.org competition finished-match API",
+  "training_errors": [
+    "BL1/2025: HTTPError",
+    "BL1/2026: HTTPError",
+    "PD/2025: HTTPError"
+  ],
+  "training_fixture_count": 992,
+  "matches": [
+    {
+      "match_id": "2026-10-24-aston-villa-fc-manchester-city-fc",
+      "home_team": "Aston Villa FC",
+      "away_team": "Manchester City FC",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": 1.0,
+          "home_odds": 1.87,
+          "away_odds": 2.06
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow",
+        "expected_home_goals": 1.1218816688245812,
+        "expected_away_goals": 1.7396470969489113,
+        "training_matches": 451,
+        "home_team_matches": 45,
+        "away_team_matches": 45,
+        "training_cutoff": "2026-10-24T11:30:00+00:00",
+        "model": "independent_poisson_shrunk_rates_v1",
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": 0.13449223008630767,
+            "full_win": 0.4816571775981656,
+            "half_win": 0.0,
+            "push": 0.23379330797773776,
+            "half_loss": 0.0,
+            "full_loss": 0.2845495144240965
+          },
+          "away": {
+            "expected_profit_per_unit": -0.18003469230862335,
+            "full_win": 0.2845495144240965,
+            "half_win": 0.0,
+            "push": 0.23379330797773776,
+            "half_loss": 0.0,
+            "full_loss": 0.4816571775981656
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-24-rayo-vallecano-de-madrid-elche-cf",
+      "home_team": "Rayo Vallecano de Madrid",
+      "away_team": "Elche CF",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-cagliari-calcio-bologna-fc-1909",
+      "home_team": "Cagliari Calcio",
+      "away_team": "Bologna FC 1909",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-como-1907-us-sassuolo-calcio",
+      "home_team": "Como 1907",
+      "away_team": "US Sassuolo Calcio",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -1.25,
+          "home_odds": 2.05,
+          "away_odds": 1.86
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow",
+        "expected_home_goals": 1.9222500421519917,
+        "expected_away_goals": 0.8406431714302123,
+        "training_matches": 451,
+        "home_team_matches": 45,
+        "away_team_matches": 45,
+        "training_cutoff": "2026-10-24T13:00:00+00:00",
+        "model": "independent_poisson_shrunk_rates_v1",
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.0994401777770844,
+            "full_win": 0.37842393674519204,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.24958150379054453,
+            "full_loss": 0.3719945594642637
+          },
+          "away": {
+            "expected_profit_per_unit": 0.04881143102400892,
+            "full_win": 0.3719945594642637,
+            "half_win": 0.24958150379054453,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.37842393674519204
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-24-sc-paderborn-07-hamburger-sv",
+      "home_team": "SC Paderborn 07",
+      "away_team": "Hamburger SV",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-fc-augsburg-1-fc-union-berlin",
+      "home_team": "FC Augsburg",
+      "away_team": "1. FC Union Berlin",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-1-fc-k-ln-fc-schalke-04",
+      "home_team": "1. FC Köln",
+      "away_team": "FC Schalke 04",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -0.5,
+          "home_odds": 2.1,
+          "away_odds": 1.82
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow_aggregate",
+        "expected_home_goals": 1.25,
+        "expected_away_goals": 1.25,
+        "home_team_matches": 6,
+        "away_team_matches": 6,
+        "model": "independent_poisson_season_aggregate_v1",
+        "source": "existing_prematch_fundamental_context",
+        "limitations": [
+          "只含赛季汇总，不区分主客场",
+          "未调整对手强度",
+          "少量比赛的进失球均值波动大"
+        ],
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.23354876369311062,
+            "full_win": 0.3649767791937569,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.6350232208062432
+          },
+          "away": {
+            "expected_profit_per_unit": 0.15574226186736256,
+            "full_win": 0.6350232208062432,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.3649767791937569
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-24-rb-leipzig-sv-07-elversberg",
+      "home_team": "RB Leipzig",
+      "away_team": "SV 07 Elversberg",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-1-fsv-mainz-05-sv-werder-bremen",
+      "home_team": "1. FSV Mainz 05",
+      "away_team": "SV Werder Bremen",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-24-arsenal-fc-everton-fc",
+      "home_team": "Arsenal FC",
+      "away_team": "Everton FC",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -1.25,
+          "home_odds": 2.11,
+          "away_odds": 1.83
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow",
+        "expected_home_goals": 1.8078886072083482,
+        "expected_away_goals": 0.6507184248235994,
+        "training_matches": 451,
+        "home_team_matches": 45,
+        "away_team_matches": 45,
+        "training_cutoff": "2026-10-24T14:00:00+00:00",
+        "model": "independent_poisson_shrunk_rates_v1",
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.05142967600293519,
+            "full_win": 0.3866810023232748,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.2653468181899098,
+            "full_loss": 0.34797217948681525
+          },
+          "away": {
+            "expected_profit_per_unit": 0.012254836199594485,
+            "full_win": 0.34797217948681525,
+            "half_win": 0.2653468181899098,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.3866810023232748
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-24-coventry-city-fc-fulham-fc",
+      "home_team": "Coventry City FC",
+      "away_team": "Fulham FC",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": 0.25,
+          "home_odds": 1.92,
+          "away_odds": 2.01
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow_aggregate",
+        "expected_home_goals": 1.1428571428571428,
+        "expected_away_goals": 1.5,
+        "home_team_matches": 7,
+        "away_team_matches": 7,
+        "model": "independent_poisson_season_aggregate_v1",
+        "source": "existing_prematch_fundamental_context",
+        "limitations": [
+          "只含赛季汇总，不区分主客场",
+          "未调整对手强度",
+          "少量比赛的进失球均值波动大"
+        ],
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.07039027702467658,
+            "full_win": 0.2891073885991925,
+            "half_win": 0.25652297045539313,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.4543696409454145
+          },
+          "away": {
+            "expected_profit_per_unit": 0.0415444635279795,
+            "full_win": 0.4543696409454145,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.25652297045539313,
+            "full_loss": 0.2891073885991925
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-24-real-racing-club-de-santander-rcd-espanyol-de-barcelona",
+      "home_team": "Real Racing Club de Santander",
+      "away_team": "RCD Espanyol de Barcelona",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -0.25,
+          "home_odds": 2.03,
+          "away_odds": 1.88
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow_aggregate",
+        "expected_home_goals": 1.3888888888888888,
+        "expected_away_goals": 2.0,
+        "home_team_matches": 9,
+        "away_team_matches": 9,
+        "model": "independent_poisson_season_aggregate_v1",
+        "source": "existing_prematch_fundamental_context",
+        "limitations": [
+          "只含赛季汇总，不区分主客场",
+          "未调整对手强度",
+          "少量比赛的进失球均值波动大"
+        ],
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.35131192012709744,
+            "full_win": 0.26620566451485084,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.2165811618155108,
+            "full_loss": 0.5172131736696384
+          },
+          "away": {
+            "expected_profit_per_unit": 0.2842376395132556,
+            "full_win": 0.5172131736696384,
+            "half_win": 0.2165811618155108,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.26620566451485084
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-25-ssc-napoli-as-roma",
+      "home_team": "SSC Napoli",
+      "away_team": "AS Roma",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": 0.0,
+          "home_odds": 1.91,
+          "away_odds": 1.99
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow",
+        "expected_home_goals": 1.0253445130080607,
+        "expected_away_goals": 1.2103036873571695,
+        "training_matches": 451,
+        "home_team_matches": 45,
+        "away_team_matches": 45,
+        "training_cutoff": "2026-10-24T16:00:00+00:00",
+        "model": "independent_poisson_shrunk_rates_v1",
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.12026703500661484,
+            "full_win": 0.3103749634181703,
+            "half_win": 0.0,
+            "push": 0.28691678486467964,
+            "half_loss": 0.0,
+            "full_loss": 0.40270825171714975
+          },
+          "away": {
+            "expected_profit_per_unit": 0.08830620578180798,
+            "full_win": 0.40270825171714975,
+            "half_win": 0.0,
+            "push": 0.28691678486467964,
+            "half_loss": 0.0,
+            "full_loss": 0.3103749634181703
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-25-valencia-cf-villarreal-cf",
+      "home_team": "Valencia CF",
+      "away_team": "Villarreal CF",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-25-chelsea-fc-tottenham-hotspur-fc",
+      "home_team": "Chelsea FC",
+      "away_team": "Tottenham Hotspur FC",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -0.5,
+          "home_odds": 1.96,
+          "away_odds": 1.96
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow",
+        "expected_home_goals": 1.9174982507256138,
+        "expected_away_goals": 1.131716815710036,
+        "training_matches": 451,
+        "home_team_matches": 45,
+        "away_team_matches": 45,
+        "training_cutoff": "2026-10-24T16:30:00+00:00",
+        "model": "independent_poisson_shrunk_rates_v1",
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": 0.09128694218199707,
+            "full_win": 0.5567790521336717,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.4432209478663278
+          },
+          "away": {
+            "expected_profit_per_unit": -0.13128694218199705,
+            "full_win": 0.4432209478663278,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.5567790521336717
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-25-borussia-dortmund-eintracht-frankfurt",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Eintracht Frankfurt",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": {
+          "provider": "Pinnacle",
+          "handicap": -1.25,
+          "home_odds": 2.03,
+          "away_odds": 1.88
+        },
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "shadow_aggregate",
+        "expected_home_goals": 2.25,
+        "expected_away_goals": 1.1666666666666667,
+        "home_team_matches": 6,
+        "away_team_matches": 6,
+        "model": "independent_poisson_season_aggregate_v1",
+        "source": "existing_prematch_fundamental_context",
+        "limitations": [
+          "只含赛季汇总，不区分主客场",
+          "未调整对手强度",
+          "少量比赛的进失球均值波动大"
+        ],
+        "asian_handicap": {
+          "home": {
+            "expected_profit_per_unit": -0.08791137776197315,
+            "full_win": 0.39418461887446105,
+            "half_win": 0.0,
+            "push": 0.0,
+            "half_loss": 0.2237876918457413,
+            "full_loss": 0.3820276892797973
+          },
+          "away": {
+            "expected_profit_per_unit": 0.0404663321038867,
+            "full_win": 0.3820276892797973,
+            "half_win": 0.2237876918457413,
+            "push": 0.0,
+            "half_loss": 0.0,
+            "full_loss": 0.39418461887446105
+          }
+        }
+      }
+    },
+    {
+      "match_id": "2026-10-25-ss-lazio-parma-calcio-1913",
+      "home_team": "SS Lazio",
+      "away_team": "Parma Calcio 1913",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    },
+    {
+      "match_id": "2026-10-25-club-atl-tico-de-madrid-rc-deportivo-la-coru-a",
+      "home_team": "Club Atlético de Madrid",
+      "away_team": "RC Deportivo La Coruña",
+      "mismatch": false,
+      "market_snapshot": {
+        "asian_handicap": null,
+        "chinese_lottery": null
+      },
+      "analysis": {
+        "status": "unavailable",
+        "reason": "缺少开球时间或亚盘报价"
+      }
+    }
+  ]
+}
