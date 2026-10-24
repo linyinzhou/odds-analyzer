@@ -1,0 +1,1921 @@
+{
+  "results": [
+    {
+      "request_id": "daily:2026-10-24-aston-villa-fc-manchester-city-fc",
+      "home_team": "Aston Villa FC",
+      "away_team": "Manchester City FC",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 4.85,
+            "draw": 4.38,
+            "away": 1.44
+          },
+          "handicap": 1,
+          "handicap_odds": {
+            "home": 2.4,
+            "draw": 3.52,
+            "away": 2.33
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 58,
+              "position": 12,
+              "played_games": 7,
+              "won": 2,
+              "draw": 2,
+              "lost": 3,
+              "goals_for": 7,
+              "goals_against": 11,
+              "goal_difference": -4,
+              "points": 8,
+              "form": [
+                "W",
+                "D",
+                "W",
+                "L",
+                "D"
+              ]
+            },
+            "away": {
+              "team_id": 65,
+              "position": 1,
+              "played_games": 7,
+              "won": 7,
+              "draw": 0,
+              "lost": 0,
+              "goals_for": 19,
+              "goals_against": 7,
+              "goal_difference": 12,
+              "points": 21,
+              "form": [
+                "W",
+                "W",
+                "W",
+                "W",
+                "W"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Aston Villa FC：排名第 12，7 场 2胜2平3负，进7失11，净胜-4，8分；近5场（新→旧）W-D-W-L-D",
+              "away": "Manchester City FC：排名第 1，7 场 7胜0平0负，进19失7，净胜+12，21分；近5场（新→旧）W-W-W-W-W"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Newcastle 0-1 Aston Villa; 2026-10-10 Aston Villa 2-2 Brentford; 2026-09-19 Tottenham 2-3 Aston Villa; 2026-09-12 Aston Villa 1-2 Nottingham; 2026-09-05 Hull City 0-0 Aston Villa",
+              "away": "2026-10-17 Manchester City 3-2 Ipswich; 2026-10-11 Liverpool 0-3 Manchester City; 2026-09-20 Manchester City 5-3 Sunderland; 2026-09-13 Manchester United 0-1 Manchester City; 2026-09-05 Manchester City 1-0 Coventry"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-410.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/england/premier-league/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-rayo-vallecano-de-madrid-elche-cf",
+      "home_team": "Rayo Vallecano de Madrid",
+      "away_team": "Elche CF",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.56,
+            "draw": 3.75,
+            "away": 4.5
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.86,
+            "draw": 3.3,
+            "away": 2.1
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 87,
+              "position": 14,
+              "played_games": 8,
+              "won": 2,
+              "draw": 3,
+              "lost": 3,
+              "goals_for": 12,
+              "goals_against": 17,
+              "goal_difference": -5,
+              "points": 9,
+              "form": [
+                "D",
+                "D",
+                "W",
+                "L",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 285,
+              "position": 18,
+              "played_games": 9,
+              "won": 1,
+              "draw": 4,
+              "lost": 4,
+              "goals_for": 11,
+              "goals_against": 17,
+              "goal_difference": -6,
+              "points": 7,
+              "form": [
+                "D",
+                "D",
+                "W",
+                "L",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Rayo Vallecano de Madrid：排名第 14，8 场 2胜3平3负，进12失17，净胜-5，9分；近5场（新→旧）D-D-W-L-W",
+              "away": "Elche CF：排名第 18，9 场 1胜4平4负，进11失17，净胜-6，7分；近5场（新→旧）D-D-W-L-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-19 Getafe 1-1 Rayo Vallecano; 2026-09-19 Osasuna 1-1 Rayo Vallecano; 2026-09-15 Rayo Vallecano 2-1 Espanyol; 2026-09-12 Real Madrid 4-1 Rayo Vallecano; 2026-09-05 Rayo Vallecano 3-2 Racing Santander",
+              "away": "2026-10-17 Villarreal 0-0 Elche; 2026-10-11 Elche 0-0 Celta Vigo; 2026-09-18 Espanyol 1-3 Elche; 2026-09-15 Elche 2-3 Real Madrid; 2026-09-12 Athletic Bilbao 1-1 Elche"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.74,
+          "draw": 3.75,
+          "away": 4.7
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -0.75,
+          "home_odds": 1.9,
+          "away_odds": 1.84
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-410.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/spain/primera-division/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/rayo-vallecano-vs-elche-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/rayo-vallecano-vs-elche-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-cagliari-calcio-bologna-fc-1909",
+      "home_team": "Cagliari Calcio",
+      "away_team": "Bologna FC 1909",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 2.8,
+            "draw": 2.75,
+            "away": 2.45
+          },
+          "handicap": 1,
+          "handicap_odds": {
+            "home": 1.42,
+            "draw": 4,
+            "away": 5.7
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 104,
+              "position": 8,
+              "played_games": 7,
+              "won": 4,
+              "draw": 1,
+              "lost": 2,
+              "goals_for": 6,
+              "goals_against": 7,
+              "goal_difference": -1,
+              "points": 13,
+              "form": [
+                "L",
+                "D",
+                "W",
+                "W",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 103,
+              "position": 15,
+              "played_games": 7,
+              "won": 1,
+              "draw": 2,
+              "lost": 4,
+              "goals_for": 6,
+              "goals_against": 10,
+              "goal_difference": -4,
+              "points": 5,
+              "form": [
+                "L",
+                "W",
+                "D",
+                "L",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Cagliari Calcio：排名第 8，7 场 4胜1平2负，进6失7，净胜-1，13分；近5场（新→旧）L-D-W-W-W",
+              "away": "Bologna FC 1909：排名第 15，7 场 1胜2平4负，进6失10，净胜-4，5分；近5场（新→旧）L-W-D-L-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-19 Monza 4-0 Cagliari; 2026-10-11 Cagliari 1-1 Juventus; 2026-09-19 Udinese 0-1 Cagliari; 2026-09-12 Atalanta 1-2 Cagliari; 2026-09-07 Cagliari 1-0 Lecce",
+              "away": "2026-10-17 Bologna 1-3 Inter; 2026-10-11 Lecce 1-2 Bologna; 2026-09-19 Bologna 1-1 Torino; 2026-09-13 Napoli 1-0 Bologna; 2026-09-06 Bologna 2-2 Sassuolo"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 3.0,
+          "draw": 3.05,
+          "away": 2.45
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": 0.25,
+          "home_odds": 1.73,
+          "away_odds": 2.05
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-411.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/italy/serie-a/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/cagliari-vs-bologna-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/cagliari-vs-bologna-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-como-1907-us-sassuolo-calcio",
+      "home_team": "Como 1907",
+      "away_team": "US Sassuolo Calcio",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.31,
+            "draw": 4.85,
+            "away": 6.25
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 1.97,
+            "draw": 3.85,
+            "away": 2.77
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 7397,
+              "position": 5,
+              "played_games": 7,
+              "won": 4,
+              "draw": 2,
+              "lost": 1,
+              "goals_for": 12,
+              "goals_against": 7,
+              "goal_difference": 5,
+              "points": 14,
+              "form": [
+                "W",
+                "D",
+                "L",
+                "W",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 471,
+              "position": 13,
+              "played_games": 7,
+              "won": 2,
+              "draw": 2,
+              "lost": 3,
+              "goals_for": 12,
+              "goals_against": 14,
+              "goal_difference": -2,
+              "points": 8,
+              "form": [
+                "L",
+                "D",
+                "L",
+                "W",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Como 1907：排名第 5，7 场 4胜2平1负，进12失7，净胜+5，14分；近5场（新→旧）W-D-L-W-W",
+              "away": "US Sassuolo Calcio：排名第 13，7 场 2胜2平3负，进12失14，净胜-2，8分；近5场（新→旧）L-D-L-W-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-18 Fiorentina 1-3 Como; 2026-10-11 Como 0-0 Roma; 2026-09-20 Frosinone 2-0 Como; 2026-09-14 Como 2-1 Parma; 2026-09-04 Genoa 1-4 Como",
+              "away": "2026-10-16 Frosinone 4-2 Sassuolo; 2026-10-11 Sassuolo 1-1 Milan; 2026-09-18 Monza 2-1 Sassuolo; 2026-09-13 Sassuolo 3-2 Juventus; 2026-09-06 Bologna 2-2 Sassuolo"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-410.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/italy/serie-a/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-sc-paderborn-07-hamburger-sv",
+      "home_team": "SC Paderborn 07",
+      "away_team": "Hamburger SV",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 2.17,
+            "draw": 3.5,
+            "away": 2.62
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 4.35,
+            "draw": 4.15,
+            "away": 1.52
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 29,
+              "position": 16,
+              "played_games": 6,
+              "won": 1,
+              "draw": 2,
+              "lost": 3,
+              "goals_for": 5,
+              "goals_against": 9,
+              "goal_difference": -4,
+              "points": 5,
+              "form": [
+                "D",
+                "L",
+                "W",
+                "L",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 7,
+              "position": 9,
+              "played_games": 6,
+              "won": 3,
+              "draw": 0,
+              "lost": 3,
+              "goals_for": 6,
+              "goals_against": 15,
+              "goal_difference": -9,
+              "points": 9,
+              "form": [
+                "W",
+                "W",
+                "W",
+                "L",
+                "L"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "SC Paderborn 07：排名第 16，6 场 1胜2平3负，进5失9，净胜-4，5分；近5场（新→旧）D-L-W-L-L",
+              "away": "Hamburger SV：排名第 9，6 场 3胜0平3负，进6失15，净胜-9，9分；近5场（新→旧）W-W-W-L-L"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Werder Bremen 2-2 Paderborn; 2026-10-10 Paderborn 0-2 Stuttgart; 2026-09-20 Paderborn 3-1 Hoffenheim; 2026-09-12 Borussia Dortmund 3-0 Paderborn; 2026-09-05 Paderborn 0-1 Freiburg",
+              "away": "2026-10-17 Hamburger 1-0 Stuttgart; 2026-10-10 Hoffenheim 2-3 Hamburger; 2026-09-19 Hamburger 2-1 FC Koln; 2026-09-13 RB Leipzig 5-0 Hamburger; 2026-09-06 Hamburger 0-5 Mainz"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 2.23,
+          "draw": 3.6,
+          "away": 2.88
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -0.25,
+          "home_odds": 1.94,
+          "away_odds": 1.82
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-412.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/paderborn-vs-hamburger-sv-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/paderborn-vs-hamburger-sv-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-fc-augsburg-1-fc-union-berlin",
+      "home_team": "FC Augsburg",
+      "away_team": "1. FC Union Berlin",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.66,
+            "draw": 3.85,
+            "away": 3.75
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.9,
+            "draw": 3.68,
+            "away": 1.95
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 16,
+              "position": 10,
+              "played_games": 6,
+              "won": 2,
+              "draw": 2,
+              "lost": 2,
+              "goals_for": 16,
+              "goals_against": 12,
+              "goal_difference": 4,
+              "points": 8,
+              "form": [
+                "L",
+                "D",
+                "L",
+                "D",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 28,
+              "position": 17,
+              "played_games": 6,
+              "won": 1,
+              "draw": 2,
+              "lost": 3,
+              "goals_for": 5,
+              "goals_against": 17,
+              "goal_difference": -12,
+              "points": 5,
+              "form": [
+                "D",
+                "W",
+                "L",
+                "L",
+                "L"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "FC Augsburg：排名第 10，6 场 2胜2平2负，进16失12，净胜+4，8分；近5场（新→旧）L-D-L-D-W",
+              "away": "1. FC Union Berlin：排名第 17，6 场 1胜2平3负，进5失17，净胜-12，5分；近5场（新→旧）D-W-L-L-L"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Elversberg 4-3 Augsburg; 2026-10-10 Augsburg 2-2 Bayern Munchen; 2026-09-19 Werder Bremen 3-2 Augsburg; 2026-09-12 Augsburg 2-2 Bayer Leverkusen; 2026-09-06 Eintracht Frankfurt 1-4 Augsburg",
+              "away": "2026-10-17 Union Berlin 0-0 Borussia Dortmund; 2026-10-10 Union Berlin 1-0 Elversberg; 2026-09-18 Bayern Munchen 7-0 Union Berlin; 2026-09-11 Union Berlin 1-3 Schalke 04; 2026-09-05 Bayer Leverkusen 4-0 Union Berlin"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.8,
+          "draw": 3.9,
+          "away": 3.85
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -0.5,
+          "home_odds": 1.78,
+          "away_odds": 1.98
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-412.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/augsburg-vs-union-berlin-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/augsburg-vs-union-berlin-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-1-fc-k-ln-fc-schalke-04",
+      "home_team": "1. FC Köln",
+      "away_team": "FC Schalke 04",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.8,
+            "draw": 3.57,
+            "away": 3.4
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 3.5,
+            "draw": 3.6,
+            "away": 1.77
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 1,
+              "position": 12,
+              "played_games": 6,
+              "won": 2,
+              "draw": 1,
+              "lost": 3,
+              "goals_for": 8,
+              "goals_against": 11,
+              "goal_difference": -3,
+              "points": 7,
+              "form": [
+                "L",
+                "W",
+                "L",
+                "D",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 6,
+              "position": 15,
+              "played_games": 6,
+              "won": 1,
+              "draw": 2,
+              "lost": 3,
+              "goals_for": 4,
+              "goals_against": 7,
+              "goal_difference": -3,
+              "points": 5,
+              "form": [
+                "L",
+                "L",
+                "D",
+                "W",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "1. FC Köln：排名第 12，6 场 2胜1平3负，进8失11，净胜-3，7分；近5场（新→旧）L-W-L-D-L",
+              "away": "FC Schalke 04：排名第 15，6 场 1胜2平3负，进4失7，净胜-3，5分；近5场（新→旧）L-L-D-W-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-16 Eintracht Frankfurt 1-0 FC Koln; 2026-10-11 FC Koln 2-1 Borussia M'gladbach; 2026-09-19 Hamburger 2-1 FC Koln; 2026-09-12 FC Koln 1-1 Werder Bremen; 2026-09-04 Stuttgart 4-1 FC Koln",
+              "away": "2026-10-17 Schalke 04 0-1 Mainz; 2026-10-11 Freiburg 2-1 Schalke 04; 2026-09-20 Schalke 04 0-0 Elversberg; 2026-09-11 Union Berlin 1-3 Schalke 04; 2026-09-05 Schalke 04 0-0 Bayern Munchen"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-412.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-rb-leipzig-sv-07-elversberg",
+      "home_team": "RB Leipzig",
+      "away_team": "SV 07 Elversberg",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.25,
+            "draw": 5.5,
+            "away": 6.8
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 1.76,
+            "draw": 4.2,
+            "away": 3.1
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 721,
+              "position": 7,
+              "played_games": 6,
+              "won": 3,
+              "draw": 0,
+              "lost": 3,
+              "goals_for": 16,
+              "goals_against": 11,
+              "goal_difference": 5,
+              "points": 9,
+              "form": [
+                "L",
+                "W",
+                "L",
+                "W",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 719,
+              "position": 6,
+              "played_games": 6,
+              "won": 3,
+              "draw": 1,
+              "lost": 2,
+              "goals_for": 12,
+              "goals_against": 11,
+              "goal_difference": 1,
+              "points": 10,
+              "form": [
+                "W",
+                "L",
+                "D",
+                "L",
+                "W"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "RB Leipzig：排名第 7，6 场 3胜0平3负，进16失11，净胜+5，9分；近5场（新→旧）L-W-L-W-L",
+              "away": "SV 07 Elversberg：排名第 6，6 场 3胜1平2负，进12失11，净胜+1，10分；近5场（新→旧）W-L-D-L-W"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Bayern Munchen 6-1 RB Leipzig; 2026-10-10 RB Leipzig 6-0 Eintracht Frankfurt; 2026-09-20 Bayer Leverkusen 2-0 RB Leipzig; 2026-09-13 RB Leipzig 5-0 Hamburger; 2026-09-05 Werder Bremen 3-1 RB Leipzig",
+              "away": "2026-10-17 Elversberg 4-3 Augsburg; 2026-10-10 Union Berlin 1-0 Elversberg; 2026-09-20 Schalke 04 0-0 Elversberg; 2026-09-13 Elversberg 1-2 Bayern Munchen; 2026-09-05 Borussia M'gladbach 3-4 Elversberg"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.4,
+          "draw": 5.1,
+          "away": 6.25
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -1.5,
+          "home_odds": 1.94,
+          "away_odds": 1.81
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-411.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/rb-leipzig-vs-elversberg-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/rb-leipzig-vs-elversberg-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-1-fsv-mainz-05-sv-werder-bremen",
+      "home_team": "1. FSV Mainz 05",
+      "away_team": "SV Werder Bremen",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.59,
+            "draw": 3.85,
+            "away": 4.15
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.75,
+            "draw": 3.6,
+            "away": 2.05
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 15,
+              "position": 5,
+              "played_games": 6,
+              "won": 3,
+              "draw": 1,
+              "lost": 2,
+              "goals_for": 14,
+              "goals_against": 10,
+              "goal_difference": 4,
+              "points": 10,
+              "form": [
+                "W",
+                "L",
+                "W",
+                "L",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 12,
+              "position": 8,
+              "played_games": 6,
+              "won": 2,
+              "draw": 3,
+              "lost": 1,
+              "goals_for": 12,
+              "goals_against": 12,
+              "goal_difference": 0,
+              "points": 9,
+              "form": [
+                "D",
+                "D",
+                "W",
+                "D",
+                "W"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "1. FSV Mainz 05：排名第 5，6 场 3胜1平2负，进14失10，净胜+4，10分；近5场（新→旧）W-L-W-L-W",
+              "away": "SV Werder Bremen：排名第 8，6 场 2胜3平1负，进12失12，净胜+0，9分；近5场（新→旧）D-D-W-D-W"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Schalke 04 0-1 Mainz; 2026-10-10 Mainz 3-4 Bayer Leverkusen; 2026-09-19 Borussia M'gladbach 3-4 Mainz; 2026-09-12 Mainz 1-3 Eintracht Frankfurt; 2026-09-06 Hamburger 0-5 Mainz",
+              "away": "2026-10-17 Werder Bremen 2-2 Paderborn; 2026-10-09 Borussia Dortmund 2-2 Werder Bremen; 2026-09-19 Werder Bremen 3-2 Augsburg; 2026-09-12 FC Koln 1-1 Werder Bremen; 2026-09-05 Werder Bremen 3-1 RB Leipzig"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.68,
+          "draw": 4.0,
+          "away": 4.4
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -0.75,
+          "home_odds": 1.83,
+          "away_odds": 1.92
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-411.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/mainz-vs-werder-bremen-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/mainz-vs-werder-bremen-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-arsenal-fc-everton-fc",
+      "home_team": "Arsenal FC",
+      "away_team": "Everton FC",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.29,
+            "draw": 4.32,
+            "away": 8.12
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.06,
+            "draw": 3.36,
+            "away": 2.89
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 57,
+              "position": 2,
+              "played_games": 7,
+              "won": 6,
+              "draw": 0,
+              "lost": 1,
+              "goals_for": 11,
+              "goals_against": 5,
+              "goal_difference": 6,
+              "points": 18,
+              "form": [
+                "W",
+                "W",
+                "L",
+                "W",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 62,
+              "position": 8,
+              "played_games": 7,
+              "won": 2,
+              "draw": 4,
+              "lost": 1,
+              "goals_for": 8,
+              "goals_against": 7,
+              "goal_difference": 1,
+              "points": 10,
+              "form": [
+                "L",
+                "D",
+                "W",
+                "D",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Arsenal FC：排名第 2，7 场 6胜0平1负，进11失5，净胜+6，18分；近5场（新→旧）W-W-L-W-W",
+              "away": "Everton FC：排名第 8，7 场 2胜4平1负，进8失7，净胜+1，10分；近5场（新→旧）L-D-W-D-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-18 Nottingham 0-1 Arsenal; 2026-10-10 Arsenal 2-1 Leeds; 2026-09-19 Brighton 3-0 Arsenal; 2026-09-12 Sunderland 0-2 Arsenal; 2026-09-06 Arsenal 2-1 Chelsea",
+              "away": "2026-10-17 Everton 0-2 Chelsea; 2026-10-11 Hull City 2-2 Everton; 2026-09-19 Everton 1-0 Ipswich; 2026-09-12 Tottenham 0-0 Everton; 2026-09-06 Everton 2-2 Manchester United"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-413.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/england/premier-league/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-coventry-city-fc-fulham-fc",
+      "home_team": "Coventry City FC",
+      "away_team": "Fulham FC",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 2.95,
+            "draw": 3.35,
+            "away": 2.04
+          },
+          "handicap": 1,
+          "handicap_odds": {
+            "home": 1.6,
+            "draw": 3.8,
+            "away": 4.15
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 1076,
+              "position": 18,
+              "played_games": 7,
+              "won": 2,
+              "draw": 0,
+              "lost": 5,
+              "goals_for": 6,
+              "goals_against": 14,
+              "goal_difference": -8,
+              "points": 6,
+              "form": [
+                "L",
+                "W",
+                "W",
+                "L",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 63,
+              "position": 19,
+              "played_games": 7,
+              "won": 1,
+              "draw": 2,
+              "lost": 4,
+              "goals_for": 7,
+              "goals_against": 10,
+              "goal_difference": -3,
+              "points": 5,
+              "form": [
+                "W",
+                "L",
+                "D",
+                "D",
+                "L"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Coventry City FC：排名第 18，7 场 2胜0平5负，进6失14，净胜-8，6分；近5场（新→旧）L-W-W-L-L",
+              "away": "Fulham FC：排名第 19，7 场 1胜2平4负，进7失10，净胜-3，5分；近5场（新→旧）W-L-D-D-L"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-19 Tottenham 3-1 Coventry; 2026-10-12 Coventry 4-1 Newcastle; 2026-09-19 Nottingham 0-1 Coventry; 2026-09-13 Coventry 0-5 Brighton; 2026-09-05 Manchester City 1-0 Coventry",
+              "away": "2026-10-17 Fulham 1-0 Hull City; 2026-10-10 Ipswich 2-1 Fulham; 2026-09-20 Fulham 1-1 Manchester United; 2026-09-12 Liverpool 0-0 Fulham; 2026-09-05 Fulham 2-3 Crystal Palace"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-413.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/england/premier-league/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-24-real-racing-club-de-santander-rcd-espanyol-de-barcelona",
+      "home_team": "Real Racing Club de Santander",
+      "away_team": "RCD Espanyol de Barcelona",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 2.28,
+            "draw": 3.35,
+            "away": 2.55
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 4.85,
+            "draw": 4.05,
+            "away": 1.48
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 5335,
+              "position": 17,
+              "played_games": 9,
+              "won": 2,
+              "draw": 2,
+              "lost": 5,
+              "goals_for": 13,
+              "goals_against": 25,
+              "goal_difference": -12,
+              "points": 8,
+              "form": [
+                "L",
+                "D",
+                "L",
+                "L",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 80,
+              "position": 16,
+              "played_games": 9,
+              "won": 2,
+              "draw": 2,
+              "lost": 5,
+              "goals_for": 11,
+              "goals_against": 12,
+              "goal_difference": -1,
+              "points": 8,
+              "form": [
+                "L",
+                "D",
+                "L",
+                "L",
+                "W"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Real Racing Club de Santander：排名第 17，9 场 2胜2平5负，进13失25，净胜-12，8分；近5场（新→旧）L-D-L-L-W",
+              "away": "RCD Espanyol de Barcelona：排名第 16，9 场 2胜2平5负，进11失12，净胜-1，8分；近5场（新→旧）L-D-L-L-W"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-18 Osasuna 2-0 Racing Santander; 2026-10-11 Racing Santander 2-2 Valencia; 2026-09-19 Celta Vigo 5-0 Racing Santander; 2026-09-16 Barcelona 7-2 Racing Santander; 2026-09-12 Racing Santander 2-1 Deportivo Alaves",
+              "away": "2026-10-17 Espanyol 0-1 Atletico Madrid; 2026-10-09 Malaga 1-1 Espanyol; 2026-09-18 Espanyol 1-3 Elche; 2026-09-15 Rayo Vallecano 2-1 Espanyol; 2026-09-12 Osasuna 0-2 Espanyol"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-413.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/spain/primera-division/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-ssc-napoli-as-roma",
+      "home_team": "SSC Napoli",
+      "away_team": "AS Roma",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 2.65,
+            "draw": 2.98,
+            "away": 2.4
+          },
+          "handicap": 1,
+          "handicap_odds": {
+            "home": 1.43,
+            "draw": 3.9,
+            "away": 5.75
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 113,
+              "position": 10,
+              "played_games": 7,
+              "won": 3,
+              "draw": 1,
+              "lost": 3,
+              "goals_for": 10,
+              "goals_against": 7,
+              "goal_difference": 3,
+              "points": 10,
+              "form": [
+                "L",
+                "W",
+                "D",
+                "W",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 100,
+              "position": 3,
+              "played_games": 7,
+              "won": 5,
+              "draw": 2,
+              "lost": 0,
+              "goals_for": 16,
+              "goals_against": 3,
+              "goal_difference": 13,
+              "points": 17,
+              "form": [
+                "W",
+                "D",
+                "D",
+                "W",
+                "W"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "SSC Napoli：排名第 10，7 场 3胜1平3负，进10失7，净胜+3，10分；近5场（新→旧）L-W-D-W-L",
+              "away": "AS Roma：排名第 3，7 场 5胜2平0负，进16失3，净胜+13，17分；近5场（新→旧）W-D-D-W-W"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Venezia 1-0 Napoli; 2026-10-10 Napoli 3-0 Frosinone; 2026-09-20 Fiorentina 1-1 Napoli; 2026-09-13 Napoli 1-0 Bologna; 2026-09-05 Inter 3-2 Napoli",
+              "away": "2026-10-17 Roma 2-0 Genoa; 2026-10-11 Como 0-0 Roma; 2026-09-19 Roma 2-2 Inter; 2026-09-14 Torino 0-2 Roma; 2026-09-05 Roma 2-1 Atalanta"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-414.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/italy/serie-a/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-valencia-cf-villarreal-cf",
+      "home_team": "Valencia CF",
+      "away_team": "Villarreal CF",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 3.15,
+            "draw": 3.45,
+            "away": 1.92
+          },
+          "handicap": 1,
+          "handicap_odds": {
+            "home": 1.68,
+            "draw": 3.7,
+            "away": 3.8
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 95,
+              "position": 19,
+              "played_games": 9,
+              "won": 1,
+              "draw": 3,
+              "lost": 5,
+              "goals_for": 6,
+              "goals_against": 15,
+              "goal_difference": -9,
+              "points": 6,
+              "form": [
+                "D",
+                "D",
+                "L",
+                "W",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 94,
+              "position": 12,
+              "played_games": 9,
+              "won": 2,
+              "draw": 3,
+              "lost": 4,
+              "goals_for": 13,
+              "goals_against": 13,
+              "goal_difference": 0,
+              "points": 9,
+              "form": [
+                "D",
+                "L",
+                "W",
+                "W",
+                "L"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Valencia CF：排名第 19，9 场 1胜3平5负，进6失15，净胜-9，6分；近5场（新→旧）D-D-L-W-L",
+              "away": "Villarreal CF：排名第 12，9 场 2胜3平4负，进13失13，净胜+0，9分；近5场（新→旧）D-L-W-W-L"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Valencia 0-0 Athletic Bilbao; 2026-10-11 Racing Santander 2-2 Valencia; 2026-09-20 Valencia 2-3 Real Sociedad; 2026-09-15 Deportivo Alaves 0-1 Valencia; 2026-09-11 Sevilla 1-0 Valencia",
+              "away": "2026-10-17 Villarreal 0-0 Elche; 2026-10-10 Real Madrid 1-0 Villarreal; 2026-09-20 Villarreal 3-1 Levante; 2026-09-17 Malaga 1-3 Villarreal; 2026-09-14 Villarreal 1-2 Real Betis"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 3.35,
+          "draw": 3.6,
+          "away": 2.07
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": 0.25,
+          "home_odds": 1.98,
+          "away_odds": 1.77
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-415.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/spain/primera-division/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/valencia-vs-villarreal-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/valencia-vs-villarreal-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-chelsea-fc-tottenham-hotspur-fc",
+      "home_team": "Chelsea FC",
+      "away_team": "Tottenham Hotspur FC",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.69,
+            "draw": 3.8,
+            "away": 3.65
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.85,
+            "draw": 3.9,
+            "away": 1.92
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 61,
+              "position": 4,
+              "played_games": 7,
+              "won": 4,
+              "draw": 1,
+              "lost": 2,
+              "goals_for": 17,
+              "goals_against": 13,
+              "goal_difference": 4,
+              "points": 13,
+              "form": [
+                "W",
+                "W",
+                "L",
+                "D",
+                "L"
+              ]
+            },
+            "away": {
+              "team_id": 73,
+              "position": 16,
+              "played_games": 7,
+              "won": 1,
+              "draw": 3,
+              "lost": 3,
+              "goals_for": 6,
+              "goals_against": 10,
+              "goal_difference": -4,
+              "points": 6,
+              "form": [
+                "W",
+                "D",
+                "L",
+                "D",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Chelsea FC：排名第 4，7 场 4胜1平2负，进17失13，净胜+4，13分；近5场（新→旧）W-W-L-D-L",
+              "away": "Tottenham Hotspur FC：排名第 16，7 场 1胜3平3负，进6失10，净胜-4，6分；近5场（新→旧）W-D-L-D-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Everton 0-2 Chelsea; 2026-10-10 Chelsea 5-1 Bournemouth; 2026-09-18 Brentford 3-0 Chelsea; 2026-09-12 Chelsea 2-2 Hull City; 2026-09-06 Arsenal 2-1 Chelsea",
+              "away": "2026-10-19 Tottenham 3-1 Coventry; 2026-10-10 Manchester United 1-1 Tottenham; 2026-09-19 Tottenham 2-3 Aston Villa; 2026-09-12 Tottenham 0-0 Everton; 2026-09-05 Nottingham 0-0 Tottenham"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-414.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/england/premier-league/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-borussia-dortmund-eintracht-frankfurt",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Eintracht Frankfurt",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.34,
+            "draw": 4.9,
+            "away": 5.6
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 1.99,
+            "draw": 3.9,
+            "away": 2.7
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 4,
+              "position": 2,
+              "played_games": 6,
+              "won": 4,
+              "draw": 2,
+              "lost": 0,
+              "goals_for": 11,
+              "goals_against": 4,
+              "goal_difference": 7,
+              "points": 14,
+              "form": [
+                "D",
+                "D",
+                "W",
+                "W",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 19,
+              "position": 11,
+              "played_games": 6,
+              "won": 2,
+              "draw": 2,
+              "lost": 2,
+              "goals_for": 10,
+              "goals_against": 16,
+              "goal_difference": -6,
+              "points": 8,
+              "form": [
+                "W",
+                "L",
+                "D",
+                "W",
+                "L"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Borussia Dortmund：排名第 2，6 场 4胜2平0负，进11失4，净胜+7，14分；近5场（新→旧）D-D-W-W-W",
+              "away": "Eintracht Frankfurt：排名第 11，6 场 2胜2平2负，进10失16，净胜-6，8分；近5场（新→旧）W-L-D-W-L"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Union Berlin 0-0 Borussia Dortmund; 2026-10-09 Borussia Dortmund 2-2 Werder Bremen; 2026-09-19 Stuttgart 0-1 Borussia Dortmund; 2026-09-12 Borussia Dortmund 3-0 Paderborn; 2026-09-05 Hoffenheim 2-3 Borussia Dortmund",
+              "away": "2026-10-16 Eintracht Frankfurt 1-0 FC Koln; 2026-10-10 RB Leipzig 6-0 Eintracht Frankfurt; 2026-09-19 Eintracht Frankfurt 2-2 Freiburg; 2026-09-12 Mainz 1-3 Eintracht Frankfurt; 2026-09-06 Eintracht Frankfurt 1-4 Augsburg"
+            }
+          ]
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-414.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/germany/bundesliga/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-ss-lazio-parma-calcio-1913",
+      "home_team": "SS Lazio",
+      "away_team": "Parma Calcio 1913",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.31,
+            "draw": 4.3,
+            "away": 7.5
+          },
+          "handicap": -1,
+          "handicap_odds": {
+            "home": 2.04,
+            "draw": 3.55,
+            "away": 2.8
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 110,
+              "position": 2,
+              "played_games": 7,
+              "won": 6,
+              "draw": 1,
+              "lost": 0,
+              "goals_for": 14,
+              "goals_against": 4,
+              "goal_difference": 10,
+              "points": 19,
+              "form": [
+                "W",
+                "W",
+                "W",
+                "D",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 112,
+              "position": 19,
+              "played_games": 7,
+              "won": 1,
+              "draw": 1,
+              "lost": 5,
+              "goals_for": 4,
+              "goals_against": 13,
+              "goal_difference": -9,
+              "points": 4,
+              "form": [
+                "L",
+                "L",
+                "W",
+                "L",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "SS Lazio：排名第 2，7 场 6胜1平0负，进14失4，净胜+10，19分；近5场（新→旧）W-W-W-D-W",
+              "away": "Parma Calcio 1913：排名第 19，7 场 1胜1平5负，进4失13，净胜-9，4分；近5场（新→旧）L-L-W-L-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-18 Juventus 0-3 Lazio; 2026-10-11 Lazio 3-1 Monza; 2026-09-19 Venezia 0-2 Lazio; 2026-09-12 Lazio 2-2 Milan; 2026-09-07 Udinese 1-2 Lazio",
+              "away": "2026-10-19 Parma 0-3 Torino; 2026-10-10 Inter 3-0 Parma; 2026-09-20 Parma 2-1 Genoa; 2026-09-14 Como 2-1 Parma; 2026-09-06 Parma 1-1 Monza"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.38,
+          "draw": 4.6,
+          "away": 7.5
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -1.25,
+          "home_odds": 1.87,
+          "away_odds": 1.88
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-415.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/italy/serie-a/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/lazio-vs-parma-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/lazio-vs-parma-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "daily:2026-10-25-club-atl-tico-de-madrid-rc-deportivo-la-coru-a",
+      "home_team": "Club Atlético de Madrid",
+      "away_team": "RC Deportivo La Coruña",
+      "queried_at": "2026-10-24T15:29:19+08:00",
+      "fields": {
+        "sporttery": {
+          "standard": {
+            "home": 1.16,
+            "draw": 5.7,
+            "away": 11
+          },
+          "handicap": -2,
+          "handicap_odds": {
+            "home": 2.83,
+            "draw": 3.8,
+            "away": 1.95
+          },
+          "single_handicap": false
+        },
+        "fundamentals": {
+          "fundamental_context": {
+            "home": {
+              "team_id": 78,
+              "position": 2,
+              "played_games": 9,
+              "won": 7,
+              "draw": 1,
+              "lost": 1,
+              "goals_for": 19,
+              "goals_against": 8,
+              "goal_difference": 11,
+              "points": 22,
+              "form": [
+                "W",
+                "W",
+                "W",
+                "W",
+                "W"
+              ]
+            },
+            "away": {
+              "team_id": 560,
+              "position": 9,
+              "played_games": 9,
+              "won": 2,
+              "draw": 5,
+              "lost": 2,
+              "goals_for": 13,
+              "goals_against": 12,
+              "goal_difference": 1,
+              "points": 11,
+              "form": [
+                "D",
+                "L",
+                "D",
+                "L",
+                "D"
+              ]
+            }
+          },
+          "fundamentals": [
+            {
+              "home": "Club Atlético de Madrid：排名第 2，9 场 7胜1平1负，进19失8，净胜+11，22分；近5场（新→旧）W-W-W-W-W",
+              "away": "RC Deportivo La Coruña：排名第 9，9 场 2胜5平2负，进13失12，净胜+1，11分；近5场（新→旧）D-L-D-L-D"
+            },
+            {
+              "label": "近5场联赛赛果（新→旧）",
+              "home": "2026-10-17 Espanyol 0-1 Atletico Madrid; 2026-10-10 Deportivo Alaves 1-2 Atletico Madrid; 2026-09-20 Atletico Madrid 2-1 Real Madrid; 2026-09-16 Atletico Madrid 4-0 Osasuna; 2026-09-13 Real Sociedad 0-3 Atletico Madrid",
+              "away": "2026-10-16 Deportivo La Coruna 1-1 Levante; 2026-10-11 Real Sociedad 3-2 Deportivo La Coruna; 2026-09-20 Deportivo La Coruna 1-1 Real Betis; 2026-09-16 Deportivo La Coruna 0-1 Sevilla; 2026-09-13 Getafe 1-1 Deportivo La Coruna"
+            }
+          ]
+        },
+        "european_odds": {
+          "home": 1.26,
+          "draw": 5.8,
+          "away": 11.0
+        },
+        "asian_handicap": {
+          "provider": "SportsGambler displayed market (secondary)",
+          "handicap": -1.75,
+          "home_odds": 1.91,
+          "away_odds": 1.84
+        }
+      },
+      "sources": {
+        "sporttery": [
+          {
+            "name": "User Sporttery screenshot; captured 15:18–15:19 CST",
+            "url": "https://linyinzhou.github.io/odds-analyzer/data/sources/sporttery-2026-10-24-415.jpg",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:19:00+08:00"
+          }
+        ],
+        "fundamentals": [
+          {
+            "name": "TipsterArea recent league results",
+            "url": "https://tipsterarea.com/leagues/spain/primera-division/all",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "european_odds": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/atletico-madrid-vs-deportivo-la-coruna-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ],
+        "asian_handicap": [
+          {
+            "name": "SportsGambler displayed market",
+            "url": "https://www.sportsgambler.com/betting-tips/football/atletico-madrid-vs-deportivo-la-coruna-prediction-lineups-odds-2026-10-24/",
+            "tier": "secondary",
+            "queried_at": "2026-10-24T15:29:19+08:00"
+          }
+        ]
+      }
+    }
+  ]
+}
