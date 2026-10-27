@@ -115,13 +115,14 @@ class SeasonModelTests(unittest.TestCase):
         payload["checker_history"][0]["review"]["reviewed_at"] = "2026-10-14T02:00:00Z"
         self.assertEqual(import_checker(payload)["imported"],0)
 
-    def test_morning_review_ingests_unselected_games_and_settles_model(self):
+    def test_morning_review_ingests_results_but_preserves_retired_model(self):
         from odds_analyzer.jobs.review_results import review_checker_results
         update_predictions(self.payload,self.now)
         target = FootballDataFixture(999,"PL","Premier League","2026-10-13T12:00:00Z","2026-10-13 20:00",1,"One",2,"Two",8,None,"FINISHED",home_score=2,away_score=1)
         unselected = FootballDataFixture(1000,"PL","Premier League","2026-10-13T12:00:00Z","2026-10-13 20:00",3,"Three",4,"Four",8,None,"FINISHED",home_score=1,away_score=1)
         reviewed, _ = review_checker_results(self.payload,"2026-10-13",(target,unselected),"2026-10-14T00:00:00Z")
-        self.assertEqual(reviewed["model_evaluation"]["reviewed"],1)
+        self.assertEqual(reviewed["model_evaluation"], self.payload["model_evaluation"])
+        self.assertEqual(reviewed.get("model_reviews"), self.payload.get("model_reviews"))
         self.assertEqual(len(known_results(reviewed,timestamp("2026-10-14T01:00:00Z"))),38)
         repeated, _ = review_checker_results(reviewed,"2026-10-13",(target,unselected),"2026-10-15T00:00:00Z")
         self.assertEqual(repeated["season_results"], reviewed["season_results"])

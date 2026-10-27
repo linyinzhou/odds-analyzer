@@ -1,18 +1,12 @@
-const APP_VERSION = "20261013-season-model-1";
+const APP_VERSION = "20261027-mismatch-only";
 const CHECKER_STORAGE_KEY = "odds-analyzer-checker-v1";
 
 const state = {
   currentMatches: [],
-  poissonShadow: {},
-  modelForecasts: [],
-  modelReviews: [],
-  modelEvaluation: {},
   mismatchHistory: [],
   checkerHistory: [],
   adhocHistory: [],
   fallbackRequests: [],
-  strategyPerformance: { minimum_sample: 20, strategies: {} },
-  learningEvaluation: null,
   nextMatchday: { generated_at: null, competitions: [] },
   analysisCompetitionCodes: ["PL", "PD", "SA"],
   activeView: "detail",
@@ -48,16 +42,10 @@ async function loadDashboard() {
   const payload = await response.json();
   const normalized = normalizePayload(payload);
   state.currentMatches = normalized.currentMatches;
-  state.poissonShadow = {};
-  state.modelForecasts = payload.model_forecasts ?? [];
-  state.modelReviews = payload.model_reviews ?? [];
-  state.modelEvaluation = payload.model_evaluation ?? {};
   state.mismatchHistory = normalized.mismatchHistory;
   state.checkerHistory = normalized.checkerHistory;
   state.adhocHistory = normalized.adhocHistory;
   state.fallbackRequests = normalized.fallbackRequests;
-  state.strategyPerformance = normalized.strategyPerformance;
-  state.learningEvaluation = normalized.learningEvaluation;
   state.nextMatchday = normalized.nextMatchday;
   state.analysisCompetitionCodes = normalized.analysisCompetitionCodes;
   state.checker = loadChecker();
@@ -66,22 +54,7 @@ async function loadDashboard() {
   elements.slateWindow.textContent = payload.slate.window + " · 分析：" + scope;
   loadRunStatus();
   render();
-  loadPoissonShadow(payload.slate.date);
-}
 
-async function loadPoissonShadow(slateDate) {
-  try {
-    const response = await fetch(`./data/poisson_shadow.json?v=${APP_VERSION}-${Date.now()}`);
-    if (!response.ok) return;
-    const report = await response.json();
-    if (report.slate_date !== slateDate || report.status !== "research_only_not_validated" || !Array.isArray(report.matches)) return;
-    state.poissonShadow = Object.fromEntries(report.matches
-      .filter((item) => item.match_id && item.mismatch === false)
-      .map((item) => [item.match_id, item]));
-    if (state.activeView === "detail") renderDetailView();
-  } catch {
-    // The research report is optional; the main dashboard remains usable.
-  }
 }
 
 async function loadRunStatus() {
@@ -119,15 +92,12 @@ function normalizePayload(payload) {
   const adhocHistory = payload.adhoc_history ?? [];
   const fallbackRequests = payload.fallback_requests ?? [];
   const nextMatchday = payload.next_matchday ?? { generated_at: null, competitions: [] };
-  const strategyPerformance = payload.strategy_performance ?? { minimum_sample: 20, strategies: {} };
   return {
     currentMatches,
     mismatchHistory,
     checkerHistory,
     adhocHistory,
     fallbackRequests,
-    strategyPerformance,
-    learningEvaluation: payload.learning_evaluation ?? null,
     nextMatchday,
     analysisCompetitionCodes,
   };
@@ -239,7 +209,7 @@ function renderMatchReport(match) {
           <p>${formatFundamentalEvidence(match)}</p>
         </section>
         ${renderMarkets(match)}
-        ${renderPoissonShadow(match)}
+
 
         <section class="recommendation">
           <h4>建议</h4>
@@ -401,61 +371,6 @@ function renderMarkets(match) {
   `;
 }
 
-function renderPoissonShadow(match) {
-  if (match.model_forecast) return renderSeasonModel(match.model_forecast);
-  const item = state.poissonShadow[match.id];
-  if (!item || match.mismatch?.matched === true || !item.market_snapshot) return "";
-  const market = item.market_snapshot;
-  if (JSON.stringify(market.asian_handicap) !== JSON.stringify(match.asian_handicap)
-      || JSON.stringify(market.chinese_lottery) !== JSON.stringify(match.chinese_lottery)) return "";
-  const analysis = item.analysis;
-  if (!analysis?.status?.startsWith("shadow")
-      || !Number.isFinite(analysis.expected_home_goals)
-      || !Number.isFinite(analysis.expected_away_goals)) return "";
-  const ev = (value) => Number.isFinite(value) ? `${value >= 0 ? "+" : ""}${value.toFixed(2)}` : "--";
-  const asian = analysis.asian_handicap;
-  const lottery = analysis.sporttery_handicap;
-  const sample = Number.isInteger(analysis.home_team_matches) && Number.isInteger(analysis.away_team_matches)
-    ? `赛季样本主/客 ${analysis.home_team_matches}/${analysis.away_team_matches} 场；` : "";
-  return `<section>
-    <h4>模型试算（未验证，继续观望）</h4>
-    <p>预计进球 ${analysis.expected_home_goals.toFixed(2)} / ${analysis.expected_away_goals.toFixed(2)}；${sample}每投入1元的模拟预期盈亏：亚盘主/客 ${ev(asian?.home?.expected_profit_per_unit)} / ${ev(asian?.away?.expected_profit_per_unit)} 元，竞彩让球主/平/客 ${ev(lottery?.home)} / ${ev(lottery?.draw)} / ${ev(lottery?.away)} 元。仅用有限赛季数据试算，未验证预测能力。</p>
-  </section>`;
-}
-
-function renderSeasonModel(model) {
-  if (model.status !== "research") return `<p class="muted">模型预测：${escapeAttribute(model.reason ?? "数据不足")}</p>`;
-  const labels = { home: "主胜", draw: "平", away: "客胜" };
-  const p = model.probabilities;
-  const pick = model.selection;
-  const line = pick ? (pick.side === "home" ? pick.home_handicap : -pick.home_handicap) : null;
-  const market = pick ? `亚盘预测：${pick.side === "home" ? "主队" : "客队"} ${line >= 0 ? "+" : ""}${line}，赔率 ${pick.odds.toFixed(2)}，每单位模拟预期盈亏 ${pick.expected_profit_per_unit >= 0 ? "+" : ""}${pick.expected_profit_per_unit.toFixed(2)}。` : "缺少有效亚盘，仅输出胜平负。";
-  const coverage = model.feature_coverage;
-  return `<section><h4>模型预测（研究记录）</h4>
-    <p>胜平负：${labels[model.outcome_pick]}；主/平/客概率 ${(p.home*100).toFixed(1)}% / ${(p.draw*100).toFixed(1)}% / ${(p.away*100).toFixed(1)}%。预计进球 ${model.expected_home_goals.toFixed(2)} / ${model.expected_away_goals.toFixed(2)}。${market}</p>
-    <p class="muted">本赛季${model.training_matches}场，主/客球队${model.team_samples.home}/${model.team_samples.away}场；含近期权重、对手攻防及主客场。可用排名${coverage.ranking_training_matches}场、历史盘口${coverage.historical_handicap_matches}场。预测已留档，赛后自动复盘；尚未验证投注收益。</p></section>`;
-}
-
-function renderModelChecker() {
-  const selected = new Map();
-  [...state.modelForecasts].sort((a,b) => Date.parse(a.recorded_at)-Date.parse(b.recorded_at)).forEach(f => {
-    const key = `${f.fixture_key}:${f.version}`;
-    if (!selected.has(key)) selected.set(key, f);
-  });
-  const reviews = new Map();
-  [...state.modelReviews].sort((a,b) => Date.parse(a.observed_at)-Date.parse(b.observed_at)).forEach(r => reviews.set(r.forecast_id, r));
-  const labels = {home:"主胜",draw:"平",away:"客胜"};
-  const evaluation = state.modelEvaluation;
-  return `<details class="schedule-note"><summary>非错盘模型复盘 · 已预测 ${evaluation.forecasts ?? 0} 场 / 已复盘 ${evaluation.reviewed ?? 0} 场</summary>
-    <p>固定每场每个模型版本的首次赛前预测；胜平负命中 ${evaluation.hits ?? 0}/${evaluation.reviewed ?? 0}，亚盘模拟收益率 ${Number.isFinite(evaluation.unit_roi) ? (evaluation.unit_roi*100).toFixed(1)+"%" : "待积累"}（${evaluation.market_reviewed ?? 0}场）。</p>
-    <div class="table-wrap"><table><thead><tr><th>比赛</th><th>原预测</th><th>赛果</th><th>亚盘单位盈亏</th></tr></thead><tbody>${[...selected.values()].reverse().map(f => {
-      const r = reviews.get(f.forecast_id), s = f.analysis.selection;
-      const line = s ? (s.side === "home" ? s.home_handicap : -s.home_handicap) : null;
-      const pick = s ? `${s.side === "home" ? "主队" : "客队"} ${line >= 0 ? "+" : ""}${line} @${s.odds}` : "亚盘缺失";
-      return `<tr><td>${escapeAttribute(f.match.home_team)} vs ${escapeAttribute(f.match.away_team)}<br>${escapeAttribute(f.match.kickoff_time)}</td><td>${labels[f.analysis.outcome_pick]}；${pick}</td><td>${r ? `${r.final_score}（${r.outcome_hit ? "命中" : "未中"}）` : "待复盘"}</td><td>${Number.isFinite(r?.unit_profit) ? r.unit_profit.toFixed(2) : "--"}</td></tr>`;
-    }).join("")}</tbody></table></div></details>`;
-}
-
 function renderStakingPlan(match) {
   const prediction = match.prediction ?? {};
   const keys = prediction.selection_keys ?? [];
@@ -523,14 +438,11 @@ function renderMismatchView() {
   elements.viewBody.insertAdjacentHTML("afterbegin", parlaySection);
   const updateParlays = () => {
     const value = Number(document.querySelector("#parlayMultiplier").value);
-    const mode = document.querySelector("#parlayMode").value;
-    const mixed = mode === "mixed";
-    const candidates = mixed ? state.currentMatches : matches;
     document.querySelector("#parlayResults").innerHTML = Number.isInteger(value) && value >= 1 && value <= 10000
-      ? renderParlayResults(MismatchParlays.calculate(candidates, { mixed, narrow: mode === "narrow" }), value)
+      ? renderParlayResults(MismatchParlays.calculate(matches), value)
       : "<p>倍数须为 1～10000 的整数。</p>";
   };
-  for (const id of ["#parlayMultiplier", "#parlayMode"]) {
+  for (const id of ["#parlayMultiplier"]) {
     document.querySelector(id).addEventListener("input", updateParlays);
   }
   updateParlays();
@@ -591,17 +503,14 @@ function renderCheckerView() {
   const reviewed = reviews.filter((review) => review.reviewed && !review.void).length;
   const hits = reviews.filter((review) => review.reviewed && review.hit).length;
   const paged = paginate(matches, state.pages.checker);
-  const learning = buildLearningSummary();
   elements.viewEyebrow.textContent = "Checker";
   elements.viewTitle.textContent = "赛后复盘";
   elements.viewCounter.textContent = `${hits}/${reviewed} 命中`;
   elements.viewBody.innerHTML = `
     <div class="checker-tools">
-      <span>按信心排序选取非错盘推荐与配比可行的错盘推荐</span>
+      <span>仅复盘错盘比赛，命中按保存的竞彩让球推荐结算</span>
       <strong>已复盘 ${reviewed} 场，命中 ${hits} 场</strong>
     </div>
-    ${renderLearningSummary(learning)}
-    ${renderModelChecker()}
     <div class="checker-list">
       ${paged.items.map(renderCheckerItem).join("")}
     </div>
@@ -681,111 +590,8 @@ function saveChecker() {
   localStorage.setItem(CHECKER_STORAGE_KEY, JSON.stringify(state.checker));
 }
 
-function buildHistoricalSummary() {
-  const reviewed = state.checkerHistory
-    .map((match) => ({ match, review: getCheckerReview(match) }))
-    .filter((item) => item.review?.reviewed && !item.review?.void);
-
-  const groups = [
-    {
-      label: "全部建议",
-      rows: reviewed,
-    },
-    {
-      label: "错盘命中规则",
-      rows: reviewed.filter((item) => item.match.mismatch?.matched),
-    },
-    {
-      label: "非错盘建议",
-      rows: reviewed.filter((item) => !item.match.mismatch?.matched),
-    },
-  ];
-
-  return groups.map((group) => {
-    const total = group.rows.length;
-    const hits = group.rows.filter((item) => item.review.hit).length;
-    return {
-      label: group.label,
-      total,
-      hits,
-      rate: total ? Math.round((hits / total) * 100) : null,
-    };
-  });
-}
-
-function buildLearningSummary() {
-  const strategies = state.learningEvaluation?.by_strategy ?? {};
-  return Object.entries(strategies).map(([key, summary]) => {
-    const outcomes = summary.outcomes ?? {};
-    const hits = (outcomes.win ?? 0) + (outcomes.half_win ?? 0);
-    const total = summary.settled - (outcomes.push ?? 0);
-    return {
-      label: key.includes("market:asian_handicap") ? "赛前冻结 · 亚盘单选" : `赛前冻结 · ${key}`,
-      total, hits, rate: total ? Math.round(hits / total * 100) : null,
-      roi: summary.roi?.return_per_unit,
-      priced: summary.roi?.priced_n ?? 0,
-      pushes: outcomes.push ?? 0,
-    };
-  });
-}
-
-function renderFrozenEvaluation() {
-  const report = state.learningEvaluation;
-  if (!report) return `<p>冻结预测评估尚未开始；历史命中率仅供参考。</p>`;
-  const summary = report.overall;
-  const value = (number) => Number.isFinite(number) ? number.toFixed(4) : "--";
-  const market = summary.market_paired;
-  return `<div class="frozen-evaluation">
-    <p>全部比赛与自选报告 · 每场首次有效赛前预测 · ${report.selected_fixtures} 场入档，${summary.settled} 场完成对照，${report.pending_results} 场待赛果。</p>
-    <div class="learning-grid">
-      <article><span>原始评分 Brier</span><strong>${value(summary.base.brier)}</strong><em>${summary.base.n} 场，排除走盘</em></article>
-      <article><span>校准评分 Brier</span><strong>${value(summary.calibrated.brier)}</strong><em>差值 ${value(summary.brier_delta)}，负值较好</em></article>
-      <article><span>同口径市场 Brier</span><strong>${value(market.market.brier)}</strong><em>${market.market.n} 场；该子集原始 / 校准 ${value(market.base.brier)} / ${value(market.calibrated.brier)}</em></article>
-    </div>
-    <p>置信度仍是规则评分，以上为概率评分诊断。仅调信心不会改变选边、命中率或收益；旧记录不补算成冻结样本。</p>
-  </div>`;
-}
-
-function renderLearningSummary(groups) {
-  const strategies = Object.values(state.strategyPerformance.strategies ?? {});
-  const active = strategies.filter((strategy) => strategy.active);
-  const largestSample = Math.max(0, ...strategies.map((strategy) => strategy.sample_size ?? 0));
-  const minimumSample = state.strategyPerformance.minimum_sample ?? 20;
-  const calibrationStatus = active.length
-    ? `已启用 ${active.length} 类策略校准，单场信心最多修正 ±5 个百分点`
-    : `策略校准样本积累中：最多 ${largestSample}/${minimumSample}，当前不调权`;
-
-  return `
-    <section class="learning-panel">
-      <div>
-        <span>策略评估 · 每场首次有效赛前预测</span>
-        <strong>${calibrationStatus}</strong>
-      </div>
-      <div class="learning-grid">
-        ${groups
-          .map(
-            (group) => `
-              <article>
-                <span>${group.label}</span>
-                <strong>${group.total ? `${group.hits}/${group.total}` : "--"}</strong>
-                <em>${group.rate === null ? "待积累" : `${group.rate}%`} · 走盘 ${group.pushes} 场</em>
-                <em>单位投注模拟收益率 ${Number.isFinite(group.roi) ? `${(group.roi * 100).toFixed(1)}%（${group.priced}场）` : "暂无"}</em>
-              </article>
-            `,
-          )
-          .join("")}
-      </div>
-      <p>半赢计命中，半输计未中，走盘剔除；收益按保存赔率及实际盘口结算。双选与单选分开评估。</p>
-      <details><summary>旧复盘统计（含人工记录及不同推荐版本，不用于评价新策略）</summary>
-        ${buildHistoricalSummary().map(group => `<p>${group.label}：${group.hits}/${group.total}，${group.rate ?? "--"}%</p>`).join("")}
-      </details>
-      ${renderFrozenEvaluation()}
-    </section>
-  `;
-}
-
 function getCheckerMatches() {
-  return [...state.checkerHistory].sort(sortCheckerHistory);
+  return state.checkerHistory.filter(match => match.mismatch?.matched === true).sort(sortCheckerHistory);
 }
 
 function getCheckerReview(match) {
@@ -800,7 +606,7 @@ function getTopCheckerCandidates(matches) {
   const candidates = matches.filter(match => {
     const prediction = match.prediction ?? {};
     if (!(prediction.confidence > 0) || !prediction.market || prediction.market === "无推荐") return false;
-    if (!match.mismatch?.matched) return prediction.betting_eligible !== false;
+    if (!match.mismatch?.matched) return false;
     const plan = prediction.staking_plan;
     const keys = prediction.selection_keys ?? [];
     const allocations = plan?.allocations ?? [];
@@ -809,7 +615,7 @@ function getTopCheckerCandidates(matches) {
       && keys.every(key => allocations.some(row => row.selection === key));
   });
   candidates.sort((a, b) => predictionConfidence(b) - predictionConfidence(a));
-  return candidates.slice(0, candidates.length >= 5 ? 8 : 3);
+  return candidates;
 }
 
 function predictionConfidence(match) {
@@ -970,15 +776,11 @@ loadDashboard().catch((error) => {
 
 function renderMismatchParlays(matches) {
   const modes = [
-    { key: "narrow", title: "错盘收窄后组合", result: MismatchParlays.calculate(matches, { narrow: true }) },
-    { key: "mixed", title: "预测单选＋错盘双选", result: MismatchParlays.calculate(state.currentMatches, { mixed: true }) },
     { key: "double", title: "错盘双选组合", result: MismatchParlays.calculate(matches) },
-  ].filter(mode => mode.result.plans.length && (mode.key !== "narrow"
-    || mode.result.plans.some(plan => mode.result.eligible.some(item => plan.ids.includes(item.match.id) && item.narrowing?.narrowed))));
+  ].filter(mode => mode.result.plans.length);
   if (!modes.length) return "";
   return `<section class="staking-plan" aria-label="串关组合">
     <h3>串关组合</h3>
-    <label>方案 <select id="parlayMode">${modes.map(mode => `<option value="${mode.key}">${mode.title}</option>`).join("")}</select></label>
     <label>倍数 <input id="parlayMultiplier" type="number" min="1" max="10000" step="1" value="1"></label>
     <p class="muted">按已有快照推演，不改写原赛前预测。以下盈亏以所选结果全部命中、双选命中较低赔率为前提。</p>
     <div id="parlayResults">${renderParlayResults(modes[0].result, 1)}</div>
@@ -992,16 +794,11 @@ function renderParlayResults(result, multiplier) {
       ? {home:"主胜",draw:"平",away:"客胜"} : {home:"让胜",draw:"让平",away:"让负"};
     const market = item.marketType === "sporttery_standard" ? "胜平负" : "让球 " + formatLine(item.match.chinese_lottery.handicap);
     const confidence = Number.isFinite(item.match.prediction.confidence) ? item.match.prediction.confidence : "未提供";
-    return `${escapeAttribute(item.match.home_team)} vs ${escapeAttribute(item.match.away_team)}：${market} ${item.keys.map(key => names[key]).join("＋")}（${item.narrowing?.narrowed ? "错盘收窄单选；原双选信心不沿用" : (item.count === 1 ? "预测单选" : "错盘双选") + "；信心 " + confidence}）`;
+    return `${escapeAttribute(item.match.home_team)} vs ${escapeAttribute(item.match.away_team)}：${market} ${item.keys.map(key => names[key]).join("＋")}（错盘双选；信心 ${confidence}）`;
   };
   if (result.status !== "complete" || !result.plans.length) return "";
-  const usedIds = new Set(result.plans.flatMap(plan => plan.ids));
-  const narrowed = result.eligible.filter(item => usedIds.has(item.match.id) && item.narrowing?.narrowed);
-  const details = narrowed.length
-    ? `<details><summary>单选收窄依据</summary><ul>${narrowed.map(item => `<li>${label(item)}：${escapeAttribute(item.reason)}</li>`).join("")}</ul></details>`
-    : "";
   const entries = new Map(result.eligible.map(item => [item.match.id, item]));
   return `<p><strong>找到 ${result.plans.length} 个全中时盈利的组合。</strong>按最高关数从多到少排序；同关数先纯串关、后混合方案，再按收益率排序。每行是一种独立方案。</p>
     <div class="table-wrap parlay-table"><table><thead><tr><th>比赛与选项</th><th>买法</th><th>投入</th><th>最低奖金</th><th>净利润</th><th>收益率</th></tr></thead>
-    <tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => label(entries.get(id))).join("<br>")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}，${multiplier}倍${plan.ids.length > Math.min(...plan.sizes) ? "（各关数全部组合）" : ""}</td><td>${money(plan.cost)}元</td><td>${money(plan.payout)}元</td><td>+${money(plan.profit)}元</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>${details}`;
+    <tbody>${result.plans.map(plan => `<tr><td>${plan.ids.map(id => label(entries.get(id))).join("<br>")}</td><td>${plan.sizes.map(k => k + "串1").join("＋")}，${multiplier}倍${plan.ids.length > Math.min(...plan.sizes) ? "（各关数全部组合）" : ""}</td><td>${money(plan.cost)}元</td><td>${money(plan.payout)}元</td><td>+${money(plan.profit)}元</td><td>${(plan.roi * 100).toFixed(2)}%</td></tr>`).join("")}</tbody></table></div>`;
 }

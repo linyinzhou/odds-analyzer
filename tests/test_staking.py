@@ -112,7 +112,7 @@ class StakingPlanTest(unittest.TestCase):
                              ("sporttery_standard", ["draw", "away"])):
             self.assertEqual(recommended_staking_references(quotes, {"market_type": market, "selection_keys": keys}), [])
 
-    def test_checker_ranks_both_kinds_and_rejects_high_confidence_bad_pairs(self):
+    def test_checker_only_keeps_feasible_mismatches_without_top_eight_limit(self):
         good = analyze_slate_match(dynamic_analysis_match(True))
         good["chinese_lottery"] = lottery(3.85, 1.59, False)
         good["prediction"]["confidence"] = 70
@@ -124,13 +124,13 @@ class StakingPlanTest(unittest.TestCase):
         normal["mismatch"]["matched"] = False
         normal["prediction"].pop("betting_eligible")
         normal["prediction"]["confidence"] = 80
-        self.assertEqual(_checker_candidates([good, bad, normal], "2026-09-12"), [normal, good])
-        many = [deepcopy(normal) for _ in range(10)]
+        self.assertEqual(_checker_candidates([good, bad, normal], "2026-09-12"), [good])
+        many = [deepcopy(good) for _ in range(10)]
         for i, item in enumerate(many):
             item["prediction"]["confidence"] = 50 + i
         selected = _checker_candidates(many, "2026-09-12")
-        self.assertEqual(len(selected), 8)
-        self.assertEqual([m["prediction"]["confidence"] for m in selected], list(range(59, 51, -1)))
+        self.assertEqual(len(selected), 10)
+        self.assertEqual([m["prediction"]["confidence"] for m in selected], list(range(59, 49, -1)))
 
     def test_missing_invalid_and_duplicate_selections(self):
         for price in (None, 0, 1, -1, float("nan"), float("inf"), True, "bad"):

@@ -9,7 +9,6 @@ from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from odds_analyzer.learning import calibrate_predictions, now_iso
 from odds_analyzer.dashboard_payload import merge_dashboard_payload
 from odds_analyzer.fallback_queue import build_fallback_requests
 from odds_analyzer.slate_analysis import analyze_slate_matches
@@ -1223,9 +1222,6 @@ def build_evening_slate_batch(
         match for match in current_matches if _match_competition_code(match) in analysis_competitions
     ]
     current_matches = analyze_slate_matches(current_matches)
-    current_matches, strategy_performance = calibrate_predictions(
-        existing_payload, current_matches, now_iso()
-    )
     current_matches = _attach_bilingual_reports(current_matches)
     source_status = {
         "football_data_source": football_data_source,
@@ -1274,7 +1270,6 @@ def build_evening_slate_batch(
             scope="daily",
         ),
         "next_matchday": next_matchday,
-        "strategy_performance": strategy_performance,
         "replace_history_batch": True,
     }
 
@@ -1289,15 +1284,14 @@ def _checker_candidates(matches: list[dict], slate_date: str) -> list[dict]:
         if (match.get("mismatch") or {}).get("matched"):
             plans = recommended_staking_references(match.get("chinese_lottery"), prediction)
             return bool(plans and plans[0]["status"] == "feasible")
-        return prediction.get("betting_eligible") is not False
+        return False
 
     candidates = [match for match in matches if eligible(match)]
     candidates.sort(
         key=lambda match: match.get("prediction", {}).get("confidence", 0),
         reverse=True,
     )
-    limit = 8 if len(candidates) >= 5 else 3
-    return candidates[:limit]
+    return candidates
 
 
 def refresh_evening_slate(path: Path, slate_date: str) -> dict:
@@ -1422,8 +1416,6 @@ def refresh_evening_slate(path: Path, slate_date: str) -> dict:
             "source": "evening-report",
             "updated_at": datetime.now(BEIJING).isoformat(timespec="seconds"),
         }
-    from odds_analyzer.season_model import update_predictions
-    update_predictions(merged_payload)
     _write_payload(path, merged_payload)
     return merged_payload
 

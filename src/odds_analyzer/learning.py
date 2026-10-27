@@ -75,7 +75,7 @@ def valid_prediction(match: dict) -> bool:
         return False
 
 
-def freeze_predictions(payload: dict, matches: list[dict], recorded_at: str | None = None, *, batch_date: str = "") -> None:
+def freeze_predictions(payload: dict, matches: list[dict], recorded_at: str | None = None, *, batch_date: str = "", mismatch_only: bool = False) -> None:
     """Record at actual generation/import time, never a user-supplied research time."""
     recorded_at = recorded_at or now_iso()
     recorded = timestamp(recorded_at)
@@ -84,6 +84,8 @@ def freeze_predictions(payload: dict, matches: list[dict], recorded_at: str | No
     archive = payload.setdefault("prediction_archive", [])
     known = {item["snapshot_id"] for item in archive}
     for match in matches:
+        if mismatch_only and not (match.get("mismatch") or {}).get("matched"):
+            continue
         kickoff = timestamp(match.get("kickoff_time"), kickoff=True)
         reason = None
         if kickoff is None:
@@ -107,7 +109,6 @@ def freeze_predictions(payload: dict, matches: list[dict], recorded_at: str | No
         if snapshot["snapshot_id"] not in known:
             archive.append(snapshot)
             known.add(snapshot["snapshot_id"])
-    payload["learning_evaluation"] = evaluate_archive(payload)
 
 
 def verify_record(record: dict, key: str) -> None:
@@ -356,7 +357,4 @@ def merge_learning_archives(preferred: dict, other: dict) -> dict:
                 raise ValueError(f"Conflicting immutable record: {item[key]}")
             records[item[key]] = deepcopy(item)
         merged[collection] = list(records.values())
-    merged["learning_evaluation"] = evaluate_archive(merged)
-    from odds_analyzer.season_model import review_predictions
-    review_predictions(merged)
     return merged

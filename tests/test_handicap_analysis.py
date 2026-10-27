@@ -215,15 +215,15 @@ class DynamicSlateAnalysisTest(unittest.TestCase):
         self.assertEqual(analyzed["prediction"]["basis"], "fresh_three_market_snapshot")
         self.assertGreaterEqual(analyzed["prediction"]["confidence"], 60)
 
-    def test_european_asian_snapshot_generates_exact_asian_recommendation(self):
+    def test_non_mismatch_retains_analysis_without_betting_prediction(self):
         match = dynamic_analysis_match(include_lottery=False)
 
         analyzed = analyze_slate_match(match)
 
         self.assertFalse(analyzed["mismatch"]["matched"])
-        self.assertEqual(analyzed["prediction"]["market"], "亚盘 Pinnacle")
-        self.assertEqual(analyzed["prediction"]["pick"], "主队 -0.25")
-        self.assertEqual(analyzed["prediction"]["basis"], "market_observation_v1")
+        self.assertEqual(analyzed["prediction"]["market"], "无推荐")
+        self.assertEqual(analyzed["prediction"]["pick"], "观望")
+        self.assertEqual(analyzed["prediction"]["basis"], "non_mismatch_information_only")
         self.assertFalse(analyzed["prediction"]["betting_eligible"])
         self.assertIn("本次竞彩未取得", analyzed["market_read"])
 
@@ -307,6 +307,7 @@ class ResultReviewTest(unittest.TestCase):
 
     def test_asian_push_is_void_not_a_miss(self):
         match = analyze_slate_match(dynamic_analysis_match(include_lottery=False))
+        match["prediction"].update(market="亚盘 Pinnacle", market_type="asian_handicap", selection_keys=["home"])
         match["prediction"]["home_handicap"] = -1.0
         match["prediction"]["pick"] = "主队 -1"
 
@@ -606,20 +607,19 @@ class DashboardPrototypeTest(unittest.TestCase):
             self.assertIn(key, payload)
 
 class CheckerCandidateTest(unittest.TestCase):
-    def test_small_batch_keeps_only_top_three(self):
+    def test_non_mismatch_small_batch_is_excluded(self):
         matches = [sample_match(f"match-{index}", confidence) for index, confidence in enumerate((51, 55, 53, 52))]
 
         selected = _checker_candidates(matches, "2026-08-22")
 
-        self.assertEqual([item["prediction"]["confidence"] for item in selected], [55, 53, 52])
+        self.assertEqual(selected, [])
 
-    def test_large_batch_is_capped_at_eight(self):
+    def test_non_mismatch_large_batch_is_excluded(self):
         matches = [sample_match(f"match-{index}", 50 + index) for index in range(10)]
 
         selected = _checker_candidates(matches, "2026-08-22")
 
-        self.assertEqual(len(selected), 8)
-        self.assertEqual(selected[0]["prediction"]["confidence"], 59)
+        self.assertEqual(selected, [])
 
 
 class WorkflowConfigurationTest(unittest.TestCase):
@@ -727,7 +727,7 @@ class EveningSlateRefreshJobTest(unittest.TestCase):
         self.assertEqual(athletic["european_odds"]["home"], 1.95)
         self.assertEqual(athletic["asian_handicap"]["handicap"], -0.5)
         self.assertEqual(athletic["odds_api_snapshot"]["bookmaker_key"], "pinnacle")
-        self.assertEqual(athletic["signal_label"], "数据不足")
+        self.assertEqual(athletic["signal_label"], "盘口观察")
         self.assertEqual(athletic["prediction"]["market"], "无推荐")
 
     def test_odds_api_team_fallback_tolerates_name_and_minute_differences(self):

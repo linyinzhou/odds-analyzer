@@ -187,11 +187,6 @@ jobs:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           API_FOOTBALL_API_KEY: ${{ secrets.API_FOOTBALL_API_KEY }}
           ANALYSIS_COMPETITIONS: ${{ inputs.analysis_competitions || 'PL,PD,SA' }}
-      - name: Compute non-mismatch Poisson shadow baseline
-        if: ${{ (github.event.schedule == '17 8 * * *' || inputs.run_type == 'evening-report') && steps.manual_guard.outputs.skip != 'true' }}
-        run: PYTHONPATH=src python -m odds_analyzer.jobs.run_poisson_shadow --payload dashboard/data/daily_matches.json --output dashboard/data/poisson_shadow.json
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
       - name: Review checker results
         if: ${{ github.event.schedule == '0 0 * * *' || inputs.run_type == 'result-review' }}
         run: PYTHONPATH=src python -m odds_analyzer.jobs.review_results --date "${SLATE_DATE}"

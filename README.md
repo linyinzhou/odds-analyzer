@@ -344,3 +344,20 @@ The skill references this repository as the implementation project and does not 
 ## Responsible Use
 
 This project is an analysis assistant, not a guarantee of profit. Recommendations should include uncertainty, bankroll discipline, and data-quality warnings.
+
+
+### Mismatch-only reporting (effective from the next run)
+
+Daily, ad hoc and fallback jobs retain all fixtures and their fundamentals/market
+commentary in Detail. Only feasible mismatch recommendations enter Checker; there
+is no top-eight cap. Home-page and Checker hit rates exclude non-mismatches and
+void settlements. Parlay controls retain the original mismatch double selections
+and multiplier/profit calculation, without narrowing or mixed prediction modes.
+
+Automatic non-mismatch model forecasts, model reviews, Poisson shadow generation
+and confidence calibration are disabled. Existing JSON records and frozen archives
+are retained, not migrated or recalculated. Historical research modules remain
+available for compatibility but are not called by the reporting workflow.
+
+Validation: `python -m unittest discover -s tests -q`,
+`node tests/test_mismatch_dashboard.cjs`, and `node --check dashboard/app.js`.

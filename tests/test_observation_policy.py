@@ -31,7 +31,9 @@ class ObservationPolicyTests(unittest.TestCase):
         source = dynamic_analysis_match(False)
         source["fundamental_context"] = {}
         result = analyze_slate_match(source)
-        self.assertEqual(len(result["prediction"]["watch_reasons"]), 3)
+        self.assertEqual(result["prediction"]["confidence"], 0)
+        self.assertEqual(result["prediction"]["selection_keys"], [])
+        self.assertTrue(result["recommendation"]["fundamental"])
 
     def test_nonfinite_and_invalid_lines_are_not_predictions(self):
         for line in [float("nan"), float("inf"), .3]:

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from odds_analyzer.learning import calibrate_predictions, freeze_predictions, now_iso
+from odds_analyzer.learning import freeze_predictions
 from odds_analyzer.dashboard_payload import upsert_history, with_batch_date, without_batch
 from odds_analyzer.fallback_queue import missing_fields_for_match
 from odds_analyzer.jobs.refresh_evening_slate import (
@@ -49,10 +49,8 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
         request = _find_request(payload, result)
         match, collection = _find_match(payload, request)
         updated, filled = _apply_result(match, request, result)
-        calibrated, performance = calibrate_predictions(payload, [updated], now_iso())
-        updated = _attach_bilingual_reports(calibrated)[0]
-        payload["strategy_performance"] = performance
-        freeze_predictions(payload, [updated], batch_date=str(request.get("batch_date") or ""))
+        updated = _attach_bilingual_reports([updated])[0]
+        freeze_predictions(payload, [updated], batch_date=str(request.get("batch_date") or ""), mismatch_only=True)
         _replace_match(payload, collection, updated)
         remaining = missing_fields_for_match(updated)
         _settle_request(request, result, remaining)
@@ -77,8 +75,6 @@ def apply_fallback_results(payload_path: Path, results_path: Path) -> dict[str, 
             "source": "fallback",
             "updated_at": imported_at,
         }
-    from odds_analyzer.season_model import update_predictions
-    update_predictions(payload, imported_at)
     payload_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload
 

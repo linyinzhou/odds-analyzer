@@ -254,8 +254,9 @@ class FrozenLearningTest(unittest.TestCase):
         }]}, "PL")
         reviewed, counts = review_checker_results(payload, "2026-07-01", fixtures, "2026-07-02T08:00:00+08:00")
         self.assertEqual(counts["reviewed"], 0)
-        self.assertEqual(reviewed["learning_evaluation"]["overall"]["settled"], 1)
-        self.assertEqual(reviewed["strategy_performance"]["strategies"]["market:asian_handicap"]["sample_size"], 1)
+        self.assertEqual(reviewed.get("result_archive", []), [])
+        self.assertNotIn("strategy_performance", reviewed)
+        self.assertEqual(reviewed["prediction_archive"], payload["prediction_archive"])
 
     def test_extra_time_uses_regular_time_and_missing_regular_time_stays_unknown(self):
         item = {"id": 1, "utcDate": "2026-07-01T14:00:00Z", "status": "FINISHED",
@@ -271,7 +272,7 @@ class FrozenLearningTest(unittest.TestCase):
 
     def test_ad_hoc_and_postponed_fixture_is_resolved_by_id(self):
         from odds_analyzer.jobs.review_results import review_results
-        payload = {}; item = match(); item["adhoc"] = True
+        payload = {}; item = match(); item["adhoc"] = True; item["mismatch"] = {"matched": True}
         forecast(payload, item)
         fixture = parse_football_data_fixtures({"matches": [{
             "id": 1, "utcDate": "2026-07-03T14:00:00Z", "status": "FINISHED",
@@ -286,7 +287,7 @@ class FrozenLearningTest(unittest.TestCase):
                  patch("odds_analyzer.jobs.review_results.refresh_next_matchday", side_effect=lambda p, key: (p, {"status": "success", "successful": 0, "failed": 0})):
                 reviewed = review_results(target, "2026-07-01", "test-key")
             fetch.assert_called_once_with("test-key", 1)
-            self.assertEqual(reviewed["learning_evaluation"]["overall"]["settled"], 1)
+            self.assertEqual(len(reviewed["result_archive"]), 1)
 
     def test_cli_is_read_only_and_rejects_input_as_output(self):
         root = Path(__file__).resolve().parents[1]

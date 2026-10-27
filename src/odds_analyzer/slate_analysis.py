@@ -59,7 +59,7 @@ def analyze_slate_match(match: dict[str, Any]) -> dict[str, Any]:
         analyzed["signal_label"] = (
             "错盘候选" if mismatch["dashboard"].get("limited_sample") else "错盘命中"
         )
-    elif prediction["market"] != "无推荐":
+    elif european and asian:
         analyzed["status"] = "watch"
         analyzed["signal_label"] = "盘口观察"
     else:
@@ -458,62 +458,14 @@ def _prediction(
             "selection_keys": [selection.value for selection in mismatch["selections"]],
         }
 
-    asian = match.get("asian_handicap")
-    if not asian or not probabilities or not match.get("football_data_snapshot"):
-        return _no_prediction()
-    try:
-        home_price = float(asian["home_odds"])
-        away_price = float(asian["away_odds"])
-        home_line = float(asian["handicap"])
-    except (KeyError, TypeError, ValueError):
-        return _no_prediction()
-    if not all(math.isfinite(value) for value in (home_price, away_price, home_line)) or min(home_price, away_price) <= 1 or not (home_line * 4).is_integer():
-        return _no_prediction()
-
-    home_cover, away_cover = _two_way_probabilities(home_price, away_price)
-    if abs(home_cover - away_cover) < 0.01:
-        pick_home = probabilities["home"] >= probabilities["away"]
-    else:
-        pick_home = home_cover > away_cover
-    selected_cover = home_cover if pick_home else away_cover
-    # Market-implied weights are not an independent estimate of handicap returns.
-    confidence = round(selected_cover * 100)
-
-    team = match.get("home_team", "主队") if pick_home else match.get("away_team", "客队")
-    selection_line = home_line if pick_home else -home_line
-    line = _format_line(selection_line)
-    provider = asian.get("provider") or "亚盘"
-    reasons = []
-    if not has_sufficient_fundamental_context(context):
-        reasons.append("双方赛季或近期战绩不足3场")
-    comparison = _fundamental_comparison(context)
-    if comparison is None:
-        reasons.append("缺少可比较的积分和净胜球数据")
-    elif not _fundamental_agrees(context, pick_home):
-        reasons.append("赛季实力指标与盘口所选方向相反，尚无让球幅度分析解释该分歧")
-    reasons.append("缺少经赛前样本验证的净胜球分布，无法计算该盘口的独立预期收益")
-    requirement_zh, requirement_en = _asian_margin_requirement(selection_line)
-    detail = f"观望：{team} {line}，{requirement_zh}。" + "；".join(reasons) + "。"
-    detail_en = (
-        f"Watch only: {team} {line}; {requirement_en}. "
-        "No validated independent goal-margin distribution is available to estimate expected returns."
-    )
     return {
-        "market": f"亚盘 {provider}",
-        "pick": f"{team} {line}",
-        "confidence": confidence,
-        "detail": detail,
-        "market_en": f"Asian handicap {provider}",
-        "pick_en": f"{team} {line}",
-        "detail_en": detail_en,
-        "decision": "watch",
-        "betting_eligible": False,
-        "watch_reasons": reasons,
-        "score_kind": "market_weight_not_probability",
-        "basis": "market_observation_v1",
-        "market_type": "asian_handicap",
-        "home_handicap": home_line,
-        "selection_keys": ["home" if pick_home else "away"],
+        "market": "无推荐", "pick": "观望", "confidence": 0,
+        "detail": mismatch["recommendation_zh"],
+        "market_en": "No bet", "pick_en": "Watch",
+        "detail_en": mismatch["recommendation_en"],
+        "decision": "watch", "betting_eligible": False,
+        "basis": "non_mismatch_information_only", "market_type": "none",
+        "selection_keys": [],
     }
 
 

@@ -10,11 +10,9 @@ from typing import Any
 
 from odds_analyzer.learning import (
     available_results,
-    evaluate_archive,
     record_result,
     selected_snapshots,
     timestamp,
-    training_performance,
 )
 from odds_analyzer.jobs.refresh_evening_slate import (
     ALLOWED_ANALYSIS_COMPETITIONS,
@@ -33,7 +31,7 @@ from odds_analyzer.sources import (
     fetch_upcoming_fixtures,
 )
 from odds_analyzer.sources.football_data import fetch_fixture_by_id
-from odds_analyzer.season_model import import_checker, ingest_fixtures, first_forecasts, review_predictions
+from odds_analyzer.season_model import import_checker, ingest_fixtures
 
 
 FINISHED_STATUSES = {"FINISHED"}
@@ -129,7 +127,6 @@ def review_checker_results(
     reviewed_at = reviewed_at or datetime.now(BEIJING).isoformat(timespec="seconds")
     import_checker(updated)
     ingest_fixtures(updated, fixtures, reviewed_at)
-    review_predictions(updated, reviewed_at)
     fixtures_by_id = {fixture.match_id: fixture for fixture in fixtures if fixture.match_id}
     fixtures_by_key = {_football_data_fixture_key(fixture): fixture for fixture in fixtures}
     counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
@@ -137,7 +134,7 @@ def review_checker_results(
     history = []
     for match in updated.get("checker_history", []):
         copied = deepcopy(match)
-        if str(copied.get("batch_date", "")) != slate_date:
+        if not (copied.get("mismatch") or {}).get("matched") or str(copied.get("batch_date", "")) != slate_date:
             history.append(copied)
             continue
 
@@ -188,16 +185,12 @@ def review_checker_results(
     updated["checker_history"] = history
     # Settle the immutable selection, including forecasts outside the checker top-N.
     for snapshot in selected_snapshots(updated):
-        if snapshot["batch_date"] != slate_date:
+        if not (snapshot["match"].get("mismatch") or {}).get("matched") or snapshot["batch_date"] != slate_date:
             continue
         fixture = _fixture_for_match(snapshot["match"], fixtures_by_id, fixtures_by_key)
         if fixture is not None:
             record_result(updated, snapshot, fixture.home_score, fixture.away_score,
                           reviewed_at, status=fixture.status)
-    # Summary includes this review; future predictions still require strictly earlier observations.
-    summary_time = (timestamp(reviewed_at) + timedelta(microseconds=1)).isoformat()
-    updated["strategy_performance"] = training_performance(updated, summary_time)
-    updated["learning_evaluation"] = evaluate_archive(updated)
     updated["last_result_review"] = {
         "batch_date": slate_date,
         "reviewed_at": reviewed_at,
@@ -228,13 +221,10 @@ def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
             dates.add((datetime.now(BEIJING).date() - timedelta(days=1)).isoformat())
         results = available_results(payload)
         for snapshot in selected_snapshots(payload):
+            if not (snapshot["match"].get("mismatch") or {}).get("matched"):
+                continue
             kickoff = timestamp(snapshot["match"].get("kickoff_time"), kickoff=True)
             if snapshot["fixture_key"] not in results and kickoff and kickoff < timestamp(reviewed_at):
-                dates.add(snapshot["batch_date"])
-        model_done = {r["forecast_id"] for r in payload.get("model_reviews", [])}
-        for snapshot in first_forecasts(payload):
-            kickoff = timestamp(snapshot["match"].get("kickoff_time"), kickoff=True)
-            if snapshot["forecast_id"] not in model_done and kickoff and kickoff < timestamp(reviewed_at):
                 dates.add(snapshot["batch_date"])
         counts = {"reviewed": 0, "pending": 0, "unsupported": 0, "not_found": 0}
         errors = {}
@@ -247,7 +237,9 @@ def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
                 continue
             fixtures = list(fixtures)
             present_ids = {fixture.match_id for fixture in fixtures}
-            for snapshot in [*selected_snapshots(payload), *first_forecasts(payload)]:
+            for snapshot in selected_snapshots(payload):
+                if not (snapshot["match"].get("mismatch") or {}).get("matched"):
+                    continue
                 if snapshot["batch_date"] != batch_date or (snapshot["fixture_key"] in results and batch_date != review_date):
                     continue
                 match_id = (snapshot["match"].get("football_data_snapshot") or {}).get("match_id")
@@ -272,7 +264,6 @@ def review_results(path: Path, slate_date: str, api_key: str) -> dict[str, Any]:
 
     payload, schedule_counts = refresh_next_matchday(payload, api_key)
     import_checker(payload)
-    review_predictions(payload, reviewed_at)
     _write_payload(path, payload)
     print(
         f"Reviewed {counts['reviewed']} checker entries for {review_date}; "
@@ -297,8 +288,7 @@ def _fixture_for_match(
 
 
 def _latest_review_batch(payload: dict[str, Any]) -> str:
-    batches = [str(match.get("batch_date")) for match in payload.get("checker_history", []) if match.get("batch_date")]
-    batches.extend(str(row["batch_date"]) for row in first_forecasts(payload) if row.get("batch_date"))
+    batches = [str(match.get("batch_date")) for match in payload.get("checker_history", []) if match.get("batch_date") and (match.get("mismatch") or {}).get("matched")]
     if batches:
         return max(batches)
     return (datetime.now(BEIJING).date() - timedelta(days=1)).isoformat()

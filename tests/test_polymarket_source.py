@@ -179,7 +179,7 @@ class PolymarketSourceTest(unittest.TestCase):
 
         self.assertFalse(analyzed["mismatch"]["matched"])
         self.assertEqual(analyzed["mismatch"]["polymarket_validation"], "conflict")
-        self.assertEqual(analyzed["prediction"]["market"], "亚盘 Pinnacle")
+        self.assertEqual(analyzed["prediction"]["market"], "无推荐")
         self.assertIn("降级为观察", analyzed["recommendation"]["mismatch"])
 
 
