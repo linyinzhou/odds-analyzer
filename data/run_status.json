@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "trigger": "schedule",
+  "run_type": "result-review",
+  "run_id": "42336760108",
+  "run_attempt": "1",
+  "commit": "e62ce30",
+  "branch": "main",
+  "actor": "linyinzhou",
+  "updated_at": "2026-11-07T04:04:10.900119Z",
+  "note": "",
+  "analysis_competitions": "PL,PD,SA"
+}
